@@ -2,12 +2,15 @@ import re
 
 class IsirDecryptor:
 
+    # Povolené znaky mimo základní ASCII rozsah
     KNOWN_CHARS = set(
         [
             'á','č','ě','é','ď','í','ň','ó','ř','š','ť','ú','ů','ý','ž',
-            'Á', 'Č', 'Ě', 'Í', 'Ř', 'Š', 'Ů', 'Ú', 'Ý', 'Ž'
+            'Á', 'Č', 'Ě', 'Í', 'Ř', 'Š', 'Ů', 'Ú', 'Ý', 'Ž', '–'
         ]
     )
+
+    # Tabulka pro nahrazení znaků s diakritikou a jiných speciálních znaků
     REPLACE = [
         ([195, 136], 'á'),
         ([199, 143], 'č'),
@@ -85,8 +88,8 @@ class IsirDecryptor:
 
         # log unknown characters
         for i,c in enumerate(res):
-            if ord(c) > 128 and c not in self.KNOWN_CHARS:
-                txtPart = res[i-8:i+8].replace('\n',' ')
+            if ord(c) >= 128 and c not in self.KNOWN_CHARS:
+                txtPart = res[max(0,i-10):i+10].replace('\n',' ')
                 codes = c.encode('utf-8')
                 strCodes = ', '.join(map(str, codes))
 
