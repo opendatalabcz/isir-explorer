@@ -1,0 +1,9 @@
+venv
+.idea
+data
+__pycache__
+*.egg-info/
+.installed.cfg
+*.egg
+eggs/
+.eggs/
