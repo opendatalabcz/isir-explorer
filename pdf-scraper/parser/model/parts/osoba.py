@@ -1,32 +1,37 @@
 
+class Osoba:
+    def __init__(self, udaje):
+        if hasattr(udaje, "Prijmeni"):
+            self.FO_PO = 1
+            self.Fyzicka_osoba = Fyzicka_osoba(udaje)
+        else:
+            self.FO_PO = 2
+            self.Pravnicka_osoba = Pravnicka_osoba(udaje)
 
-class Dluznik:
-    def __init__(self):
-        self.FO_PO = 1
-        self.Fyzicka_osoba = Fyzicka_osoba()
-        self.Pravnicka_osoba = Pravnicka_osoba()
+
+class Dluznik(Osoba):
+    pass
 
 
-class Veritel:
-    def __init__(self):
-        self.FO_PO = 2
-        self.Fyzicka_osoba = Fyzicka_osoba()
-        self.Pravnicka_osoba = Pravnicka_osoba()
+class Veritel(Osoba):
+    pass
 
+class Adresa:
+    pass
 
 class UdajeOsoby:
+    def __init__(self):
+        self.Sidlo = Adresa()
+
+
+class TypOsoby:
+    def __init__(self, udaje):
+        self.Udaje = udaje
+
+
+class Fyzicka_osoba(TypOsoby):
     pass
 
 
-class Osoba:
+class Pravnicka_osoba(TypOsoby):
     pass
-
-
-class Fyzicka_osoba(Osoba):
-    def __init__(self):
-        self.Udaje = UdajeOsoby()
-
-
-class Pravnicka_osoba(Osoba):
-    def __init__(self):
-        self.Udaje = UdajeOsoby()

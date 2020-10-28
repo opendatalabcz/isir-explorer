@@ -2,7 +2,7 @@ from parser.model.prihlaska_pohledavky import PrihlaskaPohledavky
 from parser.isir_parser import IsirParser
 from parser.model.parts.osoba import *
 from parser.model.parts.spisova_znacka import *
-
+import re
 
 class PrihlaskaParser(IsirParser):
 
@@ -19,30 +19,52 @@ class PrihlaskaParser(IsirParser):
                 znackaTxt = self.removeSpaces(self.textAfter(line, "Spis. značka"))
                 self.model.setSoud(soud, self.spisovaZnacka(znackaTxt))
 
+    def _udajeOsoby(self, lines):
+        udaje = UdajeOsoby()
+        for line in lines:
+            if "Příjmení:" in line and "Jméno:" in line:
+                udaje.Prijmeni = self.textBetween(line, "Příjmení:", "Jméno:")
+                udaje.Jmeno = self.textAfter(line, "Jméno:")
+            elif "Titul za jm.:" in line and "Titul před jm.:" in line:
+                udaje.Titul_za = self.textBetween(line, "Titul za jm.:", "Titul před jm.:")
+                udaje.Titul_pred = self.textAfter(line, "Titul před jm.:")
+            elif "Datum narození:" in line and "Rodné číslo:" in line:
+                udaje.Datum_narozeni = re.sub(r"[^0-9.]", "", self.textBetween(line, "Datum narození:", "Rodné číslo:"))
+                # RC bez lomitka
+                udaje.Rodne_cislo = self.numbersOnly(self.textAfter(line, "Rodné číslo:"))
+            elif "IČ:" in line and "Jiné registr. č.:" in line:
+                udaje.IC = self.numbersOnly(self.textBetween(line, "IČ:", "Jiné registr. č.:"))
+                udaje.Jine_reg_cislo = self.numbersOnly(self.textAfter(line, "Jiné registr. č.:"))
+            elif "Název/obch.firma:" in line:
+                udaje.Nazev = self.textAfter(line, "Název/obch.firma:")
+            elif "Ulice:" in line:
+                udaje.Sidlo.Ulice = self.textAfter(line, "Ulice:")
+            elif "Č.p./č.e.:" in line and "Č.o.:" in line:
+                udaje.Sidlo.Cp = self.textBetween(line, "Č.p./č.e.:", "Č.o.:")
+                udaje.Sidlo.Co = self.textAfter(line, "Č.o.:")
+            elif "Obec:" in line:
+                udaje.Sidlo.Obec = self.textAfter(line, "Obec:")
+            elif "PSČ:" in line and "Část obce:" in line:
+                udaje.Sidlo.PSC = self.textBetween(line, "PSČ:", "Část obce:")
+                udaje.Sidlo.Cast_obce = self.textAfter(line, "Část obce:")
+            elif "Stát:" in line:
+                udaje.Sidlo.Stat = self.textAfter(line, "Stát:")
+            elif "Číslo účtu:" in line:
+                udaje.Cislo_uctu = self.textAfter(line, "Číslo účtu:")
+
+        return udaje
+
     def _dluznik(self):
         txt = self.textBetween(self.txt, "     Dlužník", "     Věřitel")
         lines = txt.split('\n')
-        dluznik = Dluznik()
-        for line in lines:
-            if "Příjmení:" in line and "Jméno:" in line:
-                dluznik.Fyzicka_osoba.Udaje.Prijmeni = self.textBetween(line, "Příjmení:", "Jméno:")
-                dluznik.Fyzicka_osoba.Udaje.Jmeno = self.textAfter(line, "Jméno:")
-            elif "Rodné číslo:" in line:
-                # bez lomitka
-                dluznik.Fyzicka_osoba.Udaje.Rodne_cislo = self.numbersOnly(self.textAfter(line, "Rodné číslo:"))
-        self.model.Dluznik = dluznik
+        udaje = self._udajeOsoby(lines)
+        self.model.Dluznik = Dluznik(udaje)
 
     def _veritel(self):
         txt = self.textBetween(self.txt, "     Věřitel", "I vyplní se pouze u zahraničních osob")
         lines = txt.split('\n')
-        veritel = Veritel()
-        for line in lines:
-            if "Název/obch.firma:" in line:
-                veritel.Pravnicka_osoba.Udaje.Nazev = self.textAfter(line, "Název/obch.firma:")
-            elif "IČ:" in line and "Jiné registr. č.:" in line:
-                # RC bez lomitka
-                veritel.Pravnicka_osoba.Udaje.IC = self.numbersOnly(self.textAfter(line, "Rodné číslo:"))
-        self.model.Veritel = veritel
+        udaje = self._udajeOsoby(lines)
+        self.model.Veritel = Veritel(udaje)
 
     def _pohledavky(self):
         txt = self.textBetween(self.txt, "Pohledávka č. 1", "54 Celková výše přihlášených pohledávek")
