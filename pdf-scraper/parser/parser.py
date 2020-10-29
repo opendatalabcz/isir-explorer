@@ -1,4 +1,5 @@
 import re
+import regex
 
 
 class Parser:
@@ -32,6 +33,32 @@ class Parser:
 
     def reMatch(self, txt, reg):
         return re.match(reg, txt)
+
+    def fieldText(self, txt, reg):
+        match = re.compile(reg, re.MULTILINE).search(txt)
+        if not match:
+            return ""
+        
+        matchStart = match.span(0)[0]
+        matchEnd = match.span(0)[1]
+
+        fieldName = match.group(0)
+
+        offset = 0
+        for c in fieldName:
+            if c == ' ':
+                offset+=1
+            else:
+                break
+
+        txt = txt[matchEnd:]
+        lines = txt.split('\n')
+        res = [lines.pop(0)]
+        for line in lines:
+            if regex.match('^[/s]{0,'+str(offset)+'}([0-9]+ )?([\w\p{L}]+ )*([\w\p{L}]+):', line, flags=regex.UNICODE):
+                break
+            res.append(line)
+        return '\n'.join(res)
 
     def reTextAfter(self, txt, reg):
         l = re.compile(reg).split(txt)

@@ -70,13 +70,14 @@ class PrihlaskaParser(IsirParser):
         lines = txt.split('\n')
         pohledavka = Pohledavka()
         for line in lines:
-            if "Typ pohledávky:" in line:
+            if self.reMatch(line, '^[\s]*Typ pohledávky:'):
                 pohledavka.Typ = self.textAfter(line, "Typ pohledávky:")
-            elif "Výše jistiny (Kč):" in line:
+            elif self.reMatch(line, '^[\s]*Výše jistiny \(Kč\):'):
                 pohledavka.Vyse_jistiny = self.priceValue(self.textAfter(line, "Výše jistiny (Kč):"))
-            elif "Celková výše pohledávky:" in line:
+            elif self.reMatch(line, '^[\s]*Celková výše pohledávky:'):
                 pohledavka.Celkova_vyse = self.priceValue(self.textAfter(line, "Celková výše pohledávky:"))
 
+        pohledavka.Duvod_vzniku = self.textBlock(self.fieldText(txt, "^[\s]*[0-9]+ Důvod vzniku:"))
         #pohledavka.Duvod_vzniku = self.textBlock(self.textBetween(txt, "06 Důvod vzniku:", "07 Vykonatelnost:"))
         #pohledavka.Dalsi_okolnosti = self.textBlock(self.textAfter(txt, "10 Další okolnosti:"))
         return pohledavka
@@ -109,7 +110,7 @@ class PrihlaskaParser(IsirParser):
                 self.model.Pohledavky.Pocet_pohledavek = self.numbersOnly(self.reTextAfter(line, '^[\s]*[0-9]+ Počet pohledávek:'))
             elif self.reMatch(line, '^[\s]*[0-9]+ Počet vložených stran:'):
                 self.model.Pohledavky.Pocet_vlozenych_stran = self.numbersOnly(self.reTextAfter(line, '^[\s]*[0-9]+ Počet vložených stran:'))
-                break
+                break #konec sumarizace
 
     def run(self):
         # úvodní část soud a spis. značka řízení
