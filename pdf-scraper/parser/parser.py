@@ -29,3 +29,17 @@ class Parser:
 
     def priceValue(self, txt):
         return txt.replace(' ', '').replace(',', '.')
+
+    def reSplitText(self, txt, reg, keepSplit=True):
+        parts = re.compile(reg, re.MULTILINE).split(txt)
+
+        if keepSplit:
+            res = [parts.pop(0)]
+            for i,p in enumerate(parts):
+                if i % 2 == 0:
+                    res.append(p)
+                else:
+                    res[-1] += p
+            return res
+
+        return parts

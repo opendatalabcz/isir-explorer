@@ -66,8 +66,7 @@ class PrihlaskaParser(IsirParser):
         udaje = self._udajeOsoby(lines)
         self.model.Veritel = Veritel(udaje)
 
-    def _pohledavky(self):
-        txt = self.textBetween(self.txt, "Pohledávka č. 1", "54 Celková výše přihlášených pohledávek")
+    def _pohledavka(self, txt):
         lines = txt.split('\n')
         pohledavka = Pohledavka()
         for line in lines:
@@ -78,10 +77,26 @@ class PrihlaskaParser(IsirParser):
             elif "Celková výše pohledávky:" in line:
                 pohledavka.Celkova_vyse = self.priceValue(self.textAfter(line, "Celková výše pohledávky:"))
 
-        pohledavka.Duvod_vzniku = self.textBlock(self.textBetween(txt, "06 Důvod vzniku:", "07 Vykonatelnost:"))
-        pohledavka.Dalsi_okolnosti = self.textBlock(self.textAfter(txt, "10 Další okolnosti:"))
+        #pohledavka.Duvod_vzniku = self.textBlock(self.textBetween(txt, "06 Důvod vzniku:", "07 Vykonatelnost:"))
+        #pohledavka.Dalsi_okolnosti = self.textBlock(self.textAfter(txt, "10 Další okolnosti:"))
+        return pohledavka
 
-        self.model.Pohledavky.append(pohledavka)
+    def _pohledavky(self):
+        pohledavkyText = re.compile('^[\s]*Pohledávka č\.[\s]+[0-9]+[\s]*$', re.MULTILINE).split(self.txt)
+
+        if len(pohledavkyText) >= 2:
+            pohledavkyText.pop(0) # Odstranit zacatek
+        
+        # posledni pohledavka
+        posledni = pohledavkyText.pop()
+        konec = self.reSplitText(posledni, '(^[0-9]+ Celková výše přihlášených pohledávek \(Kč\):.*)', keepSplit=True)
+        pohledavkyText.append(konec[0]) # posledni pohledavka
+        sumarizace = konec[1]
+
+        for pohledavkaText in pohledavkyText:
+            pohledavka = self._pohledavka(pohledavkaText)
+            self.model.Pohledavky.append(pohledavka)
+        
 
     def run(self):
         # úvodní část soud a spis. značka řízení
