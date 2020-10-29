@@ -89,14 +89,27 @@ class PrihlaskaParser(IsirParser):
         
         # posledni pohledavka
         posledni = pohledavkyText.pop()
-        konec = self.reSplitText(posledni, '(^[0-9]+ Celková výše přihlášených pohledávek \(Kč\):.*)', keepSplit=True)
+        konec = self.reSplitText(posledni, '(^[\s]*[0-9]+ Celková výše přihlášených pohledávek \(Kč\):.*)', keepSplit=True)
         pohledavkyText.append(konec[0]) # posledni pohledavka
         sumarizace = konec[1]
 
         for pohledavkaText in pohledavkyText:
             pohledavka = self._pohledavka(pohledavkaText)
-            self.model.Pohledavky.append(pohledavka)
-        
+            self.model.Pohledavky.Pohledavky.append(pohledavka)
+
+        sumLines = sumarizace.split('\n')
+        for line in sumLines:
+            if self.reMatch(line, '^[\s]*[0-9]+ Celková výše přihlášených pohledávek \(Kč\):'):
+                self.model.Pohledavky.Celkova_vyse = self.priceValue(self.reTextAfter(line, '^[\s]*[0-9]+ Celková výše přihlášených pohledávek \(Kč\):'))
+            elif self.reMatch(line, '^[\s]*[0-9]+ Celková výše nezajištěných pohledávek \(Kč\):'):
+                self.model.Pohledavky.Celkova_vyse_nezajistenych = self.priceValue(self.reTextAfter(line, '^[\s]*[0-9]+ Celková výše nezajištěných pohledávek \(Kč\):'))
+            elif self.reMatch(line, '^[\s]*[0-9]+ Celková výše zajištěných pohledávek \(Kč\):'):
+                self.model.Pohledavky.Celkova_vyse_zajistenych = self.priceValue(self.reTextAfter(line, '^[\s]*[0-9]+ Celková výše zajištěných pohledávek \(Kč\):'))
+            elif self.reMatch(line, '^[\s]*[0-9]+ Počet pohledávek:'):
+                self.model.Pohledavky.Pocet_pohledavek = self.numbersOnly(self.reTextAfter(line, '^[\s]*[0-9]+ Počet pohledávek:'))
+            elif self.reMatch(line, '^[\s]*[0-9]+ Počet vložených stran:'):
+                self.model.Pohledavky.Pocet_vlozenych_stran = self.numbersOnly(self.reTextAfter(line, '^[\s]*[0-9]+ Počet vložených stran:'))
+                break
 
     def run(self):
         # úvodní část soud a spis. značka řízení

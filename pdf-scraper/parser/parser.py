@@ -30,6 +30,17 @@ class Parser:
     def priceValue(self, txt):
         return txt.replace(' ', '').replace(',', '.')
 
+    def reMatch(self, txt, reg):
+        return re.match(reg, txt)
+
+    def reTextAfter(self, txt, reg):
+        l = re.compile(reg).split(txt)
+        if len(l) == 1:
+            return txt #no matches
+        l.pop(0) #remove text before 1st splitter
+        res = ''.join(l)
+        return res.strip()
+
     def reSplitText(self, txt, reg, keepSplit=True):
         parts = re.compile(reg, re.MULTILINE).split(txt)
 
