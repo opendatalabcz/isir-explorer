@@ -4,3 +4,6 @@ class SpisovaZnacka:
 
 class Pohledavka:
     pass
+
+class Vykonatelnost:
+    pass

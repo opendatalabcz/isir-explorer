@@ -78,8 +78,16 @@ class PrihlaskaParser(IsirParser):
                 pohledavka.Celkova_vyse = self.priceValue(self.textAfter(line, "Celková výše pohledávky:"))
 
         pohledavka.Duvod_vzniku = self.textBlock(self.fieldText(txt, "^[\s]*[0-9]+ Důvod vzniku:"))
-        #pohledavka.Duvod_vzniku = self.textBlock(self.textBetween(txt, "06 Důvod vzniku:", "07 Vykonatelnost:"))
-        #pohledavka.Dalsi_okolnosti = self.textBlock(self.textAfter(txt, "10 Další okolnosti:"))
+        pohledavka.Dalsi_okolnosti = self.textBlock(self.fieldText(txt, "^[\s]*[0-9]+ Další okolnosti:"))
+
+        # Vykonatelnost
+        txtVykonatelnost = self.fieldText(txt, "^[\s]*[0-9]+ Vykonatelnost:")
+        for line in txtVykonatelnost.split('\n'):
+            if "pro částku:" in line and "dle:" in line:
+                pohledavka.Vykonatelnost = Vykonatelnost()
+                pohledavka.Vykonatelnost.Pro_castku = self.priceValue(self.textBetween(line, "pro částku:", "dle:"))
+                pohledavka.Vykonatelnost.Dle = self.textAfter(line, "dle:")
+
         return pohledavka
 
     def _pohledavky(self):
