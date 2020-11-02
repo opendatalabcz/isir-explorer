@@ -8,6 +8,11 @@ class Osoba:
             self.FO_PO = 2
             self.Pravnicka_osoba = Pravnicka_osoba(udaje)
 
+    def __repr__(self):
+        if self.FO_PO == 1:
+            return self.Fyzicka_osoba.__repr__()
+        else:
+            return self.Pravnicka_osoba.__repr__()
 
 class Dluznik(Osoba):
     pass
@@ -28,10 +33,13 @@ class TypOsoby:
     def __init__(self, udaje):
         self.Udaje = udaje
 
-
 class Fyzicka_osoba(TypOsoby):
-    pass
+
+    def __repr__(self):
+        return self.Udaje.Prijmeni
 
 
 class Pravnicka_osoba(TypOsoby):
-    pass
+
+    def __repr__(self):
+        return self.Udaje.Nazev+'-'+self.Udaje.IC

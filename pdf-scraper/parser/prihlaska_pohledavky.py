@@ -98,6 +98,11 @@ class PrihlaskaParser(IsirParser):
                 pohledavka.Prislusenstvi.Zpusob_vypoctu = self.textBlock(self.fieldText(txtPrislusenstvi, "^[\s]*Způsob výpočtu:"))
                 break
 
+        # Vlastnosti (zatim faze sbirani dat)
+        txtVlastnosti = self.fieldText(txt, "[\s]*[0-9]+ Vlastnosti pohledávky:")
+        with open('data/vlastnosti/'+repr(self.model.Dluznik)+'_'+str(len(self.model.Pohledavky.Pohledavky)+1), 'w') as f:
+            f.write(txtVlastnosti)
+
         return pohledavka
 
     def _pohledavky(self):
