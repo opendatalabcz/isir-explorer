@@ -10,3 +10,9 @@ class Vykonatelnost:
 
 class Prislusenstvi:
     pass
+
+class Vlastnosti:
+    pass
+
+class SplatnaOd:
+    pass

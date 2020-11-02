@@ -66,6 +66,42 @@ class PrihlaskaParser(IsirParser):
         udaje = self._udajeOsoby(lines)
         self.model.Veritel = Veritel(udaje)
 
+    def _vlastnostiPohledavky(self, txtVlastnosti, pohledavka):
+        # Obsah teto sekce je aktualne ukladan pro analyzu formatu
+        with open('data/vlastnosti/'+repr(self.model.Dluznik)+'_'+str(len(self.model.Pohledavky.Pohledavky)+1), 'w') as f:
+            f.write(txtVlastnosti)
+
+        splatna = False
+        for line in txtVlastnosti.split('\n'):
+            if "Splatná:" in line:
+                pohledavka.Vlastnosti = Vlastnosti()
+                splatna = "Splatná od:" in line
+                pohledavka.Vlastnosti.Splatna = splatna
+                if splatna:
+                    pohledavka.Vlastnosti.SplatnaOd = []
+                    continue
+            if "Pohledávka:" in line:
+                break
+            if splatna:
+                splatnaTxt = line.strip()
+                columns = splatnaTxt.split('   ', 1)
+                vCastce = None
+                od = None
+                if len(columns) == 1:
+                    # pripad, kdy je vyplnen pouze jeden z udaju Splatna od: / V castce:
+                    if self.reMatch(columns[0], "^([0-9]+ )*[0-9]+(,[0-9]+)?$"):
+                        vCastce = self.priceValue(columns[0])
+                    elif columns[0]!="":
+                        od = columns[0]
+                elif len(columns) == 2:
+                    od = columns[0].strip()
+                    vCastce = self.priceValue(columns[1])
+                if vCastce is not None or od is not None:
+                    splatnaOd = SplatnaOd()
+                    splatnaOd.Od = od
+                    splatnaOd.V_castce = vCastce
+                    pohledavka.Vlastnosti.SplatnaOd.append(splatnaOd)
+
     def _pohledavka(self, txt):
         lines = txt.split('\n')
         pohledavka = Pohledavka()
@@ -100,8 +136,7 @@ class PrihlaskaParser(IsirParser):
 
         # Vlastnosti (zatim faze sbirani dat)
         txtVlastnosti = self.fieldText(txt, "[\s]*[0-9]+ Vlastnosti pohledávky:")
-        with open('data/vlastnosti/'+repr(self.model.Dluznik)+'_'+str(len(self.model.Pohledavky.Pohledavky)+1), 'w') as f:
-            f.write(txtVlastnosti)
+        self._vlastnostiPohledavky(txtVlastnosti, pohledavka)
 
         return pohledavka
 
