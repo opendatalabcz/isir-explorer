@@ -60,13 +60,30 @@ class Parser:
             res.append(line)
         return '\n'.join(res)
 
-    def reTextAfter(self, txt, reg):
-        l = re.compile(reg).split(txt)
+    def reTextAfter(self, txt, reg, multiline=False):
+        if multiline:
+            compiled = re.compile(reg, re.MULTILINE)
+        else:
+            compiled = re.compile(reg)
+        l = compiled.split(txt)
         if len(l) == 1:
             return txt #no matches
         l.pop(0) #remove text before 1st splitter
         res = ''.join(l)
         return res.strip()
+
+    def reTextBefore(self, txt, reg, multiline=False):
+        if multiline:
+            compiled = re.compile(reg, re.MULTILINE)
+        else:
+            compiled = re.compile(reg)
+        l = compiled.split(txt)
+        return l.pop(0).strip()
+
+    def reTextBetween(self, txt, regA, regB, multiline=True):
+        after = self.reTextAfter(txt, regA, multiline)
+        before = self.reTextBefore(after, regB, multiline)
+        return before
 
     def reSplitText(self, txt, reg, keepSplit=True):
         parts = re.compile(reg, re.MULTILINE).split(txt)

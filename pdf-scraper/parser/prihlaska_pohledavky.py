@@ -55,13 +55,13 @@ class PrihlaskaParser(IsirParser):
         return udaje
 
     def _dluznik(self):
-        txt = self.textBetween(self.txt, "     Dlužník", "     Věřitel")
+        txt = self.reTextBetween(self.txt, "^[\s]+Dlužník", "^[\s]+Věřitel")
         lines = txt.split('\n')
         udaje = self._udajeOsoby(lines)
         self.model.Dluznik = Dluznik(udaje)
 
     def _veritel(self):
-        txt = self.textBetween(self.txt, "     Věřitel", "I vyplní se pouze u zahraničních osob")
+        txt = self.reTextBetween(self.txt, "^[\s]+Věřitel", "^[\s]+I vyplní se pouze u zahraničních osob")
         lines = txt.split('\n')
         udaje = self._udajeOsoby(lines)
         self.model.Veritel = Veritel(udaje)
