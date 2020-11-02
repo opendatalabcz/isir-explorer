@@ -1,0 +1,3 @@
+[app]
+pdftotext=/usr/bin/pdftotext2
+tmp_dir=/tmp/isir

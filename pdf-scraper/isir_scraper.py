@@ -6,14 +6,15 @@ from parser.prihlaska_pohledavky import PrihlaskaParser
 
 class IsirScraper:
     
-    def __init__(self, filename):
+    def __init__(self, filename, config):
+        self.config = config
         self.filename = filename
 
         base = os.path.basename(self.filename)
         parts = os.path.splitext(base)
         self.document_name = parts[0]
 
-        self.tmp_path = '/tmp/isir'
+        self.tmp_path = self.config['tmp_dir']
         self.tmpDir()
 
     def tmpDir(self):
@@ -23,7 +24,7 @@ class IsirScraper:
     def run(self):
         # To text
         output_path = self.tmp_path+'/'+self.document_name
-        subprocess.run(["/home/tumapav3//bin/pdftotext2", "-layout", "-nopgbrk", self.filename, output_path])
+        subprocess.run([self.config['pdftotext'], "-layout", "-nopgbrk", self.filename, output_path])
 
         with open(output_path, 'rb') as f:
             txtBytes = f.read()
