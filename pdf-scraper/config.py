@@ -8,7 +8,7 @@ class AppConfig:
     GLOBAL_CATEGORY = 'app'
 
     # Klice v nastaveni, ktere je vzdy nutne specifikovat
-    REQUIRED = ['pdftotext']
+    REQUIRED = []
 
     # Vychozi hodnoty v nastaveni a popis konfigurace
     DEFAULTS = {
