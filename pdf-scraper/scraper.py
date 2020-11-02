@@ -16,19 +16,25 @@ def validate_config_file(ctx, param, value):
 @click.argument('PDF_FILE',
                 type=click.STRING,
                 required=True)
-@click.option('--debug',
-              is_flag=True,
-              default=False,
-              help='Aktivuje debug vypis do stdout.')
+@click.option('-o', '--output',
+              default='-',
+              type=click.File('w'),
+              show_default=True,
+              help='Výstupní soubor nebo - pro stdout.')
 @click.option('-c', '--config',
               metavar='FILENAME',
-              help='Cesta ke konfiguracnimu souboru aplikace.',
-              required=True,
+              help='Cesta ke konfiguracnimu souboru.',
               show_default=True,
               default='app.cfg',
               type=click.File('r'),
               callback=validate_config_file)
-def startParser(pdf_file, config, debug):
+@click.option('--debug',
+              is_flag=True,
+              default=False,
+              help='Aktivuje debug vypis do stdout.')
+def startParser(pdf_file, output, config, debug):
+    config.set_opt("debug", debug)
+    config.set_opt("_out", output)
     parser = IsirScraper(pdf_file, config)
     parser.run()
 

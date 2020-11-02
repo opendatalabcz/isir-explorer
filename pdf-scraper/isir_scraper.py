@@ -42,6 +42,5 @@ class IsirScraper:
 
         # Save output
         output = parser.model.toJSON()
-        with open(output_path+".json", "w") as f:
-            f.write(output)
+        self.config['_out'].write(output)
 

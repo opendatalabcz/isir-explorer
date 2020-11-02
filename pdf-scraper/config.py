@@ -13,7 +13,8 @@ class AppConfig:
     # Vychozi hodnoty v nastaveni a popis konfigurace
     DEFAULTS = {
         "pdftotext": "pdftotext",                           # Cesta ke spusteni programu pdftotext
-        "tmp_dir": "/tmp/isir"                              # Adresar pro docasne soubory
+        "tmp_dir": "/tmp/isir",                             # Adresar pro docasne soubory
+        "debug": False,
     }
 
     def __init__(self, conf):

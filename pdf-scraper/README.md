@@ -7,10 +7,9 @@ Součást projektu ISIR Explorer pro konverzu dat z pdf formulářů zveřejňov
 Usage: scraper.py [OPTIONS] PDF_FILE
 
 Options:
+  -o, --output FILENAME  Výstupní soubor nebo - pro stdout.  [default: -]
+  -c, --config FILENAME  Cesta ke konfiguracnimu souboru.  [default: app.cfg]
   --debug                Aktivuje debug vypis do stdout.
-  -c, --config FILENAME  Cesta ke konfiguracnimu souboru aplikace.  [default:
-                         app.cfg; required]
-
   --help                 Show this message and exit.
 ```
 

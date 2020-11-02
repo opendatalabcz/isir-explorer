@@ -147,5 +147,3 @@ class PrihlaskaParser(IsirParser):
 
         # data pohledavek
         self._pohledavky()
-
-        print(self.model.toJSON())
