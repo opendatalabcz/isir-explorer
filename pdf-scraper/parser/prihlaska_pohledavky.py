@@ -117,8 +117,9 @@ class PrihlaskaParser(IsirParser):
         pohledavkyText.append(konec[0]) # posledni pohledavka
         sumarizace = konec[1]
 
-        for pohledavkaText in pohledavkyText:
+        for cislo, pohledavkaText in enumerate(pohledavkyText):
             pohledavka = self._pohledavka(pohledavkaText)
+            pohledavka.Cislo = cislo+1
             self.model.Pohledavky.Pohledavky.append(pohledavka)
 
         sumLines = sumarizace.split('\n')
