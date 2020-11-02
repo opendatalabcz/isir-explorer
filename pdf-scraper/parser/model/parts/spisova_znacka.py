@@ -7,3 +7,6 @@ class Pohledavka:
 
 class Vykonatelnost:
     pass
+
+class Prislusenstvi:
+    pass
