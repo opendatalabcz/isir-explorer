@@ -136,6 +136,8 @@ class PrihlaskaParser(IsirParser):
                 break #konec sumarizace
 
     def run(self):
+        super().run()
+
         # úvodní část soud a spis. značka řízení
         self._soudSpisovaZnacka()
 

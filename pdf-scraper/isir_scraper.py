@@ -24,7 +24,7 @@ class IsirScraper:
     def run(self):
         # To text
         output_path = self.tmp_path+'/'+self.document_name
-        subprocess.run([self.config['pdftotext'], "-layout", "-nopgbrk", self.filename, output_path])
+        subprocess.run([self.config['pdftotext'], "-layout", "-nodiag", "-nopgbrk", self.filename, output_path])
 
         with open(output_path, 'rb') as f:
             txtBytes = f.read()

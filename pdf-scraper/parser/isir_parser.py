@@ -1,5 +1,6 @@
 from parser.parser import Parser
 from parser.model.parts.spisova_znacka import SpisovaZnacka
+import re
 
 
 class IsirParser(Parser):
@@ -17,3 +18,21 @@ class IsirParser(Parser):
         znacka.Cislo = part2[0].strip()
         znacka.Rok = part2[1].strip()
         return znacka
+
+    def removeVersionLine(self):
+        temp = []
+        for line in self.lines:
+            res = re.match('^[\s]{60,}Verze ([A-Za-z0-9\-]+)$', line)
+            if res:
+                # Ulozit verzi pokud jeste neni nastavena
+                if self.model.Metadata.Verze is None:
+                    self.model.Metadata.Verze = res[1]
+            else:
+                temp.append(line)
+        self.lines = temp
+        self.txt = '\n'.join(temp)
+
+    def run(self):
+
+        # Odstrani radky v zapati stranek s informaci o verzi dokumentu
+        self.removeVersionLine()
