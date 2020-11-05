@@ -16,6 +16,15 @@ class PrehledovyListParser(IsirParser):
         self.txt = self.reTextBetween(self.txt, "^[\s]*Přezkumné jednání / Přezkum přihlášených pohledávek:", "^[\s]*[D-H]\. Přílohy")
 
     def _prehledPohledavek(self, txt):
+        """Funkce pro čtení tabulky s přehledem pohledávek. Použití je možné pro sekce
+        C. a D. přehledového listu pohledávek (zajištěné a nezajištěné pohledávky).
+
+        Args:
+            txt (string): Část textu obsahující tabulku s přehledem
+
+        Returns:
+            tuple(pohledavky,celkem): Seznam pohledávek a sumarizace
+        """
         lines = txt.split('\n')
 
         rows = []
@@ -122,4 +131,3 @@ class PrehledovyListParser(IsirParser):
 
         # C. Přehled přihlášených nezajištěných pohledávek
         self._prehledNezajistenych()
-        
