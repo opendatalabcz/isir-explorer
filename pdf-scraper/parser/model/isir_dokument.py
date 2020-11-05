@@ -8,6 +8,8 @@ class DokumentMetadata:
 
 class IsirDokument:
 
+    TYP_DOKUMENTU = "NeznamyTyp"
+
     def __init__(self):
         super().__init__()
         self.Metadata = DokumentMetadata()

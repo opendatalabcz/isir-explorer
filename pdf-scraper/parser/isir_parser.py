@@ -32,7 +32,14 @@ class IsirParser(Parser):
         self.lines = temp
         self.txt = '\n'.join(temp)
 
+    def extractDocument(self):
+        pass
+
     def run(self):
+        self.model.Metadata.Typ = self.model.TYP_DOKUMENTU
+
+        # Pokud pdf obsahuje vice typu dokumentu, vybrat text toho aktualniho
+        self.extractDocument()
 
         # Odstrani radky v zapati stranek s informaci o verzi dokumentu
         self.removeVersionLine()

@@ -29,7 +29,7 @@ class Parser:
         return self.removeSpaces(txt.replace('\n', ' ')).strip()
 
     def priceValue(self, txt):
-        return txt.replace(' ', '').replace(',', '.')
+        return re.sub("[^0-9,.]", "", txt).replace(',', '.')
 
     def reMatch(self, txt, reg):
         return re.match(reg, txt)

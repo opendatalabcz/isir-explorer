@@ -2,6 +2,7 @@ import subprocess
 import os
 from isir_decryptor import IsirDecryptor
 from parser.prihlaska_pohledavky import PrihlaskaParser
+from parser.prehledovy_list import PrehledovyListParser
 
 
 class IsirScraper:
@@ -36,8 +37,8 @@ class IsirScraper:
             f.write(data)
 
         # Parse
-        # Zatím pouze přihláška pohledávky 5-a
-        parser = PrihlaskaParser(data)
+        #parser = PrihlaskaParser(data)
+        parser = PrehledovyListParser(data)
         parser.run()
 
         # Save output
