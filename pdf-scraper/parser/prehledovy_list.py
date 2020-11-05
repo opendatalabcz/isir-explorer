@@ -15,9 +15,7 @@ class PrehledovyListParser(IsirParser):
     def extractDocument(self):
         self.txt = self.reTextBetween(self.txt, "^[\s]*Přezkumné jednání / Přezkum přihlášených pohledávek:", "^[\s]*[D-H]\. Přílohy")
 
-
-    def _prehledNezajistenych(self):
-        txt = self.reTextBetween(self.txt, "^[\s]*C. Přehled přihlášených nezajištěných pohledávek", "^[\s]*Komentář:")
+    def _prehledPohledavek(self, txt):
         lines = txt.split('\n')
 
         rows = []
@@ -47,6 +45,7 @@ class PrehledovyListParser(IsirParser):
                 break
             i+=1
 
+        pohledavky = []
         for rg in rowgroups:
             zaznam = ZaznamPohledavky()
             
@@ -71,24 +70,36 @@ class PrehledovyListParser(IsirParser):
             zaznam.Odmitnuto       = self.priceValue(rg[2][5])
             zaznam.Procent         = self.priceValue(rg[2][6])
 
-            self.model.Nezajistene.Pohledavky.append(zaznam)
+            pohledavky.append(zaznam)
 
         # Radek se sumarizaci ma jine usporadani sloupcu
         celkem = ZaznamPohledavky()
-        celkem.Celkova_vyse      = self.priceValue(total[0][0])
-        celkem.Vykonatelne       = self.priceValue(total[0][1])
-        celkem.Popreno           = self.priceValue(total[0][2])
-        celkem.Podmineno         = self.priceValue(total[0][3])
-        celkem.Neprezkoumavano   = self.priceValue(total[0][4])
+        if len(total) == 2:
+            celkem.Celkova_vyse      = self.priceValue(total[0][0])
+            celkem.Vykonatelne       = self.priceValue(total[0][1])
+            celkem.Popreno           = self.priceValue(total[0][2])
+            celkem.Podmineno         = self.priceValue(total[0][3])
+            celkem.Neprezkoumavano   = self.priceValue(total[0][4])
 
-        celkem.Zbyva_uspokojit   = self.priceValue(total[1][0])
-        celkem.Nevykonatelne     = self.priceValue(total[1][1])
-        celkem.Zjisteno          = self.priceValue(total[1][2])
-        celkem.Duplicitni        = self.priceValue(total[1][3])
-        celkem.Odmitnuto         = self.priceValue(total[1][4])
+            celkem.Zbyva_uspokojit   = self.priceValue(total[1][0])
+            celkem.Nevykonatelne     = self.priceValue(total[1][1])
+            celkem.Zjisteno          = self.priceValue(total[1][2])
+            celkem.Duplicitni        = self.priceValue(total[1][3])
+            celkem.Odmitnuto         = self.priceValue(total[1][4])
 
+        return pohledavky, celkem
+
+    def _prehledZajistenych(self):
+        txt = self.reTextBetween(self.txt, "^[\s]*B. Přehled přihlášených zajištěných pohledávek", "^[\s]*Komentář:")
+        pohledavky, celkem = self._prehledPohledavek(txt)
+        self.model.Zajistene.Pohledavky = pohledavky
+        self.model.Zajistene.Celkem = celkem
+
+    def _prehledNezajistenych(self):
+        txt = self.reTextBetween(self.txt, "^[\s]*C. Přehled přihlášených nezajištěných pohledávek", "^[\s]*Komentář:")
+        pohledavky, celkem = self._prehledPohledavek(txt)
+        self.model.Nezajistene.Pohledavky = pohledavky
         self.model.Nezajistene.Celkem = celkem
-
 
     def removeVersionLine(self):
         temp = []
@@ -106,7 +117,9 @@ class PrehledovyListParser(IsirParser):
     def run(self):
         super().run()
 
-        self._prehledNezajistenych()
+        # B. Přehled přihlášených zajištěných pohledávek
+        self._prehledZajistenych()
+
         # C. Přehled přihlášených nezajištěných pohledávek
+        self._prehledNezajistenych()
         
-        #print(self.txt)
