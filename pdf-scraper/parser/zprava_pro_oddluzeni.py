@@ -59,7 +59,7 @@ class ZpravaProOddluzeniParser(IsirParser):
                 elif self.reMatch(line, '^[\s]*Výše př.jmu'):
                     prijem.Vyse = self.priceValue(self.reTextAfter(line, '^[\s]*Výše př.jmu'))
             if hasattr(prijem, 'Vyse') and prijem.Vyse != '':
-                self.model.Prijmy_dluznika.append(prijem)
+                self.model.Prijmy_dluznika.Prijmy.append(prijem)
 
         # Renta dluznika
         txtRenta = self.reTextBetween(txt, "^[\s]*FINANČNÍ DAR / DŮCHOD / RENTA DLUŽNÍKA", "^[\s]*Komentář:")
@@ -74,8 +74,11 @@ class ZpravaProOddluzeniParser(IsirParser):
             elif self.reMatch(line, '^[\s]*Výše př.jmu'):
                 prijem.Vyse = self.priceValue(self.reTextAfter(line, '^[\s]*Výše př.jmu'))
             if hasattr(prijem, 'Vyse') and prijem.Vyse != '':
-                self.model.Prijmy_dluznika.append(prijem)
+                self.model.Prijmy_dluznika.Prijmy.append(prijem)
                 prijem = PrijemDluznika()
+
+        # Komentar k prijmum
+        self.model.Prijmy_dluznika.Komentar = self.textBlock(self.reTextBetween(txt, "^[\s]*Komentář:", "^[\s]*CELKOVÝ MĚSÍČNÍ PŘÍJEM DLUŽNÍKA"))
 
     def _hospodarskaSituaceDluznika(self):
         txt = self.reTextBetween(self.txt, "^[\s]*A\. Hospodářská situace dlužníka", "^[\s]*B\. Navrhovaný způsob řešení úpadku")
