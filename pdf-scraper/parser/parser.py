@@ -60,6 +60,22 @@ class Parser:
             res.append(line)
         return '\n'.join(res)
 
+    def reLineTextAfter(self, txt, reg):
+        """Ve víceřádkovém textu najde řádek, jehož začátek odpovídá zadanému regulárnímu výrazu
+        a vrátí text nacházející se v takovém řádku za částí nalezenou regulárním výrazem.
+
+        Args:
+            txt (string): víceřádkový text
+            reg (string): regulární výraz
+        """
+
+        reg+="(.*)$"
+        match = re.compile(reg, re.MULTILINE).search(txt)
+        if not match:
+            return ""
+        else:
+            return match[1].strip()
+
     def reTextAfter(self, txt, reg, multiline=False):
         if multiline:
             compiled = re.compile(reg, re.MULTILINE)

@@ -80,6 +80,9 @@ class ZpravaProOddluzeniParser(IsirParser):
         # Komentar k prijmum
         self.model.Prijmy_dluznika.Komentar = self.textBlock(self.reTextBetween(txt, "^[\s]*Komentář:", "^[\s]*CELKOVÝ MĚSÍČNÍ PŘÍJEM DLUŽNÍKA"))
 
+        # Celkovy mesicni prijem
+        self.model.Prijmy_dluznika.Celkem = self.priceValue(self.reLineTextAfter(txt, "^[\s]*CELKOVÝ MĚSÍČNÍ PŘÍJEM DLUŽNÍKA"))
+
     def _hospodarskaSituaceDluznika(self):
         txt = self.reTextBetween(self.txt, "^[\s]*A\. Hospodářská situace dlužníka", "^[\s]*B\. Navrhovaný způsob řešení úpadku")
         self._prijmyDluznika(txt)
