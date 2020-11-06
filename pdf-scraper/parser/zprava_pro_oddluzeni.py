@@ -68,7 +68,7 @@ class ZpravaProOddluzeniParser(IsirParser):
         for line in lines:
             print(line)
             if self.reMatch(line, '^[\s]*Jméno a příjmení poskytovatele'):
-                prijem.Nazev_platce = self.reTextAfter(line, '^[\s]*Jméno a příjmení poskytovatele')
+                prijem.Nazev_platce = self.removeSpaces(self.reTextAfter(line, '^[\s]*Jméno a příjmení poskytovatele'))
             elif self.reMatch(line, '^[\s]*Typ příjmu'):
                 prijem.Typ = self.reTextAfter(line, '^[\s]*Typ příjmu')
             elif self.reMatch(line, '^[\s]*Výše př.jmu'):
