@@ -3,6 +3,7 @@ import os
 from isir_decryptor import IsirDecryptor
 from parser.prihlaska_pohledavky import PrihlaskaParser
 from parser.prehledovy_list import PrehledovyListParser
+from parser.zprava_pro_oddluzeni import ZpravaProOddluzeniParser
 
 
 class IsirScraper:
@@ -38,7 +39,8 @@ class IsirScraper:
 
         # Parse
         #parser = PrihlaskaParser(data)
-        parser = PrehledovyListParser(data)
+        #parser = PrehledovyListParser(data)
+        parser = ZpravaProOddluzeniParser(data)
         parser.run()
 
         # Save output

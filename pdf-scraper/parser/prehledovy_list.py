@@ -14,6 +14,7 @@ class PrehledovyListParser(IsirParser):
 
     def extractDocument(self):
         self.txt = self.reTextBetween(self.txt, "^[\s]*Přezkumné jednání / Přezkum přihlášených pohledávek:", "^[\s]*[D-H]\. Přílohy")
+        self.lines = self.txt.split('\n')
 
     def _prehledPohledavek(self, txt):
         """Funkce pro čtení tabulky s přehledem pohledávek. Použití je možné pro sekce
