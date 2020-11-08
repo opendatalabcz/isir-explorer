@@ -15,6 +15,9 @@ class ZaznamSoupisuMajetku:
 class SoupisMajetku():
     pass
 
+class HospodarskaSituace:
+    pass
+
 class PrehledPohledavek():
 
     def __init__(self):
@@ -35,5 +38,6 @@ class ZpravaProOddluzeni(IsirDokument):
     def __init__(self):
         self.Prijmy_dluznika = PrijmyDluznika()
         self.Soupis_majetku = SoupisMajetku()
+        self.Hospodarska_situace = HospodarskaSituace()
         self.Navrh_reseni = PrehledPohledavek()
         super().__init__()

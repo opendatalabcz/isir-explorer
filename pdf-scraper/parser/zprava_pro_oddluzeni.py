@@ -117,6 +117,14 @@ class ZpravaProOddluzeniParser(IsirParser):
 
         self._prehledMajetkovePodstaty(txt)
 
+        # Výše zálohy insolvencniho spravce
+        self.model.Hospodarska_situace.Vyse_zalohy = self.priceValue(self.reLineTextAfter(txt, "^[\s]*Výše zálohy"))
+        self.model.Hospodarska_situace.Vytezek_zpenezeni_obydli = self.priceValue(self.reLineTextAfter(txt, "^[\s]*Očekávaná výše výtěžku zpeněžení obydlí"))
+        self.model.Hospodarska_situace.Povinnen_vydat_obydli = self.reLineTextAfter(txt, "^[\s]*Dlužník povinen vydat obydlí ke zpeněžení")
+        self.model.Hospodarska_situace.Zpracovatel_navrhu = self.reLineTextAfter(txt, "^[\s]*Zpracovatel návrhu na povolení oddlužení")
+        self.model.Hospodarska_situace.Odmena_za_sapsani_navrhu = self.priceValue(self.reLineTextAfter(txt, "^[\s]*-[\s]*výše odměny za sepsání a podání"))
+            
+
     def _navrhovanyZpusobReseni(self):
         txt = self.reTextBetween(self.txt, "^[\s]*B\. Navrhovaný způsob řešení úpadku", "^[\s]*C\. Přílohy")
 
