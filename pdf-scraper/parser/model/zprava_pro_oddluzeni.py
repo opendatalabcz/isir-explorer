@@ -6,6 +6,15 @@ class PrijemDluznika:
 class ZaznamPohledavky():
     pass
 
+class ZaznamSoupisuMajetku:
+    def __init__(self):
+        self.Oceneni = ""
+        self.Zajisteno = ""
+        self.Nezajisteno = ""
+
+class SoupisMajetku():
+    pass
+
 class PrehledPohledavek():
 
     def __init__(self):
@@ -25,5 +34,6 @@ class ZpravaProOddluzeni(IsirDokument):
 
     def __init__(self):
         self.Prijmy_dluznika = PrijmyDluznika()
+        self.Soupis_majetku = SoupisMajetku()
         self.Navrh_reseni = PrehledPohledavek()
         super().__init__()

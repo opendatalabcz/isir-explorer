@@ -1,4 +1,4 @@
-from parser.model.zprava_pro_oddluzeni import ZpravaProOddluzeni, PrijemDluznika
+from parser.model.zprava_pro_oddluzeni import ZpravaProOddluzeni, PrijemDluznika, ZaznamSoupisuMajetku
 from parser.isir_parser import IsirParser
 from parser.model.parts.osoba import *
 from parser.model.parts.spisova_znacka import *
@@ -83,9 +83,39 @@ class ZpravaProOddluzeniParser(IsirParser):
         # Celkovy mesicni prijem
         self.model.Prijmy_dluznika.Celkem = self.priceValue(self.reLineTextAfter(txt, "^[\s]*CELKOVÝ MĚSÍČNÍ PŘÍJEM DLUŽNÍKA"))
 
+
+    def _prehledMajetkovePodstaty(self, txt):
+        txtPrehled = self.reTextBetween(txt, "^[\s]*PŘEHLED SOUPISU MAJETKOVÉ PODSTATY DLUŽNÍKA", "^[\s]*HOSPODÁŘSKÁ SITUACE DLUŽNÍKA")
+        lines = txtPrehled.split('\n')
+        for line in lines:
+            parts = re.compile("[\s]{2,}").split(line.strip())
+            if len(parts) != 4:
+                continue
+            zaznam = ZaznamSoupisuMajetku()
+            
+            zaznam.Oceneni = self.priceValue(parts[1])
+            zaznam.Zajisteno = self.priceValue(parts[2])
+            zaznam.Nezajisteno = self.priceValue(parts[3])
+
+            if parts[0] == 'Nemovitý majetek':
+                self.model.Soupis_majetku.Nemovity = zaznam
+            elif parts[0] == 'Movitý majetek':
+                self.model.Soupis_majetku.Movity = zaznam
+            elif parts[0] == 'Finanční prostředky':
+                self.model.Soupis_majetku.Financni_prostredky = zaznam
+            elif parts[0] == 'Pohledávky':
+                self.model.Soupis_majetku.Pohledavky = zaznam
+            elif parts[0] == 'Ostatní majetek':
+                self.model.Soupis_majetku.Ostatni = zaznam
+            elif parts[0] == 'Celkem':
+                self.model.Soupis_majetku.Celkem = zaznam
+
     def _hospodarskaSituaceDluznika(self):
         txt = self.reTextBetween(self.txt, "^[\s]*A\. Hospodářská situace dlužníka", "^[\s]*B\. Navrhovaný způsob řešení úpadku")
+
         self._prijmyDluznika(txt)
+
+        self._prehledMajetkovePodstaty(txt)
 
     def _navrhovanyZpusobReseni(self):
         txt = self.reTextBetween(self.txt, "^[\s]*B\. Navrhovaný způsob řešení úpadku", "^[\s]*C\. Přílohy")
