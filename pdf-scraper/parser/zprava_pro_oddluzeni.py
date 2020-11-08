@@ -123,6 +123,14 @@ class ZpravaProOddluzeniParser(IsirParser):
         self.model.Hospodarska_situace.Povinnen_vydat_obydli = self.reLineTextAfter(txt, "^[\s]*Dlužník povinen vydat obydlí ke zpeněžení")
         self.model.Hospodarska_situace.Zpracovatel_navrhu = self.reLineTextAfter(txt, "^[\s]*Zpracovatel návrhu na povolení oddlužení")
         self.model.Hospodarska_situace.Odmena_za_sapsani_navrhu = self.priceValue(self.reLineTextAfter(txt, "^[\s]*-[\s]*výše odměny za sepsání a podání"))
+
+        miraUspokojeni = self.reTextAfter(txt, "^[\s]*PŘEDPOKLÁDANÁ MÍRA USPOKOJENÍ VĚŘITELŮ")
+        
+        # Textova pole nasledujici po tabulce s Predpokladanou mirou uspokojeni veritelu
+        self.model.Navrh_dluznika = self.reLineTextAfter(miraUspokojeni, "^[\s]*Navrhovaný způsob oddlužení dlužníkem")
+        self.model.Navrh_spravce = self.reLineTextAfter(miraUspokojeni, "^[\s]*Insolvenční správce navrhuje provést oddlužení")
+        self.model.Okolnosti_proti_oddluzeni = self.reLineTextAfter(miraUspokojeni, "^[\s]*Okolnosti bránící schválení oddlužení")
+        oduvodneni = self.reTextAfter(miraUspokojeni, "^[\s]*Odůvodnění")
             
 
     def _navrhovanyZpusobReseni(self):
