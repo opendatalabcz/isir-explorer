@@ -15,6 +15,21 @@ class ZaznamSoupisuMajetku:
 class SoupisMajetku():
     pass
 
+class PredpokladUspokojeniVeritelu:
+
+    class ZaznamPredpokladuUspokojeni:
+        def __init__(self):
+            self.Mira = None
+            self.Vyse = None
+
+    def __init__(self):
+        self.Splatkovy_kalendar = self.ZaznamPredpokladuUspokojeni()
+        self.Zpenezeni_majetku = self.ZaznamPredpokladuUspokojeni()
+        self.Splat_kal_zpen_maj = self.ZaznamPredpokladuUspokojeni()
+
+class PredpokladUspokojeni:
+    pass
+
 class HospodarskaSituace:
     pass
 
@@ -40,4 +55,5 @@ class ZpravaProOddluzeni(IsirDokument):
         self.Soupis_majetku = SoupisMajetku()
         self.Hospodarska_situace = HospodarskaSituace()
         self.Navrh_reseni = PrehledPohledavek()
+        self.Predpoklad_uspokojeni = PredpokladUspokojeni()
         super().__init__()

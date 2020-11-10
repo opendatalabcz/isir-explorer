@@ -1,4 +1,5 @@
-from parser.model.zprava_pro_oddluzeni import ZpravaProOddluzeni, PrijemDluznika, ZaznamSoupisuMajetku
+from parser.model.zprava_pro_oddluzeni import ZpravaProOddluzeni, PrijemDluznika, ZaznamSoupisuMajetku, \
+    PredpokladUspokojeniVeritelu
 from parser.isir_parser import IsirParser
 from parser.model.parts.osoba import *
 from parser.model.parts.spisova_znacka import *
@@ -110,6 +111,27 @@ class ZpravaProOddluzeniParser(IsirParser):
             elif parts[0] == 'Celkem':
                 self.model.Soupis_majetku.Celkem = zaznam
 
+    def _predpokladUspokojeni(self, txtCol):
+        lines = txtCol.split('\n')
+        rows = []
+        for line in lines:
+            parts = re.compile("[\s]{2,}").split(line.strip())
+            if len(parts) == 2 and parts[0][-1] == '%':
+                rows.append(parts)
+        
+        if len(rows) != 3:
+            return None
+        
+        res = PredpokladUspokojeniVeritelu()
+        res.Splatkovy_kalendar.Mira = self.priceValue(rows[0][0])
+        res.Splatkovy_kalendar.Vyse = self.priceValue(rows[0][1])
+        res.Zpenezeni_majetku.Mira = self.priceValue(rows[1][0])
+        res.Zpenezeni_majetku.Vyse = self.priceValue(rows[1][1])
+        res.Splat_kal_zpen_maj.Mira = self.priceValue(rows[2][0])
+        res.Splat_kal_zpen_maj.Vyse = self.priceValue(rows[2][1])
+        return res
+
+
     def _hospodarskaSituaceDluznika(self):
         txt = self.reTextBetween(self.txt, "^[\s]*A\. Hospodářská situace dlužníka", "^[\s]*B\. Navrhovaný způsob řešení úpadku")
 
@@ -125,7 +147,13 @@ class ZpravaProOddluzeniParser(IsirParser):
         self.model.Hospodarska_situace.Odmena_za_sapsani_navrhu = self.priceValue(self.reLineTextAfter(txt, "^[\s]*-[\s]*výše odměny za sepsání a podání"))
 
         miraUspokojeni = self.reTextAfter(txt, "^[\s]*PŘEDPOKLÁDANÁ MÍRA USPOKOJENÍ VĚŘITELŮ")
+        miraUspokojeniTable = self.reTextBefore(miraUspokojeni, "^[\s]*Navrhovaný způsob oddlužení dlužníkem", True)
+        miraUspokojeniNazajistene = self.reTextColumn(miraUspokojeniTable, " Předpokládaná míra uspokojení nezajištěných věřitelů  ")
+        miraUspokojeniZajistene = self.reTextColumn(miraUspokojeniTable, "Předpokládaná míra uspokojení zajištěných věřitelů[\s]*$")
         
+        self.model.Predpoklad_uspokojeni.Nezajistene = self._predpokladUspokojeni(miraUspokojeniNazajistene)
+        self.model.Predpoklad_uspokojeni.Zajistene = self._predpokladUspokojeni(miraUspokojeniZajistene)
+
         # Textova pole nasledujici po tabulce s Predpokladanou mirou uspokojeni veritelu
         self.model.Navrh_dluznika = self.reLineTextAfter(miraUspokojeni, "^[\s]*Navrhovaný způsob oddlužení dlužníkem")
         self.model.Navrh_spravce = self.reLineTextAfter(miraUspokojeni, "^[\s]*Insolvenční správce navrhuje provést oddlužení")

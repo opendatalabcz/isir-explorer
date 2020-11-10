@@ -114,3 +114,22 @@ class Parser:
             return res
 
         return parts
+
+    def reTextColumn(self, txt, reg):
+        lines = txt.split('\n')
+        reg = re.compile(reg)
+        pos = None
+        for line in lines:
+            res = reg.search(line)
+            if res:
+                pos = (res.start(), res.end())
+                break
+
+        if pos is None:
+            return ""
+        
+        outLines = []
+        for line in lines:
+            outLines.append(line[pos[0]:pos[1]])
+
+        return '\n'.join(outLines)
