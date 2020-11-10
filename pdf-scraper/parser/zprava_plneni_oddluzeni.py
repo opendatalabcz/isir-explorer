@@ -13,7 +13,7 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         super().__init__()
 
     def extractDocument(self):
-        self.txt = self.reTextBetween(self.txt, "^[\s]*A\. Hospodářská situace dlužníka", "^[\s]*C\. Přílohy")
+        self.txt = self.reTextBetween(self.txt, "^[\s]*A\. ZPRÁVA INSOLVENČNÍHO SPRÁVCE O PLNĚNÍ POVINNOSTÍ DLUŽNÍKA V ODDLUŽENÍ", "^[\s]*C\. Přílohy")
         self.lines = self.txt.split('\n')
 
     def removeVersionLine(self):
@@ -29,12 +29,17 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         self.lines = temp
         self.txt = '\n'.join(temp)
 
-    def _hospodarskaSituaceDluznika(self):
+    def __zpravaSpravcePlneni(self):
+        pass
+    
+    def _mesicniVykazPlneni(self):
         pass
 
     def run(self):
         super().run()
 
-        self._hospodarskaSituaceDluznika()
+        self._zpravaSpravcePlneni()
+
+        self._mesicniVykazPlneni()
 
         #print(self.txt)
