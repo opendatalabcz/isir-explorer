@@ -1,5 +1,5 @@
 from parser.model.zprava_pro_oddluzeni import ZpravaProOddluzeni, PrijemDluznika, ZaznamSoupisuMajetku, \
-    PredpokladUspokojeniVeritelu
+    PredpokladUspokojeniVeritelu, ZaznamDistribucnihoSchematu
 from parser.isir_parser import IsirParser
 from parser.model.parts.osoba import *
 from parser.model.parts.spisova_znacka import *
@@ -67,7 +67,6 @@ class ZpravaProOddluzeniParser(IsirParser):
         lines = txtRenta.split('\n')
         prijem = PrijemDluznika()
         for line in lines:
-            print(line)
             if self.reMatch(line, '^[\s]*Jméno a příjmení poskytovatele'):
                 prijem.Nazev_platce = self.removeSpaces(self.reTextAfter(line, '^[\s]*Jméno a příjmení poskytovatele'))
             elif self.reMatch(line, '^[\s]*Typ příjmu'):
@@ -164,6 +163,20 @@ class ZpravaProOddluzeniParser(IsirParser):
     def _navrhovanyZpusobReseni(self):
         txt = self.reTextBetween(self.txt, "^[\s]*B\. Navrhovaný způsob řešení úpadku", "^[\s]*C\. Přílohy")
 
+        lines = txt.split('\n')
+        for line in lines:
+            match = self.reMatch(line, "^([0-9]+)[\s]+( .*)[\s]{2,}([0-9]+(?:,[0-9]+)? %)[\s]*$")
+            if match:
+                zaznam = ZaznamDistribucnihoSchematu()
+                zaznam.Veritel = self.numbersOnly(match[1])
+                zaznam.Podil = self.priceValue(match[3])
+                match = re.compile(" ((:?[0-9]+ )*(:?[0-9]+)(:?,[0-9]+)? Kč)").search(match[2])
+                if match:
+                    zaznam.Castka = self.priceValue(match[1])
+                else:
+                    pass #TODO necitelna castka
+                self.model.Distribucni_schema.Nezajistene.append(zaznam)
+        #TODO overit schema pro zajistene veritele
 
     def run(self):
         super().run()

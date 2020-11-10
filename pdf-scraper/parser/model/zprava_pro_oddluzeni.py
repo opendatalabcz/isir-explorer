@@ -33,11 +33,18 @@ class PredpokladUspokojeni:
 class HospodarskaSituace:
     pass
 
-class PrehledPohledavek():
+class ZaznamDistribucnihoSchematu:
+    def __init__(self):
+        self.Veritel = None
+        self.Castka = None
+        self.Podil = None
+
+
+class DistribucniSchema():
 
     def __init__(self):
-        self.Pohledavky = []
-        self.Celkem = ZaznamPohledavky()
+        self.Nezajistene = []
+        self.Zajistene = []
 
 class PrijmyDluznika:
 
@@ -54,6 +61,6 @@ class ZpravaProOddluzeni(IsirDokument):
         self.Prijmy_dluznika = PrijmyDluznika()
         self.Soupis_majetku = SoupisMajetku()
         self.Hospodarska_situace = HospodarskaSituace()
-        self.Navrh_reseni = PrehledPohledavek()
+        self.Distribucni_schema = DistribucniSchema()
         self.Predpoklad_uspokojeni = PredpokladUspokojeni()
         super().__init__()
