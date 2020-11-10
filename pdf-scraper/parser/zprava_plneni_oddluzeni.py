@@ -29,8 +29,13 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         self.lines = temp
         self.txt = '\n'.join(temp)
 
-    def __zpravaSpravcePlneni(self):
-        pass
+    def _zpravaSpravcePlneni(self):
+        txt = self.reTextBefore(self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
+        self.model.ZpravaSpravce.Plni_povinnosti = self.reLineTextAfter(txt, "^[\s]*Dlužník plní povinnosti v rámci schváleného způsobu oddlužení")
+        self.model.ZpravaSpravce.Duvod_neplneni = self.textBlock(self.reTextBetween(txt, "^[\s]*-[\s]*důvod neplnění schváleného způsobu oddlužení:", "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:"))
+        self.model.ZpravaSpravce.Stanovisko_dluznika = self.textBlock(self.reTextBetween(txt, "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:", "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:"))
+        self.model.ZpravaSpravce.Vyjadreni_spravce = self.textBlock(self.reTextBetween(txt, "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:", "^[\s]*Aktuální míra uspokojení nezajištěných věřitelů"))
+        
     
     def _mesicniVykazPlneni(self):
         pass
