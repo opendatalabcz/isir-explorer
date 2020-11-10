@@ -1,7 +1,12 @@
 from parser.model.isir_dokument import IsirDokument
 
-class ZpravaSpravce:
+class MiraUspokojeni:
     pass
+
+class ZpravaSpravce:
+    def __init__(self):
+        self.Mira_uspokojeni = MiraUspokojeni()
+
 
 class VykazPlneni:
     pass

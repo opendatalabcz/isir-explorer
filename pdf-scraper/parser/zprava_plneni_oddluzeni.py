@@ -35,7 +35,14 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         self.model.ZpravaSpravce.Duvod_neplneni = self.textBlock(self.reTextBetween(txt, "^[\s]*-[\s]*důvod neplnění schváleného způsobu oddlužení:", "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:"))
         self.model.ZpravaSpravce.Stanovisko_dluznika = self.textBlock(self.reTextBetween(txt, "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:", "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:"))
         self.model.ZpravaSpravce.Vyjadreni_spravce = self.textBlock(self.reTextBetween(txt, "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:", "^[\s]*Aktuální míra uspokojení nezajištěných věřitelů"))
+
+        self.model.ZpravaSpravce.Mira_uspokojeni.Nezajistene_aktualni = self.priceValue(self.reLineTextAfter(txt, "^[\s]*Aktuální míra uspokojení nezajištěných věřitelů"))
+        self.model.ZpravaSpravce.Mira_uspokojeni.Nezajistene_ocekavana = self.priceValue(self.reLineTextAfter(txt, "^[\s]*Očekávaná míra uspokojení nezajištěných věřitelů"))
+        #TODO zajisteni veritele (?)
         
+        txt = self.reTextAfter(txt, "^[\s]*Doporučení insolvenčního správce:", True)
+        self.model.ZpravaSpravce.Doporuceni_spravce = self.textBlock(self.reTextBetween(txt, "^[\s]*Doporučení insolvenčního správce:", "^[\s]*Odůvodnění:"))
+        self.model.ZpravaSpravce.Doporuceni_spravce_oduvodneni = self.textBlock(self.reTextAfter(txt, "^[\s]*Odůvodnění:", True))
     
     def _mesicniVykazPlneni(self):
         pass
