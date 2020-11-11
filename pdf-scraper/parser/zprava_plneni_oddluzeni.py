@@ -10,6 +10,10 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         self.txt = data
         self.lines = data.split('\n')
         self.model = ZpravaPlneniOddluzeni()
+
+        # Pocet sloupcu v tabulce plneni splatkoveho kalendare (tj. pocet mesicu)
+        self.colsCount = 0
+
         super().__init__()
 
     def extractDocument(self):
@@ -44,8 +48,71 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         self.model.ZpravaSpravce.Doporuceni_spravce = self.textBlock(self.reTextBetween(txt, "^[\s]*Doporučení insolvenčního správce:", "^[\s]*Odůvodnění:"))
         self.model.ZpravaSpravce.Doporuceni_spravce_oduvodneni = self.textBlock(self.reTextAfter(txt, "^[\s]*Odůvodnění:", True))
     
+    def _sloupceVykazuPlneni(self, line, reg, checkColsCount=True):
+        colsTxt = self.reLineTextAfter(line, reg)
+        cols = re.compile("[\s]{2,}").split(colsTxt.strip())
+        if checkColsCount and len(cols) != self.colsCount:
+            return None
+        return cols
+
     def _mesicniVykazPlneni(self):
-        pass
+        txt = self.reTextAfter(self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
+        lines = txt.split('\n')
+        tabulkaPlneni = {}
+        nextLine = None
+        for line in lines:
+            matched = True
+            if self.reMatch(line, "^[\s]*Rok "):
+                tabulkaPlneni["Rok"] = self._sloupceVykazuPlneni(line, "^[\s]*Rok ", False)
+                self.colsCount = len(tabulkaPlneni["Rok"])
+            elif self.reMatch(line, "^[\s]*Měsíc "):
+                tabulkaPlneni["Mesic"] = self._sloupceVykazuPlneni(line, "^[\s]*Měsíc ")
+            elif self.reMatch(line, "^[\s]*Příjem "):
+                tabulkaPlneni["Prijem"] = self._sloupceVykazuPlneni(line, "^[\s]*Příjem ")
+            elif self.reMatch(line, "^[\s]*Provedené srážky "):
+                tabulkaPlneni["Srazky"] = self._sloupceVykazuPlneni(line, "^[\s]*Provedené srážky ")
+            elif self.reMatch(line, "^[\s]*ZM\+NNB "):
+                tabulkaPlneni["ZMNNB"] = self._sloupceVykazuPlneni(line, "^[\s]*ZM\+NNB ")
+            elif self.reMatch(line, "^[\s]*Vyživované osoby "):
+                tabulkaPlneni["Vyzivovane_osoby"] = self._sloupceVykazuPlneni(line, "^[\s]*Vyživované osoby ")
+            elif self.reMatch(line, "^[\s]*Nepostižitelné "):
+                tabulkaPlneni["Nepostizitelne"] = self._sloupceVykazuPlneni(line, "^[\s]*Nepostižitelné ")
+            elif self.reMatch(line, "^[\s]*Postižitelné "):
+                tabulkaPlneni["Postizitelne"] = self._sloupceVykazuPlneni(line, "^[\s]*Postižitelné ")
+            elif self.reMatch(line, "^[\s]*Vráceno dlužníkům "):
+                tabulkaPlneni["Vraceno_dluznikum"] = self._sloupceVykazuPlneni(line, "^[\s]*Vráceno dlužníkům ")
+            elif self.reMatch(line, "^[\s]*Mimořádný příjem "):
+                tabulkaPlneni["Mimoradny_prijem"] = self._sloupceVykazuPlneni(line, "^[\s]*Mimořádný příjem ")
+            elif self.reMatch(line, "^[\s]*Darovací smlouva "):
+                tabulkaPlneni["Darovaci_smlouva"] = self._sloupceVykazuPlneni(line, "^[\s]*Darovací smlouva ")
+            elif self.reMatch(line, "^[\s]*K přerozdělení "):
+                tabulkaPlneni["K_prerozdeleni"] = self._sloupceVykazuPlneni(line, "^[\s]*K přerozdělení ")
+            elif self.reMatch(line, "^[\s]*- na odměnu IS "):
+                tabulkaPlneni["Odmena_IS"] = self._sloupceVykazuPlneni(line, "^[\s]*- na odměnu IS ")
+            elif self.reMatch(line, "^[\s]*- na výživné "):
+                tabulkaPlneni["Vyzivne"] = self._sloupceVykazuPlneni(line, "^[\s]*- na výživné ")
+            elif self.reMatch(line, "^[\s]*- ostatním věřitelům "):
+                tabulkaPlneni["Ostatnim_veritelum"] = self._sloupceVykazuPlneni(line, "^[\s]*- ostatním věřitelům ")
+                # Konec tabulky
+                break
+            elif self.reMatch(line, "^[\s]*- na jiné zapodstatové(?: pohledávky)? "):
+                # Nadpis v tabulce je na dva radky, hodnoty precist z dalsi iterace
+                cols = self._sloupceVykazuPlneni(line, "^[\s]*- na jiné zapodstatové(?: pohledávky)? ")
+                if cols is not None:
+                    tabulkaPlneni["Jine"] = cols
+                else:
+                    nextLine = "Jine"
+                    matched = False
+            elif nextLine:
+                cols = self._sloupceVykazuPlneni(line, "^[\s]*")
+                if cols:
+                    tabulkaPlneni[nextLine] = cols
+                else:
+                    matched = False
+
+            if matched:
+                nextLine = None
+        print(tabulkaPlneni)
 
     def run(self):
         super().run()
