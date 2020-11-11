@@ -55,9 +55,7 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
             return None
         return cols
 
-    def _mesicniVykazPlneni(self):
-        txt = self.reTextAfter(self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
-        lines = txt.split('\n')
+    def _mesicniVykazPlneniPrijmyDluznika(self, txt, lines):
         tabulkaPlneni = {}
         nextLine = None
         for line in lines:
@@ -112,28 +110,42 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
 
             if matched:
                 nextLine = None
-        print(tabulkaPlneni)
         prijemMesicne = []
+
+        NUMBERS_ONLY_COLUMNS = ["Rok", "Mesic", "Vyzivovane_osoby"]
+        PRICE_COLUMNS = ["Prijem", "Srazky", "ZMNNB", "Nepostizitelne", "Postizitelne", "Vraceno_dluznikum",
+            "Mimoradny_prijem", "Darovaci_smlouva", "K_prerozdeleni", "Odmena_IS", "Vyzivne", "Ostatnim_veritelum"]
 
         for i in range(self.colsCount):
             mesic = ZaznamVykazuPlneni()
-            mesic.Rok = self.numbersOnly(tabulkaPlneni["Rok"][i])
-            mesic.Mesic = self.numbersOnly(tabulkaPlneni["Mesic"][i])
-            mesic.Prijem = self.priceValue(tabulkaPlneni["Prijem"][i])
-            mesic.Srazky = self.priceValue(tabulkaPlneni["Srazky"][i])
-            mesic.ZMNNB = self.priceValue(tabulkaPlneni["ZMNNB"][i])
-            mesic.Vyzivovane_osoby = self.numbersOnly(tabulkaPlneni["Vyzivovane_osoby"][i])
-            mesic.Nepostizitelne = self.priceValue(tabulkaPlneni["Nepostizitelne"][i])
-            mesic.Postizitelne = self.priceValue(tabulkaPlneni["Postizitelne"][i])
-            mesic.Vraceno_dluznikum = self.priceValue(tabulkaPlneni["Vraceno_dluznikum"][i])
-            mesic.Mimoradny_prijem = self.priceValue(tabulkaPlneni["Mimoradny_prijem"][i])
-            mesic.Darovaci_smlouva = self.priceValue(tabulkaPlneni["Darovaci_smlouva"][i])
-            mesic.K_prerozdeleni = self.priceValue(tabulkaPlneni["K_prerozdeleni"][i])
-            mesic.Odmena_IS = self.priceValue(tabulkaPlneni["Odmena_IS"][i])
-            mesic.Vyzivne = self.priceValue(tabulkaPlneni["Vyzivne"][i])
-            mesic.Ostatnim_veritelum = self.priceValue(tabulkaPlneni["Ostatnim_veritelum"][i])
+
+            for key in NUMBERS_ONLY_COLUMNS:
+                try:
+                    val = self.numbersOnly(tabulkaPlneni[key][i])
+                except KeyError:
+                    val = None
+                setattr(mesic, key, val)
+
+            for key in PRICE_COLUMNS:
+                try:
+                    val = self.priceValue(tabulkaPlneni[key][i])
+                except KeyError:
+                    val = None
+                setattr(mesic, key, val)
+
             prijemMesicne.append(mesic)
         self.model.VykazPlneni.Prijem = prijemMesicne
+
+    def _mesicniVykazPlneniPrerozdeleniVeritelum(self):
+        pass
+
+    def _mesicniVykazPlneni(self):
+        txt = self.reTextAfter(self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
+        lines = txt.split('\n')
+
+        self._mesicniVykazPlneniPrijmyDluznika(txt, lines)
+
+        self._mesicniVykazPlneniPrerozdeleniVeritelum(txt, lines)
 
     def run(self):
         super().run()
