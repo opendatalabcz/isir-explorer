@@ -7,9 +7,13 @@ class ZpravaSpravce:
     def __init__(self):
         self.Mira_uspokojeni = MiraUspokojeni()
 
+class ZaznamVykazuPlneni:
+    pass
 
 class VykazPlneni:
-    pass
+    def __init__(self):
+        self.Prijem = []
+        self.Rozdeleni = []
 
 class ZpravaPlneniOddluzeni(IsirDokument):
 

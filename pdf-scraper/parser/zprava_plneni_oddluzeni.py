@@ -1,4 +1,4 @@
-from parser.model.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeni
+from parser.model.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeni, ZaznamVykazuPlneni
 from parser.isir_parser import IsirParser
 from parser.model.parts.osoba import *
 from parser.model.parts.spisova_znacka import *
@@ -113,6 +113,27 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
             if matched:
                 nextLine = None
         print(tabulkaPlneni)
+        prijemMesicne = []
+
+        for i in range(self.colsCount):
+            mesic = ZaznamVykazuPlneni()
+            mesic.Rok = self.numbersOnly(tabulkaPlneni["Rok"][i])
+            mesic.Mesic = self.numbersOnly(tabulkaPlneni["Mesic"][i])
+            mesic.Prijem = self.priceValue(tabulkaPlneni["Prijem"][i])
+            mesic.Srazky = self.priceValue(tabulkaPlneni["Srazky"][i])
+            mesic.ZMNNB = self.priceValue(tabulkaPlneni["ZMNNB"][i])
+            mesic.Vyzivovane_osoby = self.numbersOnly(tabulkaPlneni["Vyzivovane_osoby"][i])
+            mesic.Nepostizitelne = self.priceValue(tabulkaPlneni["Nepostizitelne"][i])
+            mesic.Postizitelne = self.priceValue(tabulkaPlneni["Postizitelne"][i])
+            mesic.Vraceno_dluznikum = self.priceValue(tabulkaPlneni["Vraceno_dluznikum"][i])
+            mesic.Mimoradny_prijem = self.priceValue(tabulkaPlneni["Mimoradny_prijem"][i])
+            mesic.Darovaci_smlouva = self.priceValue(tabulkaPlneni["Darovaci_smlouva"][i])
+            mesic.K_prerozdeleni = self.priceValue(tabulkaPlneni["K_prerozdeleni"][i])
+            mesic.Odmena_IS = self.priceValue(tabulkaPlneni["Odmena_IS"][i])
+            mesic.Vyzivne = self.priceValue(tabulkaPlneni["Vyzivne"][i])
+            mesic.Ostatnim_veritelum = self.priceValue(tabulkaPlneni["Ostatnim_veritelum"][i])
+            prijemMesicne.append(mesic)
+        self.model.VykazPlneni.Prijem = prijemMesicne
 
     def run(self):
         super().run()
