@@ -38,7 +38,14 @@ class ZpravaSplneniOddluzeniParser(IsirParser):
         self.model.Prubeh_rizeni.Oddluzeni_povoleno = self.reLineTextAfter(txt, "^[\s]*Oddlužení povoleno usnesením ze dne")
         self.model.Prubeh_rizeni.Oddluzeni_schvaleno = self.reLineTextAfter(txt, "^[\s]*Oddlužení schváleno usnesením ze dne")
 
+    def _vysledekRizeni(self):
+        txt = self.reTextBetween(self.txt, "^[\s]*B\. Výsledek insolvenčního řízení", "^[\s]*C\. Pohledávky za majetkovou podstatou")
+        
+        self.model.Vysledek_rizeni.Posledni_splatka = self.reLineTextAfter(txt, "^[\s]*Poslední splátka dle splátkového kalendáře")
+
+
     def run(self):
         super().run()
 
         self._prubehRizeni()
+        self._vysledekRizeni()
