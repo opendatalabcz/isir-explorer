@@ -10,6 +10,14 @@ class ZpravaSpravce:
 class ZaznamVykazuPlneni:
     pass
 
+class ZaznamUspokojeniVeritele:
+    
+    def __init__(self):
+        self.Veritel = None
+        self.Podil = None
+        self.Castka = None
+        self.Vyplaceno = []
+
 class VykazPlneni:
     def __init__(self):
         self.Prijem = []

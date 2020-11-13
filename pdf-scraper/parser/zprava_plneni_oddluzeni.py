@@ -1,4 +1,4 @@
-from parser.model.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeni, ZaznamVykazuPlneni
+from parser.model.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeni, ZaznamVykazuPlneni, ZaznamUspokojeniVeritele
 from parser.isir_parser import IsirParser
 from parser.model.parts.osoba import *
 from parser.model.parts.spisova_znacka import *
@@ -136,8 +136,79 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
             prijemMesicne.append(mesic)
         self.model.VykazPlneni.Prijem = prijemMesicne
 
-    def _mesicniVykazPlneniPrerozdeleniVeritelum(self):
-        pass
+    class Zaznam:
+        def __init__(self):
+            self.Veritel = []
+            self.Sloupce = []
+
+    def _sloupcePrerozdeleniVeritelum(self, colsTxt):
+        cols = re.compile("[\s]{2,}").split(colsTxt.strip())
+
+        # pocet mesicu ve vykazu + sloupec podilu + sloupec castky
+        if len(cols) != self.colsCount+2:
+            return None
+        return cols
+
+    def _mesicniVykazPlneniPrerozdeleniVeritelum(self, txt, lines):
+        
+        obsahVykazu = False
+        zaznamy = []
+        zaznam = self.Zaznam()
+        stav = 0 # 0=nic neprebyva, cte se novy zaznam, 1=zustatek nazvu veritele, 2=precten datovy radek s cisly ve stavu 1
+        for i,line in enumerate(lines):
+            if self.reMatch(line, "^.*Zjištěná pohledávka[\s]+Vyplaceno věřitelům"):
+                obsahVykazu = True
+                continue
+            elif not obsahVykazu:
+                continue
+            
+            # Rozdelit radek dle procentni hodnoty podilu (prvni z ciselnych sloupcu)
+            parts = self.reSplitText(line, "([0-9]+(?:,[0-9]+)?[\s]?%)")
+            if len(parts) == 2:
+
+                if stav == 2:
+                    zaznamy.append(zaznam)
+                    zaznam = self.Zaznam()
+                    stav = 0
+
+                # Radek obsahuje ciselne hodnoty ve sloupcich (a mozna i nazev veritele)
+                zaznam.Veritel.append(parts[0].strip())
+                zaznam.Sloupce = self._sloupcePrerozdeleniVeritelum(parts[1].strip())
+
+                if stav == 0:
+                    zaznamy.append(zaznam)
+                    zaznam = self.Zaznam()
+                elif stav == 1:
+                    stav = 2
+            else:
+                # Prazdny radek nebo radek s pokracujicim nazvem veritele
+                text = parts[0].strip()
+                if '' != text:
+                    zaznam.Veritel.append(text)
+
+                    if stav == 0:
+                        stav = 1
+                    elif stav == 2:
+                        stav = 0
+                        zaznamy.append(zaznam)
+                        zaznam = self.Zaznam()
+
+            # Konec části s rozpisem věřitelů, začátek řádků se sumarizací
+            if self.reMatch(line, "^[\s]+Celkem přerozděleno"):
+                lines = lines[i:]
+                break
+        print(zaznamy)
+
+        for zaznam in zaznamy:
+            vyplacenoVeriteli = ZaznamUspokojeniVeritele()
+            vyplacenoVeriteli.Veritel = ' '.join(zaznam.Veritel)
+            vyplacenoVeriteli.Podil = self.priceValue(zaznam.Sloupce[0])
+            vyplacenoVeriteli.Castka = self.priceValue(zaznam.Sloupce[1])
+            zaznam.Sloupce = zaznam.Sloupce[2:]
+            for sloupec in zaznam.Sloupce:
+                vyplacenoVeriteli.Vyplaceno.append(self.priceValue(sloupec))
+            self.model.VykazPlneni.Rozdeleni.append(vyplacenoVeriteli)
+
 
     def _mesicniVykazPlneni(self):
         txt = self.reTextAfter(self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
