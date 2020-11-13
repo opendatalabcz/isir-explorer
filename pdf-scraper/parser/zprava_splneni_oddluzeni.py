@@ -42,7 +42,48 @@ class ZpravaSplneniOddluzeniParser(IsirParser):
         txt = self.reTextBetween(self.txt, "^[\s]*B\. Výsledek insolvenčního řízení", "^[\s]*C\. Pohledávky za majetkovou podstatou")
         
         self.model.Vysledek_rizeni.Posledni_splatka = self.reLineTextAfter(txt, "^[\s]*Poslední splátka dle splátkového kalendáře")
+        self.model.Vysledek_rizeni.Preplatek = self.priceValue(self.reLineTextAfter(txt, "^[\s]*Přeplatek na splátkách ve výši"))
 
+        lines = txt.split('\n')
+        
+        # Cisla stavu pro detekci hodnot nachazejicich se na jinych radkach, nez jejich nadpisy
+        USPOKOJENI_NEZAJ = 1
+        ZASLANI_VYZVY = 2
+
+        nextLineState = 0
+        for line in lines:
+            if self.reMatch(line, '^[\s]*Předpokládaná míra uspokojení nezajištěných'):
+                nextLineState = USPOKOJENI_NEZAJ
+                continue
+            elif self.reMatch(line, '^[\s]*Nezajištění věřitelé uspokojeni \(výše / míra\)'):
+                row = self.reTextAfter(line, '^[\s]*Nezajištění věřitelé uspokojeni \(výše / míra\)')
+                cols = re.compile("[\s]{2,}").split(row.strip())
+                if len(cols) == 2:
+                    self.model.Vysledek_rizeni.Uspokojeni_nezaj_vyse = self.priceValue(cols[0])
+                    self.model.Vysledek_rizeni.Uspokojeni_nezaj_mira = self.priceValue(cols[1])
+                continue
+            elif self.reMatch(line, '^[\s]*Zajištění věřitelé uspokojeni \(výše / míra\)'):
+                row = self.reTextAfter(line, '^[\s]*Zajištění věřitelé uspokojeni \(výše / míra\)')
+                cols = re.compile("[\s]{2,}").split(row.strip())
+                if len(cols) == 2:
+                    self.model.Vysledek_rizeni.Uspokojeni_zaj_vyse = self.priceValue(cols[0])
+                    self.model.Vysledek_rizeni.Uspokojeni_zaj_mira = self.priceValue(cols[1])
+                continue
+            elif self.reMatch(line, '^[\s]*Plátci příjmu zaslána výzva k ukončení provádění srážek'):
+                nextLineState = ZASLANI_VYZVY
+                continue
+
+            if nextLineState == USPOKOJENI_NEZAJ:
+                cols = re.compile("[\s]{2,}").split(line.strip())
+                if len(cols) == 2:
+                    self.model.Vysledek_rizeni.Predpoklad_uspokojeni_nezaj_vyse = self.priceValue(cols[0])
+                    self.model.Vysledek_rizeni.Predpoklad_uspokojeni_nezaj_mira = self.priceValue(cols[1])
+                    nextLineState = 0
+            elif nextLineState == ZASLANI_VYZVY:
+                cols = re.compile("[\s]{2,}").split(line.strip())
+                if len(cols) == 1 and len(cols[0]) > 7:
+                    self.model.Vysledek_rizeni.Zaslani_vyzvy_ukonceni_srazek = cols[0]
+                break # konec tabulky
 
     def run(self):
         super().run()
