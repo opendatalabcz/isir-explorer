@@ -20,7 +20,7 @@ class ZaznamUspokojeniVeritele:
 
 class VykazPlneni:
     def __init__(self):
-        self.Prijem = []
+        self.Mesic = []
         self.Rozdeleni = []
 
 class ZpravaPlneniOddluzeni(IsirDokument):

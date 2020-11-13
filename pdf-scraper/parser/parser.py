@@ -4,6 +4,10 @@ import regex
 
 class Parser:
 
+    RE_KC_AMOUNT = "^((:?[0-9]+ )*(:?[0-9]+)(:?,[0-9]+)? Kč)$"
+    RE_PERCENT = "^([0-9]+(?:,[0-9]+)?[\s]?%)$"
+    RE_INT = "^[0-9]+$"
+
     def textBetween(self, txt, start, end):
         part = self.textAfter(txt, start)
         return part.split(end, 2)[0].strip()

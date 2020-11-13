@@ -134,7 +134,7 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
                 setattr(mesic, key, val)
 
             prijemMesicne.append(mesic)
-        self.model.VykazPlneni.Prijem = prijemMesicne
+        self.model.VykazPlneni.Mesic = prijemMesicne
 
     class Zaznam:
         def __init__(self):
@@ -217,6 +217,39 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
 
             posledniVeritel = vyplacenoVeriteli.Veritel
 
+        # Ze zbyvajicich radku precist sumarizaci (Celkem prerozdeleno, Mira uspokojeni)
+        self._sumarizaceMesicnihoVykazu(lines)
+
+    def _sumarizaceMesicnihoVykazu(self, lines):
+        # Poradi datovych typu v poslednich 4 radcich tabulky
+        typeOrder = [
+            self.RE_KC_AMOUNT,
+            self.RE_PERCENT,
+            self.RE_PERCENT,
+            self.RE_INT
+        ]
+        matchedRows = 0
+        rows = []
+        for line in lines:
+            cols = re.compile("[\s]{2,}").split(line.strip())
+            if len(cols) >= self.colsCount:
+                cols = cols[-self.colsCount:]
+                matches = 0
+                for val in cols:
+                    if self.reMatch(val, typeOrder[matchedRows]):
+                        matches += 1
+                if matches == len(cols):
+                    matchedRows += 1
+                    rows.append(cols)
+                    if len(rows) == len(typeOrder):
+                        break
+        
+        # Sumarizaci uspokojeni veritelu kategorizovat do struktury .. jiz rozdelene dle mesicu
+        for i in range(self.colsCount):
+            self.model.VykazPlneni.Mesic[i].Celkem_prerozdeleno = self.priceValue(rows[0][i])
+            self.model.VykazPlneni.Mesic[i].Mira_uspokojeni = self.priceValue(rows[1][i])
+            self.model.VykazPlneni.Mesic[i].Mira_uspkojeni_ocekavana = self.priceValue(rows[2][i])
+            self.model.VykazPlneni.Mesic[i].Mesic_oddluzeni = self.numbersOnly(rows[3][i])
 
     def _mesicniVykazPlneni(self):
         txt = self.reTextAfter(self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
