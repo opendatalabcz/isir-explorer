@@ -198,6 +198,7 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
                 lines = lines[i:]
                 break
 
+        posledniVeritel = None
         for zaznam in zaznamy:
             vyplacenoVeriteli = ZaznamUspokojeniVeritele()
             vyplacenoVeriteli.Veritel = ' '.join(zaznam.Veritel)
@@ -206,7 +207,15 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
             zaznam.Sloupce = zaznam.Sloupce[2:]
             for sloupec in zaznam.Sloupce:
                 vyplacenoVeriteli.Vyplaceno.append(self.priceValue(sloupec))
+            
+            # Preskocit duplicitni radky na nulovou castku (zaskrtnuta Deponovana castka)
+            if vyplacenoVeriteli.Veritel == posledniVeritel and '0' == vyplacenoVeriteli.Castka:
+                continue
+
+            # Pridat zaznam
             self.model.VykazPlneni.Rozdeleni.append(vyplacenoVeriteli)
+
+            posledniVeritel = vyplacenoVeriteli.Veritel
 
 
     def _mesicniVykazPlneni(self):
