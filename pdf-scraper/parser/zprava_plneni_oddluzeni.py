@@ -197,7 +197,6 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
             if self.reMatch(line, "^[\s]+Celkem přerozděleno"):
                 lines = lines[i:]
                 break
-        print(zaznamy)
 
         for zaznam in zaznamy:
             vyplacenoVeriteli = ZaznamUspokojeniVeritele()
