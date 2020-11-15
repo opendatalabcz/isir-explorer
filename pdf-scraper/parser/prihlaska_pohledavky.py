@@ -12,6 +12,21 @@ class PrihlaskaParser(IsirParser):
         self.model = PrihlaskaPohledavky()
         super().__init__()
 
+    def removeVersionLine(self):
+        """Prihlasky pohledavek neobsahuji strankovani
+        """
+        temp = []
+        for line in self.lines:
+            res = re.match('^[\s]{60,}Verze ([A-Za-z0-9\-]+)$', line)
+            if res:
+                # Ulozit verzi pokud jeste neni nastavena
+                if self.model.Metadata.Verze is None:
+                    self.model.Metadata.Verze = res[1]
+            else:
+                temp.append(line)
+        self.lines = temp
+        self.txt = '\n'.join(temp)
+
     def _soudSpisovaZnacka(self):
         for line in self.lines:
             if "Soud" in line and "Spis. značka" in line:

@@ -22,7 +22,7 @@ class IsirParser(Parser):
     def removeVersionLine(self):
         temp = []
         for line in self.lines:
-            res = re.match('^[\s]{60,}Verze ([A-Za-z0-9\-]+)$', line)
+            res = re.match('^[\s]{10,}(?:Stránka [0-9]+ z [0-9]+)?[\s]+Verze ([A-Za-z0-9\-]+)$', line)
             if res:
                 # Ulozit verzi pokud jeste neni nastavena
                 if self.model.Metadata.Verze is None:

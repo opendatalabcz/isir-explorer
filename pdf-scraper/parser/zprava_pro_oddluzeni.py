@@ -17,19 +17,6 @@ class ZpravaProOddluzeniParser(IsirParser):
         self.txt = self.reTextBetween(self.txt, "^[\s]*A\. Hospodářská situace dlužníka", "^[\s]*C\. Přílohy")
         self.lines = self.txt.split('\n')
 
-    def removeVersionLine(self):
-        temp = []
-        for line in self.lines:
-            res = re.match('^[\s]{10,}(?:Stránka [0-9]+ z [0-9]+)?[\s]{5,}Verze ([A-Za-z0-9\-]+)$', line)
-            if res:
-                # Ulozit verzi pokud jeste neni nastavena
-                if self.model.Metadata.Verze is None:
-                    self.model.Metadata.Verze = res[1]
-            else:
-                temp.append(line)
-        self.lines = temp
-        self.txt = '\n'.join(temp)
-
     def _prijmyDluznika(self,txt):
         """Prijmy dluznika
 

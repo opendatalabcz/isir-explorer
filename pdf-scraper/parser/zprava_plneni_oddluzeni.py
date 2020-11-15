@@ -20,18 +20,6 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         self.txt = self.reTextBetween(self.txt, "^[\s]*A\. ZPRÁVA INSOLVENČNÍHO SPRÁVCE O PLNĚNÍ POVINNOSTÍ DLUŽNÍKA V ODDLUŽENÍ", "^[\s]*C\. Přílohy")
         self.lines = self.txt.split('\n')
 
-    def removeVersionLine(self):
-        temp = []
-        for line in self.lines:
-            res = re.match('^[\s]{10,}(?:Stránka [0-9]+ z [0-9]+)?[\s]+Verze ([A-Za-z0-9\-]+)$', line)
-            if res:
-                # Ulozit verzi pokud jeste neni nastavena
-                if self.model.Metadata.Verze is None:
-                    self.model.Metadata.Verze = res[1]
-            else:
-                temp.append(line)
-        self.lines = temp
-        self.txt = '\n'.join(temp)
 
     def _zpravaSpravcePlneni(self):
         txt = self.reTextBefore(self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
