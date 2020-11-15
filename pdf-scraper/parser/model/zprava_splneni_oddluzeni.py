@@ -6,6 +6,9 @@ class PrubehRizeni:
 class VysledekhRizeni:
     pass
 
+class OdmenaSpravce:
+    pass
+
 class ZpravaSplneniOddluzeni(IsirDokument):
 
     TYP_DOKUMENTU = "ZpravaSplneniOddluzeni"
@@ -15,3 +18,4 @@ class ZpravaSplneniOddluzeni(IsirDokument):
 
         self.Prubeh_rizeni = PrubehRizeni()
         self.Vysledek_rizeni = VysledekhRizeni()
+        self.Odmena_spravce = OdmenaSpravce()

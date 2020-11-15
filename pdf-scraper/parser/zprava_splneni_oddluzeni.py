@@ -113,7 +113,63 @@ class ZpravaSplneniOddluzeniParser(IsirParser):
             "^[\s]*D\. Vyúčtování odměny a náhrady hotových výdajů insolvenčního správce",
             "^[\s]*E\. Detail vyúčtování odměny a náhrady nákladů insolvenčního správce"
         )
-        
+
+        lines = txt.split('\n')
+
+        # Cisla stavu pro detekci hodnot nachazejicich se na jinych radkach, nez jejich nadpisy
+        CELKOVA_ODMENA = 1
+        HOTOVE_VYDAJE = 2
+
+        nextLineState = 0
+        for line in lines:
+            if self.reMatch(line, '^[\s]*Celková odměna insolvenčního'):
+                nextLineState = CELKOVA_ODMENA
+                continue
+            elif self.reMatch(line, '^[\s]*Hotové výdaje insolvenčního'):
+                nextLineState = HOTOVE_VYDAJE
+                continue
+            elif self.reMatch(line, '^[\s]*výtěžku zpeněžení zajištěného'):
+                nextLineState = 0
+                row = self.reTextAfter(line, '^[\s]*výtěžku zpeněžení zajištěného')
+                cols = re.compile("[\s]{2,}").split(row.strip())
+                if len(cols) == 3:
+                    # prvni sloupec je cena bez dph pokud je platce dph a je mozne jej ingorovat
+                    cols = cols[1:]
+                if len(cols) == 2:
+                    self.model.Odmena_spravce.Vytezek_zpenezeni_zaji = self.priceValue(cols[0])
+                    self.model.Odmena_spravce.Vytezek_zpenezeni_zaji_uhrazeno = self.priceValue(cols[1])
+                continue
+            elif self.reMatch(line, '^[\s]*výtěžku zpeněžení určeného k'):
+                nextLineState = 0
+                row = self.reTextAfter(line, '^[\s]*výtěžku zpeněžení určeného k')
+                cols = re.compile("[\s]{2,}").split(row.strip())
+                if len(cols) == 3:
+                    # prvni sloupec je cena bez dph pokud je platce dph a je mozne jej ingorovat
+                    cols = cols[1:]
+                if len(cols) == 2:
+                    self.model.Odmena_spravce.Vytezek_zpenezeni_rozdeleni = self.priceValue(cols[0])
+                    self.model.Odmena_spravce.Vytezek_zpenezeni_rozdeleni_uhrazeno = self.priceValue(cols[1])
+                break # Konec tabulky
+
+
+            if nextLineState == CELKOVA_ODMENA:
+                cols = re.compile("[\s]{2,}").split(line.strip())
+                if len(cols) == 3:
+                    # prvni sloupec je cena bez dph pokud je platce dph a je mozne jej ingorovat
+                    cols = cols[1:]
+                if len(cols) == 2:
+                    self.model.Odmena_spravce.Celkova_odmena = self.priceValue(cols[0])
+                    self.model.Odmena_spravce.Celkova_odmena_uhrazeno = self.priceValue(cols[1])
+                    nextLineState = 0
+            elif nextLineState == HOTOVE_VYDAJE:
+                cols = re.compile("[\s]{2,}").split(line.strip())
+                if len(cols) == 3:
+                    # prvni sloupec je cena bez dph pokud je platce dph a je mozne jej ingorovat
+                    cols = cols[1:]
+                if len(cols) == 2:
+                    self.model.Odmena_spravce.Hotove_vydaje = self.priceValue(cols[0])
+                    self.model.Odmena_spravce.Hotove_vydaje_uhrazeno = self.priceValue(cols[1])
+                    nextLineState = 0
 
 
     def run(self):
