@@ -1,11 +1,13 @@
 import subprocess
 import os
+import sys
 from isir_decryptor import IsirDecryptor
 from parser.prihlaska_pohledavky import PrihlaskaParser
 from parser.prehledovy_list import PrehledovyListParser
 from parser.zprava_pro_oddluzeni import ZpravaProOddluzeniParser
 from parser.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeniParser
 from parser.zprava_splneni_oddluzeni import ZpravaSplneniOddluzeniParser
+from parser.errors import UnreadableDocument
 
 class IsirScraper:
     
@@ -39,12 +41,17 @@ class IsirScraper:
             f.write(data)
 
         # Parse
-        #parser = PrihlaskaParser(data)
+        parser = PrihlaskaParser(data)
         #parser = PrehledovyListParser(data)
         #parser = ZpravaProOddluzeniParser(data)
         #parser = ZpravaPlneniOddluzeniParser(data)
-        parser = ZpravaSplneniOddluzeniParser(data)
-        parser.run()
+        #parser = ZpravaSplneniOddluzeniParser(data)
+
+        try:
+            parser.run()
+        except UnreadableDocument:
+            print("Necitelny dokument", file=sys.stderr)
+            exit(1)
 
         # Save output
         output = parser.model.toJSON()

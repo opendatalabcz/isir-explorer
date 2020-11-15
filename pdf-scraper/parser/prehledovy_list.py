@@ -8,7 +8,7 @@ class PrehledovyListParser(IsirParser):
 
     def __init__(self, data):
         self.txt = data
-        self.lines = data.split('\n')
+        self.lines = None
         self.model = PrehledovyList()
         super().__init__()
 

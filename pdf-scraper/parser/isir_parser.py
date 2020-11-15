@@ -1,5 +1,6 @@
 from parser.parser import Parser
 from parser.model.parts.spisova_znacka import SpisovaZnacka
+from parser.errors import NoSplitterFound, UnreadableDocument
 import re
 
 
@@ -39,7 +40,10 @@ class IsirParser(Parser):
         self.model.Metadata.Typ = self.model.TYP_DOKUMENTU
 
         # Pokud pdf obsahuje vice typu dokumentu, vybrat text toho aktualniho
-        self.extractDocument()
+        try:
+            self.extractDocument()
+        except NoSplitterFound:
+            raise UnreadableDocument()
 
         # Odstrani radky v zapati stranek s informaci o verzi dokumentu
         self.removeVersionLine()

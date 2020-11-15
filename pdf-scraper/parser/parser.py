@@ -1,6 +1,6 @@
 import re
 import regex
-
+from parser.errors import NoSplitterFound
 
 class Parser:
 
@@ -80,29 +80,39 @@ class Parser:
         else:
             return match[1].strip()
 
-    def reTextAfter(self, txt, reg, multiline=False):
+    def reTextAfter(self, txt, reg, multiline=False, allow_no_match=True):
         if multiline:
             compiled = re.compile(reg, re.MULTILINE)
         else:
             compiled = re.compile(reg)
         l = compiled.split(txt)
         if len(l) == 1:
-            return txt #no matches
+            # No matches
+            if allow_no_match:
+                return txt
+            else:
+                raise NoSplitterFound()
         l.pop(0) #remove text before 1st splitter
         res = ''.join(l)
         return res.strip()
 
-    def reTextBefore(self, txt, reg, multiline=False):
+    def reTextBefore(self, txt, reg, multiline=False, allow_no_match=True):
         if multiline:
             compiled = re.compile(reg, re.MULTILINE)
         else:
             compiled = re.compile(reg)
         l = compiled.split(txt)
+        if len(l) == 1:
+            # No matches
+            if allow_no_match:
+                return txt
+            else:
+                raise NoSplitterFound()
         return l.pop(0).strip()
 
     def reTextBetween(self, txt, regA, regB, multiline=True):
-        after = self.reTextAfter(txt, regA, multiline)
-        before = self.reTextBefore(after, regB, multiline)
+        after = self.reTextAfter(txt, regA, multiline, False)
+        before = self.reTextBefore(after, regB, multiline, False)
         return before
 
     def reSplitText(self, txt, reg, keepSplit=True):

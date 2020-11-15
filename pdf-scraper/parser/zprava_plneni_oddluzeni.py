@@ -8,7 +8,7 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
 
     def __init__(self, data):
         self.txt = data
-        self.lines = data.split('\n')
+        self.lines = None
         self.model = ZpravaPlneniOddluzeni()
 
         # Pocet sloupcu v tabulce plneni splatkoveho kalendare (tj. pocet mesicu)
