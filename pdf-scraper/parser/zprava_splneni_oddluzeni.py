@@ -158,6 +158,13 @@ class ZpravaSplneniOddluzeniParser(IsirParser):
                     self.model.Odmena_spravce.Hotove_vydaje_uhrazeno = self.priceValue(cols[1])
                     nextLineState = 0
 
+        # Komentář IS k vyuctovani odmen
+        txt = self.reTextAfter(
+            self.txt,
+            "^[\s]*I\. Odměna a hotové výdaje",
+            True
+        )
+        self.model.Odmena_spravce.Zprava_spravce = self.textBlock(self.reTextAfter(txt, "^[\s]*Komentář:[\s]*$", True))
 
     def run(self):
         super().run()
