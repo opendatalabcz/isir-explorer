@@ -84,6 +84,29 @@ class ZpravaSplneniOddluzeniParser(IsirParser):
                 if len(cols) == 1 and len(cols[0]) > 7:
                     self.model.Vysledek_rizeni.Zaslani_vyzvy_ukonceni_srazek = cols[0]
                 break # konec tabulky
+        
+        # Textova pole pod tabulkou
+        # Zprava o prubehu rizeni
+        self.model.Vysledek_rizeni.Zprava_o_prubehu = self.textBlock(self.reTextBetween(
+            txt,
+            ".*míře plnění \(např. pracovní neschopnost, ztráta zaměstnání či neposkytování daru třetí osobou\):[\s]*$",
+            "^[\s]*Insolvenční správce uvádí, že dlužník řádně plnil všechny povinnosti podle insolvenčního zákona a uložené rozhodnutím"
+        ))
+
+        # Doporuceni spravce
+        self.model.Vysledek_rizeni.Doporuceni_spravce = self.textBlock(self.reTextBetween(
+            txt,
+            "^[\s]*Doporučení insolvenčního správce:",
+            "^[\s]*Odůvodnění"
+        ))
+
+        # Oduvodneni doporuceni spravce
+        self.model.Vysledek_rizeni.Doporuceni_spravce_oduvodneni = self.textBlock(self.reTextAfter(
+            self.reTextAfter(txt, "^[\s]*Doporučení insolvenčního správce:", True),
+            "^[\s]*Odůvodnění",
+            True
+        ))    
+
 
     def run(self):
         super().run()
