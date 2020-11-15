@@ -107,9 +107,18 @@ class ZpravaSplneniOddluzeniParser(IsirParser):
             True
         ))    
 
+    def _vyuctovaniOdmenyIS(self):
+        txt = self.reTextBetween(
+            self.txt,
+            "^[\s]*D\. Vyúčtování odměny a náhrady hotových výdajů insolvenčního správce",
+            "^[\s]*E\. Detail vyúčtování odměny a náhrady nákladů insolvenčního správce"
+        )
+        
+
 
     def run(self):
         super().run()
 
         self._prubehRizeni()
         self._vysledekRizeni()
+        self._vyuctovaniOdmenyIS()
