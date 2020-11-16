@@ -7,14 +7,11 @@ import re
 class ZpravaPlneniOddluzeniParser(IsirParser):
 
     def __init__(self, data):
-        self.txt = data
-        self.lines = None
+        super().__init__()
         self.model = ZpravaPlneniOddluzeni()
 
         # Pocet sloupcu v tabulce plneni splatkoveho kalendare (tj. pocet mesicu)
         self.colsCount = 0
-
-        super().__init__()
 
     def extractDocument(self):
         self.txt = self.reTextBetween(self.txt, "^[\s]*A\. ZPRÁVA INSOLVENČNÍHO SPRÁVCE O PLNĚNÍ POVINNOSTÍ DLUŽNÍKA V ODDLUŽENÍ", "^[\s]*C\. Přílohy")

@@ -6,6 +6,11 @@ import re
 
 class IsirParser(Parser):
 
+    def __init__(self, data):
+        super().__init__()
+        self.txt = data
+        self.lines = None
+
     def spisovaZnacka(self, txt):
         part1 = self.textBefore(txt, "INS")
         soudSenat = part1.split(" ", 2)

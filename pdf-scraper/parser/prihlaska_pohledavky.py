@@ -7,10 +7,8 @@ import re
 class PrihlaskaParser(IsirParser):
 
     def __init__(self, data):
-        self.txt = data
-        self.lines = None
-        self.model = PrihlaskaPohledavky()
         super().__init__()
+        self.model = PrihlaskaPohledavky()
 
     def extractDocument(self):
         self.txt = self.reTextBetween(self.txt, "^[\s]{3,}PŘIHLÁŠKA POHLEDÁVKY[\s]*$", "^[\s]*Způsob doručení přihlášky pohledávky na soud:")

@@ -7,10 +7,8 @@ import re
 class PrehledovyListParser(IsirParser):
 
     def __init__(self, data):
-        self.txt = data
-        self.lines = None
-        self.model = PrehledovyList()
         super().__init__()
+        self.model = PrehledovyList()
 
     def extractDocument(self):
         self.txt = self.reTextBetween(self.txt, "^[\s]*Přezkumné jednání / Přezkum přihlášených pohledávek:", "^[\s]*[D-H]\. Přílohy")
