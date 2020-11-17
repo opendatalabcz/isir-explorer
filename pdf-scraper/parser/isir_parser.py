@@ -11,6 +11,9 @@ class IsirParser(Parser):
         self.txt = data
         self.lines = None
 
+        # Text, ktery zbyde ze vstupniho textu po extrakci daneho typu dokumentu
+        self.residue = ""
+
     def spisovaZnacka(self, txt):
         part1 = self.textBefore(txt, "INS")
         soudSenat = part1.split(" ", 2)
@@ -37,6 +40,18 @@ class IsirParser(Parser):
                 temp.append(line)
         self.lines = temp
         self.txt = '\n'.join(temp)
+
+    def extractDocumentByRange(self, start, end):
+        # Obsah dokumentu
+        document = self.reTextBetween(self.txt, start, end)
+        
+        # Ulozit nepouzity rozsah
+        self.residue += self.reTextBefore(self.txt, start, True)
+        self.residue += self.reTextAfter(self.txt, end, True)
+        
+        # Pouzit novy dokument
+        self.txt = document
+        self.lines = self.txt.split('\n')
 
     def extractDocument(self):
         pass

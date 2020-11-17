@@ -8,12 +8,13 @@ import re
 class ZpravaProOddluzeniParser(IsirParser):
 
     def __init__(self, data):
-        super().__init__()
+        super().__init__(data)
         self.model = ZpravaProOddluzeni()
 
     def extractDocument(self):
-        self.txt = self.reTextBetween(self.txt, "^[\s]*A\. Hospodářská situace dlužníka", "^[\s]*C\. Přílohy")
-        self.lines = self.txt.split('\n')
+        doc_start = "^[\s]*A\. Hospodářská situace dlužníka"
+        doc_end = "^[\s]*C\. Přílohy"
+        self.extractDocumentByRange(doc_start, doc_end)
 
     def _prijmyDluznika(self,txt):
         """Prijmy dluznika

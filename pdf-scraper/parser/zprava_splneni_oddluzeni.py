@@ -7,12 +7,13 @@ import re
 class ZpravaSplneniOddluzeniParser(IsirParser):
 
     def __init__(self, data):
-        super().__init__()
+        super().__init__(data)
         self.model = ZpravaSplneniOddluzeni()
 
     def extractDocument(self):
-        self.txt = self.reTextBetween(self.txt, "^[\s]*A\. Průběh insolvenčního řízení", "^[\s]*F\. Přílohy")
-        self.lines = self.txt.split('\n')
+        doc_start = "^[\s]*A\. Průběh insolvenčního řízení"
+        doc_end = "^[\s]*F\. Přílohy"
+        self.extractDocumentByRange(doc_start, doc_end)
 
     def _prubehRizeni(self):
         txt = self.reTextBetween(self.txt, "^[\s]*A\. Průběh insolvenčního řízení", "^[\s]*B\. Výsledek insolvenčního řízení")

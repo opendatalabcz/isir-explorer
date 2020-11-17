@@ -7,12 +7,13 @@ import re
 class PrihlaskaParser(IsirParser):
 
     def __init__(self, data):
-        super().__init__()
+        super().__init__(data)
         self.model = PrihlaskaPohledavky()
 
     def extractDocument(self):
-        self.txt = self.reTextBetween(self.txt, "^[\s]{3,}PŘIHLÁŠKA POHLEDÁVKY[\s]*$", "^[\s]*Způsob doručení přihlášky pohledávky na soud:")
-        self.lines = self.txt.split('\n')
+        doc_start = "^[\s]{3,}PŘIHLÁŠKA POHLEDÁVKY[\s]*$"
+        doc_end = "^[\s]*Způsob doručení přihlášky pohledávky na soud:"
+        self.extractDocumentByRange(doc_start, doc_end)
 
     def removeVersionLine(self):
         """Prihlasky pohledavek neobsahuji strankovani

@@ -7,12 +7,13 @@ import re
 class PrehledovyListParser(IsirParser):
 
     def __init__(self, data):
-        super().__init__()
+        super().__init__(data)
         self.model = PrehledovyList()
 
     def extractDocument(self):
-        self.txt = self.reTextBetween(self.txt, "^[\s]*Přezkumné jednání / Přezkum přihlášených pohledávek:", "^[\s]*[D-H]\. Přílohy")
-        self.lines = self.txt.split('\n')
+        doc_start = "^[\s]*Přezkumné jednání / Přezkum přihlášených pohledávek:"
+        doc_end = "^[\s]*[D-H]\. Přílohy"
+        self.extractDocumentByRange(doc_start, doc_end)
 
     def _prehledPohledavek(self, txt):
         """Funkce pro čtení tabulky s přehledem pohledávek. Použití je možné pro sekce
