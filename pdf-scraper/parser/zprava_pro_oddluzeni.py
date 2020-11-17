@@ -29,7 +29,7 @@ class ZpravaProOddluzeniParser(IsirParser):
         txtPrijmy = self.reTextBetween(txt, "^[\s]*PŘÍJEM DLUŽNÍKA č\.", "^[\s]*FINANČNÍ DAR / DŮCHOD / RENTA DLUŽNÍKA")
 
         # Rozdeleni jednotlivych prijmu
-        prijmyParts = self.reSplitText(txtPrijmy, "^[\s]*PŘÍJEM DLUŽNÍKA č\.")
+        prijmyParts = self.reSplitText(txtPrijmy, "^[\s]*PŘÍJEM DLUŽNÍKA č\.", keep_split=False)
 
         for txtPrijem in prijmyParts:
             lines = txtPrijem.split('\n')

@@ -166,7 +166,7 @@ class PrihlaskaParser(IsirParser):
         
         # posledni pohledavka
         posledni = pohledavkyText.pop()
-        konec = self.reSplitText(posledni, '(^[\s]*[0-9]+ Celková výše přihlášených pohledávek \(Kč\):.*)', keepSplit=True)
+        konec = self.reSplitText(posledni, '^[\s]*[0-9]+ Celková výše přihlášených pohledávek \(Kč\):.*', keepSplit=True)
         pohledavkyText.append(konec[0]) # posledni pohledavka
         sumarizace = konec[1]
 

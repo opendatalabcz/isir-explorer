@@ -81,7 +81,6 @@ class Parser:
             return match[1].strip()
 
     def reTextAfter(self, txt, reg, multiline=False, allow_no_match=True, keep_split=False):
-        reg = reg if not keep_split else "("+reg+")"
         l = self.reSplitText(txt, reg, keep_split=keep_split, multiline=multiline, split_pos=0)
         if len(l) == 1:
             # No matches
@@ -94,7 +93,6 @@ class Parser:
         return res.strip()
 
     def reTextBefore(self, txt, reg, multiline=False, allow_no_match=True, keep_split=False):
-        reg = reg if not keep_split else "("+reg+")"
         l = self.reSplitText(txt, reg, keep_split=keep_split, multiline=multiline, split_pos=1)
         if len(l) == 1:
             # No matches
@@ -114,7 +112,7 @@ class Parser:
 
         Args:
             txt (str): Vstupní text
-            reg (str): Regulární výraz, dle kterého text rozdělit
+            reg (str): Regulární výraz, dle kterého text rozdělit. Nesmí obsahovat capturing groups.
             keep_split (bool, optional): Zda se má zachovat dělící řetězec obsažen regulárním výrazem.
                 pro prozdělení. Defaults to True.
             multiline (bool, optional): Víceřádková operace. Defaults to True.
@@ -123,6 +121,10 @@ class Parser:
         Returns:
             list: Vysledne casti textu po rozdeleni.
         """
+
+        # Pridat globalni capturing group
+        reg = reg if not keep_split else "("+reg+")"
+
         if multiline:
             parts = re.compile(reg, re.MULTILINE).split(txt)
         else:

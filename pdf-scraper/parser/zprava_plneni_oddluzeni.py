@@ -148,7 +148,7 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
                 continue
             
             # Rozdelit radek dle procentni hodnoty podilu (prvni z ciselnych sloupcu)
-            parts = self.reSplitText(line, "([0-9]+(?:,[0-9]+)?[\s]?%)")
+            parts = self.reSplitText(line, "[0-9]+(?:,[0-9]+)?[\s]?%")
             if len(parts) == 2:
 
                 if stav == 2:
