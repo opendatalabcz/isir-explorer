@@ -80,12 +80,9 @@ class Parser:
         else:
             return match[1].strip()
 
-    def reTextAfter(self, txt, reg, multiline=False, allow_no_match=True):
-        if multiline:
-            compiled = re.compile(reg, re.MULTILINE)
-        else:
-            compiled = re.compile(reg)
-        l = compiled.split(txt)
+    def reTextAfter(self, txt, reg, multiline=False, allow_no_match=True, keep_split=False):
+        reg = reg if not keep_split else "("+reg+")"
+        l = self.reSplitText(txt, reg, keep_split=keep_split, multiline=multiline, split_pos=0)
         if len(l) == 1:
             # No matches
             if allow_no_match:
@@ -96,12 +93,9 @@ class Parser:
         res = ''.join(l)
         return res.strip()
 
-    def reTextBefore(self, txt, reg, multiline=False, allow_no_match=True):
-        if multiline:
-            compiled = re.compile(reg, re.MULTILINE)
-        else:
-            compiled = re.compile(reg)
-        l = compiled.split(txt)
+    def reTextBefore(self, txt, reg, multiline=False, allow_no_match=True, keep_split=False):
+        reg = reg if not keep_split else "("+reg+")"
+        l = self.reSplitText(txt, reg, keep_split=keep_split, multiline=multiline, split_pos=1)
         if len(l) == 1:
             # No matches
             if allow_no_match:
@@ -110,18 +104,34 @@ class Parser:
                 raise NoSplitterFound()
         return l.pop(0).strip()
 
-    def reTextBetween(self, txt, regA, regB, multiline=True):
-        after = self.reTextAfter(txt, regA, multiline, False)
-        before = self.reTextBefore(after, regB, multiline, False)
+    def reTextBetween(self, txt, regA, regB, multiline=True, keep_split=False):
+        after = self.reTextAfter(txt, regA, multiline, False, keep_split)
+        before = self.reTextBefore(after, regB, multiline, False, keep_split)
         return before
 
-    def reSplitText(self, txt, reg, keepSplit=True):
-        parts = re.compile(reg, re.MULTILINE).split(txt)
+    def reSplitText(self, txt, reg, keep_split=True, multiline=True, split_pos=0):
+        """Rozdelit text dle regularniho vyrazu
 
-        if keepSplit:
+        Args:
+            txt (str): Vstupní text
+            reg (str): Regulární výraz, dle kterého text rozdělit
+            keep_split (bool, optional): Zda se má zachovat dělící řetězec obsažen regulárním výrazem.
+                pro prozdělení. Defaults to True.
+            multiline (bool, optional): Víceřádková operace. Defaults to True.
+            split_pos (int, optional): 0=splitter zahrnut v lichych indexech, 1=v sudych. Defaults to 0.
+
+        Returns:
+            list: Vysledne casti textu po rozdeleni.
+        """
+        if multiline:
+            parts = re.compile(reg, re.MULTILINE).split(txt)
+        else:
+            parts = re.compile(reg).split(txt)
+
+        if keep_split:
             res = [parts.pop(0)]
             for i,p in enumerate(parts):
-                if i % 2 == 0:
+                if i % 2 == split_pos:
                     res.append(p)
                 else:
                     res[-1] += p
