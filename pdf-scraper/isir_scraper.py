@@ -60,10 +60,18 @@ class IsirScraper:
                 continue
 
             documents.append(parser.model)
+
+            # Pokud neni aktivni --multidoc, zastavit hledani po prvnim parsovanem dokumentu
+            if not self.config['multidoc']:
+                break
         
         if not documents:
             print("Necitelny dokument", file=sys.stderr)
             exit(1)
+
+        # Pokud neni aktivni --multidoc, zobrazit vzdy jen prvni dokument
+        if not self.config['multidoc']:
+            documents = documents[0]
 
         # Save output
         output = json.dumps(documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)

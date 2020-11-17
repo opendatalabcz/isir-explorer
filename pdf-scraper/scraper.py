@@ -28,12 +28,17 @@ def validate_config_file(ctx, param, value):
               default='app.cfg',
               type=click.File('r'),
               callback=validate_config_file)
+@click.option('-m', '--multidoc',
+              is_flag=True,
+              default=False,
+              help='Aktivuje čtení více dokumentů z jednoho vstupního PDF. Výstupem je pole objektů s nalezenými dokumenty.')
 @click.option('--debug',
               is_flag=True,
               default=False,
-              help='Aktivuje debug vypis do stdout.')
-def startParser(pdf_file, output, config, debug):
+              help='Debug výpis do stdout.')
+def startParser(pdf_file, output, config, multidoc, debug):
     config.set_opt("debug", debug)
+    config.set_opt("multidoc", multidoc)
     config.set_opt("_out", output)
     parser = IsirScraper(pdf_file, config)
     parser.run()

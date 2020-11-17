@@ -9,7 +9,10 @@ Usage: scraper.py [OPTIONS] PDF_FILE
 Options:
   -o, --output FILENAME  Výstupní soubor nebo - pro stdout.  [default: -]
   -c, --config FILENAME  Cesta ke konfiguracnimu souboru.  [default: app.cfg]
-  --debug                Aktivuje debug vypis do stdout.
+  -m, --multidoc         Aktivuje čtení více dokumentů z jednoho vstupního
+                         PDF. Výstupem je pole objektů s nalezenými dokumenty.
+
+  --debug                Debug výpis do stdout.
   --help                 Show this message and exit.
 ```
 
