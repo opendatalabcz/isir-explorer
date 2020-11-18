@@ -229,7 +229,7 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
                     if len(rows) == len(typeOrder):
                         break
         
-        # Sumarizaci uspokojeni veritelu kategorizovat do struktury .. jiz rozdelene dle mesicu
+        # Sumarizaci uspokojeni veritelu kategorizovat k danemu mesici, do struktury VykazPlneni.Mesic
         for i in range(self.colsCount):
             self.model.VykazPlneni.Mesic[i].Celkem_prerozdeleno = self.priceValue(rows[0][i])
             self.model.VykazPlneni.Mesic[i].Mira_uspokojeni = self.priceValue(rows[1][i])
@@ -250,5 +250,3 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         self._zpravaSpravcePlneni()
 
         self._mesicniVykazPlneni()
-
-        #print(self.txt)

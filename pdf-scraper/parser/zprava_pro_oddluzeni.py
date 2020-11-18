@@ -170,5 +170,3 @@ class ZpravaProOddluzeniParser(IsirParser):
         self._hospodarskaSituaceDluznika()
 
         self._navrhovanyZpusobReseni()
-
-        #print(self.txt)

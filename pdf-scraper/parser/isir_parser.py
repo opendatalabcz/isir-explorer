@@ -46,8 +46,8 @@ class IsirParser(Parser):
         document = self.reTextBetween(self.txt, start, end, keep_split=True)
         
         # Ulozit nepouzity rozsah
-        #self.residue += self.reTextBefore(self.txt, start, multiline=True)
-        #self.residue += self.reTextAfter(self.txt, end, multiline=True)
+        self.residue += self.reTextBefore(self.txt, start, multiline=True)
+        self.residue += self.reTextAfter(self.txt, end, multiline=True)
         
         # Pouzit novy dokument
         self.txt = document
