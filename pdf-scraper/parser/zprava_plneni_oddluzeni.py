@@ -139,7 +139,12 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         obsahVykazu = False
         zaznamy = []
         zaznam = self.Zaznam()
-        stav = 0 # 0=nic neprebyva, cte se novy zaznam, 1=zustatek nazvu veritele, 2=precten datovy radek s cisly ve stavu 1
+        
+        STAV_VYCHOZI = 0
+        STAV_NAZEV_VERITELE = 1    # zustatek nazvu veritele z predchoziho radku
+        STAV_HODNOTY_PRECTENY = 2  # precten datovy radek s cisly ve stavu 1
+        nextLineState = STAV_VYCHOZI
+
         for i,line in enumerate(lines):
             if self.reMatch(line, "^.*Zjištěná pohledávka[\s]+Vyplaceno věřitelům"):
                 obsahVykazu = True
@@ -151,30 +156,30 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
             parts = self.reSplitText(line, "[0-9]+(?:,[0-9]+)?[\s]?%")
             if len(parts) == 2:
 
-                if stav == 2:
+                if nextLineState == 2:
                     zaznamy.append(zaznam)
                     zaznam = self.Zaznam()
-                    stav = 0
+                    nextLineState = STAV_VYCHOZI
 
                 # Radek obsahuje ciselne hodnoty ve sloupcich (a mozna i nazev veritele)
                 zaznam.Veritel.append(parts[0].strip())
                 zaznam.Sloupce = self._sloupcePrerozdeleniVeritelum(parts[1].strip())
 
-                if stav == 0:
+                if nextLineState == STAV_VYCHOZI:
                     zaznamy.append(zaznam)
                     zaznam = self.Zaznam()
-                elif stav == 1:
-                    stav = 2
+                elif nextLineState == STAV_NAZEV_VERITELE:
+                    nextLineState = STAV_HODNOTY_PRECTENY
             else:
                 # Prazdny radek nebo radek s pokracujicim nazvem veritele
                 text = parts[0].strip()
                 if '' != text:
                     zaznam.Veritel.append(text)
 
-                    if stav == 0:
-                        stav = 1
-                    elif stav == 2:
-                        stav = 0
+                    if nextLineState == STAV_VYCHOZI:
+                        nextLineState = STAV_NAZEV_VERITELE
+                    elif nextLineState == STAV_HODNOTY_PRECTENY:
+                        nextLineState = STAV_VYCHOZI
                         zaznamy.append(zaznam)
                         zaznam = self.Zaznam()
 
