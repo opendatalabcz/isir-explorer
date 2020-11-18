@@ -9,6 +9,12 @@ Usage: scraper.py [OPTIONS] PDF_FILE
 Options:
   -o, --output FILENAME  Výstupní soubor nebo - pro stdout.  [default: -]
   -c, --config FILENAME  Cesta ke konfiguracnimu souboru.  [default: app.cfg]
+  -d, --doctype TYPE     Výběr typu dokumentu. Podporovane hodnoty: Prihlaska,
+                         PrehledovyList, ZpravaProOddluzeni,
+                         ZpravaPlneniOddluzeni, ZpravaSplneniOddluzeni. Pokud
+                         není zadáno, je použita automatická detekce dle
+                         obsahu vstupního PDF souboru.
+
   -m, --multidoc         Aktivuje čtení více dokumentů z jednoho vstupního
                          PDF. Výstupem je pole objektů s nalezenými dokumenty.
 

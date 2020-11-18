@@ -30,7 +30,7 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         #TODO zajisteni veritele (?)
         
         txt = self.reTextAfter(txt, "^[\s]*Doporučení insolvenčního správce:", True)
-        self.model.ZpravaSpravce.Doporuceni_spravce = self.textBlock(self.reTextBetween(txt, "^[\s]*Doporučení insolvenčního správce:", "^[\s]*Odůvodnění:"))
+        self.model.ZpravaSpravce.Doporuceni_spravce = self.textBlock(self.reTextBefore(txt, "^[\s]*Odůvodnění:"))
         self.model.ZpravaSpravce.Doporuceni_spravce_oduvodneni = self.textBlock(self.reTextAfter(txt, "^[\s]*Odůvodnění:", True))
     
     def _sloupceVykazuPlneni(self, line, reg, checkColsCount=True):

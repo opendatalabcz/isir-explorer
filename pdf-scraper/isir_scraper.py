@@ -12,13 +12,13 @@ from parser.errors import UnreadableDocument
 
 class IsirScraper:
 
-    PARSER_TYPES = [
-        PrihlaskaParser,
-        PrehledovyListParser,
-        ZpravaProOddluzeniParser,
-        ZpravaPlneniOddluzeniParser,
-        ZpravaSplneniOddluzeniParser,
-    ]
+    PARSER_TYPES = {
+        "Prihlaska": PrihlaskaParser,
+        "PrehledovyList": PrehledovyListParser,
+        "ZpravaProOddluzeni": ZpravaProOddluzeniParser,
+        "ZpravaPlneniOddluzeni": ZpravaPlneniOddluzeniParser,
+        "ZpravaSplneniOddluzeni": ZpravaSplneniOddluzeniParser,
+    }
     
     def __init__(self, filename, config):
         self.config = config
@@ -34,6 +34,14 @@ class IsirScraper:
     def tmpDir(self):
         if not os.path.exists(self.tmp_path):
             os.makedirs(self.tmp_path)
+
+    @staticmethod
+    def getParserByName(name):
+        name = name.lower()
+        for key in IsirScraper.PARSER_TYPES:
+            if name == key.lower():
+                return IsirScraper.PARSER_TYPES[key]
+        return None
     
     def run(self):
         # To text
@@ -51,7 +59,14 @@ class IsirScraper:
 
         # Parse
         documents = []
-        for parserCls in self.PARSER_TYPES:
+        if self.config['doctype']:
+            # Use only the parser selected by the user
+            parsers = [ self.getParserByName(self.config['doctype']) ]
+        else:
+            # Use all parser types (detect document type)
+            parsers = self.PARSER_TYPES.values()
+
+        for parserCls in parsers:
             parser = parserCls(data)
 
             try:

@@ -12,6 +12,14 @@ def validate_config_file(ctx, param, value):
 
     return AppConfig(config)
 
+def validate_doctype(ctx, param, value):
+    parser = IsirScraper.getParserByName(value)
+
+    if not parser:
+        raise click.BadParameter(f"Zadaný typ dokumentu ({value}) není podporován.")
+
+    return value
+
 @click.command()
 @click.argument('PDF_FILE',
                 type=click.STRING,
@@ -28,6 +36,10 @@ def validate_config_file(ctx, param, value):
               default='app.cfg',
               type=click.File('r'),
               callback=validate_config_file)
+@click.option('-d', '--doctype',
+              metavar='TYPE',
+              help='Výběr typu dokumentu. Podporovane hodnoty: Prihlaska, PrehledovyList, ZpravaProOddluzeni, ZpravaPlneniOddluzeni, ZpravaSplneniOddluzeni. Pokud není zadáno, je použita automatická detekce dle obsahu vstupního PDF souboru.',
+              callback=validate_doctype)
 @click.option('-m', '--multidoc',
               is_flag=True,
               default=False,
@@ -36,8 +48,9 @@ def validate_config_file(ctx, param, value):
               is_flag=True,
               default=False,
               help='Debug výpis do stdout.')
-def startParser(pdf_file, output, config, multidoc, debug):
+def startParser(pdf_file, output, config, doctype, multidoc, debug):
     config.set_opt("debug", debug)
+    config.set_opt("doctype", doctype)
     config.set_opt("multidoc", multidoc)
     config.set_opt("_out", output)
     parser = IsirScraper(pdf_file, config)
