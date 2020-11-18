@@ -14,6 +14,7 @@ class AppConfig:
     DEFAULTS = {
         "pdftotext": "pdftotext",                           # Cesta ke spusteni programu pdftotext
         "tmp_dir": "/tmp/isir",                             # Adresar pro docasne soubory
+        "doctype": False,                                   # Typ dokumentu, nespecifikovan => autodetekce
         "debug": False,
     }
 

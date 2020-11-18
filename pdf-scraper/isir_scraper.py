@@ -37,6 +37,8 @@ class IsirScraper:
 
     @staticmethod
     def getParserByName(name):
+        if not name:
+            return None
         name = name.lower()
         for key in IsirScraper.PARSER_TYPES:
             if name == key.lower():

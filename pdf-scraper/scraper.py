@@ -13,6 +13,9 @@ def validate_config_file(ctx, param, value):
     return AppConfig(config)
 
 def validate_doctype(ctx, param, value):
+    if value is None:
+        return None
+
     parser = IsirScraper.getParserByName(value)
 
     if not parser:
