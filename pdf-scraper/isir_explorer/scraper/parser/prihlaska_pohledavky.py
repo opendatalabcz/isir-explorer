@@ -5,6 +5,8 @@ from .model.parts.spisova_znacka import *
 import re
 
 class PrihlaskaParser(IsirParser):
+    """Parser pro čtení formulářů typu Přihláška pohledávky.
+    """
 
     def __init__(self, data):
         super().__init__(data)

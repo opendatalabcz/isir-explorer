@@ -6,6 +6,8 @@ from .model.parts.spisova_znacka import *
 import re
 
 class ZpravaProOddluzeniParser(IsirParser):
+    """Parser pro čtení formulářů typu Zpráva pro oddlužení.
+    """
 
     def __init__(self, data):
         super().__init__(data)

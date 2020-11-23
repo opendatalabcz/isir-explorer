@@ -1,36 +1,19 @@
-isir\_explorer.scraper package
-==============================
+scraper
+=======
 
-Subpackages
+
+IsirDecryptor
+-------------
+
+.. autoclass:: isir_explorer.scraper.isir_decryptor.IsirDecryptor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+IsirScraper
 -----------
 
-.. toctree::
-
-    isir_explorer.scraper.parser
-
-Submodules
-----------
-
-isir\_explorer.scraper.isir\_decryptor module
----------------------------------------------
-
-.. automodule:: isir_explorer.scraper.isir_decryptor
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-isir\_explorer.scraper.isir\_scraper module
--------------------------------------------
-
-.. automodule:: isir_explorer.scraper.isir_scraper
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: isir_explorer.scraper
+.. autoclass:: isir_explorer.scraper.isir_scraper.IsirScraper
     :members:
     :undoc-members:
     :show-inheritance:
