@@ -1,7 +1,7 @@
-from parser.model.prihlaska_pohledavky import PrihlaskaPohledavky
-from parser.isir_parser import IsirParser
-from parser.model.parts.osoba import *
-from parser.model.parts.spisova_znacka import *
+from .model.prihlaska_pohledavky import PrihlaskaPohledavky
+from .isir_parser import IsirParser
+from .model.parts.osoba import *
+from .model.parts.spisova_znacka import *
 import re
 
 class PrihlaskaParser(IsirParser):

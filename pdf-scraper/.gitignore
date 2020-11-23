@@ -3,6 +3,7 @@ venv
 .vscode
 data
 __pycache__
+dist/
 *.egg-info/
 .installed.cfg
 *.egg

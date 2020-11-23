@@ -1,6 +1,6 @@
 import re
 import regex
-from parser.errors import NoSplitterFound
+from .errors import NoSplitterFound
 
 class Parser:
 

@@ -1,4 +1,4 @@
-from parser.model.isir_dokument import IsirDokument
+from .isir_dokument import IsirDokument
 
 class PrubehRizeni:
     pass

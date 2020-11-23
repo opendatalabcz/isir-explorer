@@ -1,6 +1,6 @@
-from parser.parser import Parser
-from parser.model.parts.spisova_znacka import SpisovaZnacka
-from parser.errors import NoSplitterFound, UnreadableDocument
+from .parser import Parser
+from .model.parts.spisova_znacka import SpisovaZnacka
+from .errors import NoSplitterFound, UnreadableDocument
 import re
 
 
