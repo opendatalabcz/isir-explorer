@@ -1,5 +1,5 @@
-from isir_scraper import IsirScraper
-from config import AppConfig
+from .isir_scraper import IsirScraper
+from ..config import AppConfig
 import click
 import configparser
 
@@ -51,13 +51,10 @@ def validate_doctype(ctx, param, value):
               is_flag=True,
               default=False,
               help='Debug výpis do stdout.')
-def startParser(pdf_file, output, config, doctype, multidoc, debug):
+def isirScraper(pdf_file, output, config, doctype, multidoc, debug):
     config.set_opt("debug", debug)
     config.set_opt("doctype", doctype)
     config.set_opt("multidoc", multidoc)
     config.set_opt("_out", output)
     parser = IsirScraper(pdf_file, config)
     parser.run()
-
-if __name__ == '__main__':
-    startParser()

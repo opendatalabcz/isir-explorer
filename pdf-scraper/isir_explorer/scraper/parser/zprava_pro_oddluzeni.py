@@ -1,8 +1,8 @@
-from parser.model.zprava_pro_oddluzeni import ZpravaProOddluzeni, PrijemDluznika, ZaznamSoupisuMajetku, \
+from .model.zprava_pro_oddluzeni import ZpravaProOddluzeni, PrijemDluznika, ZaznamSoupisuMajetku, \
     PredpokladUspokojeniVeritelu, ZaznamDistribucnihoSchematu
-from parser.isir_parser import IsirParser
-from parser.model.parts.osoba import *
-from parser.model.parts.spisova_znacka import *
+from .isir_parser import IsirParser
+from .model.parts.osoba import *
+from .model.parts.spisova_znacka import *
 import re
 
 class ZpravaProOddluzeniParser(IsirParser):

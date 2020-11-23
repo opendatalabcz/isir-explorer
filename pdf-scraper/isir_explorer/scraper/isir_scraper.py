@@ -2,13 +2,13 @@ import subprocess
 import os
 import sys
 import json
-from isir_decryptor import IsirDecryptor
-from parser.prihlaska_pohledavky import PrihlaskaParser
-from parser.prehledovy_list import PrehledovyListParser
-from parser.zprava_pro_oddluzeni import ZpravaProOddluzeniParser
-from parser.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeniParser
-from parser.zprava_splneni_oddluzeni import ZpravaSplneniOddluzeniParser
-from parser.errors import UnreadableDocument
+from .isir_decryptor import IsirDecryptor
+from .parser.prihlaska_pohledavky import PrihlaskaParser
+from .parser.prehledovy_list import PrehledovyListParser
+from .parser.zprava_pro_oddluzeni import ZpravaProOddluzeniParser
+from .parser.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeniParser
+from .parser.zprava_splneni_oddluzeni import ZpravaSplneniOddluzeniParser
+from .parser.errors import UnreadableDocument
 
 class IsirScraper:
 
