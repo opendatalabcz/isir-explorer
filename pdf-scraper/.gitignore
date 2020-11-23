@@ -4,6 +4,7 @@ venv
 data
 __pycache__
 dist/
+docs/_build
 *.egg-info/
 .installed.cfg
 *.egg

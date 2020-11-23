@@ -5,6 +5,11 @@ from setuptools import setup, find_packages
 with open('README.rst') as f:
     long_description = ''.join(f.readlines())
 
+extras_require = {
+    'docs': [
+        'sphinx==1.8.5',
+    ]
+}
 
 setup(
     name='isir-explorer',
@@ -38,4 +43,5 @@ setup(
         ],
     },
     install_requires=['configparser>=5', 'click>=7', 'regex>=2020.10.28'],
+    extras_require=extras_require,
 )
