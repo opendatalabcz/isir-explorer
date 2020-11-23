@@ -1,13 +1,6 @@
 isir\_explorer.scraper.parser package
 =====================================
 
-Subpackages
------------
-
-.. toctree::
-
-    isir_explorer.scraper.parser.model
-
 Submodules
 ----------
 
