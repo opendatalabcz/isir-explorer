@@ -8,7 +8,13 @@ with open('README.rst') as f:
 extras_require = {
     'docs': [
         'sphinx==1.8.5',
-    ]
+    ],
+    'postgresql': [
+        'databases[postgresql]>=0.4.1'
+    ],
+    'mysql': [
+        'databases[mysql]>=0.4.1'
+    ],
 }
 
 setup(
@@ -40,8 +46,14 @@ setup(
     entry_points={
         'console_scripts': [
             'isir-scraper = isir_explorer.scraper.main:main',
+            'isir-dbimport = isir_explorer.dbimport.main:main',
         ],
     },
-    install_requires=['configparser>=5', 'click>=7', 'regex>=2020.10.28'],
+    install_requires=[
+        'configparser>=5',
+        'click>=7',
+        'regex>=2020.10.28',
+        'databases>=0.4.1',
+    ],
     extras_require=extras_require,
 )

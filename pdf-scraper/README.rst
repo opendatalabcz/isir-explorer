@@ -34,10 +34,9 @@ Instalace
     git clone git@github.com:opendatalabcz/isir-explorer.git
     cd isir-explorer/pdf-scraper/
     python3.7 -m venv venv && . venv/bin/activate
-    pip install -r requirements.txt
-    python3 scraper.py
+    pip install .
+    isir-scraper --help
 
-TODO: K dispozici bude instalace přes ``pip install``
 
 Před použitím je nutné nastavit správnou cestu k upravenému programu
 `pdftotext <https://github.com/opendatalabcz/poppler>`__ v konfiguračním

@@ -3,7 +3,7 @@ import click
 
 class AppConfig:
 
-    CONF_CATEGORIES = ['app']
+    CONF_CATEGORIES = ['app', 'db']
 
     GLOBAL_CATEGORY = 'app'
 
