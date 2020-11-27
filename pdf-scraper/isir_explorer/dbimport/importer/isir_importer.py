@@ -21,5 +21,12 @@ class IsirImporter:
         rowid = await self.db.execute(query=query, values=data)
         return rowid
     
+    async def insertMany(self, table, dataset):
+        data = dataset[0]
+        column_names = list(data.keys())
+        placeholders = map(lambda x:":"+x, column_names)
+        query = f"INSERT INTO {table} (" + ",".join(column_names) + ") VALUES ("+ ",".join(placeholders) +")"
+        await self.db.execute_many(query=query, values=dataset)
+
     async def importDocument(self):
         pass
