@@ -51,10 +51,10 @@ class PrihlaskaParser(IsirParser):
             elif "Datum narození:" in line and "Rodné číslo:" in line:
                 udaje.Datum_narozeni = re.sub(r"[^0-9.]", "", self.textBetween(line, "Datum narození:", "Rodné číslo:"))
                 # RC bez lomitka
-                udaje.Rodne_cislo = self.numbersOnly(self.textAfter(line, "Rodné číslo:"))
+                udaje.Rodne_cislo = self.numbersOnly(self.textAfter(line, "Rodné číslo:"), toInt=False)
             elif "IČ:" in line and "Jiné registr. č.:" in line:
-                udaje.IC = self.numbersOnly(self.textBetween(line, "IČ:", "Jiné registr. č.:"))
-                udaje.Jine_reg_cislo = self.numbersOnly(self.textAfter(line, "Jiné registr. č.:"))
+                udaje.IC = self.numbersOnly(self.textBetween(line, "IČ:", "Jiné registr. č.:"), toInt=False)
+                udaje.Jine_reg_cislo = self.numbersOnly(self.textAfter(line, "Jiné registr. č.:"), toInt=False)
             elif "Název/obch.firma:" in line:
                 udaje.Nazev = self.textAfter(line, "Název/obch.firma:")
             elif "Ulice:" in line:

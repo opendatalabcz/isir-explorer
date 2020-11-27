@@ -73,15 +73,25 @@ class Parser:
         """
         return re.sub(' +', ' ', txt)
 
-    def numbersOnly(self, txt):
+    def numbersOnly(self, txt, toInt=True):
         """Z textu vrátí pouze číselné hodnoty.
 
         Parametry
         ---------
         txt: :class:`str`
             Vstupní text.
+        toInt: :class:`bool`
+            Vrátit hodnotu jako datový typ int. Pokud vstupní řetězec neobsahuje
+            žádné číselné hodnoty, výstupem konverze je None.
+            Výchozí je True.
         """
-        return re.sub("[^0-9]", "", txt)
+        s = re.sub("[^0-9]", "", txt)
+        if toInt:
+            if "" == s:
+                return None
+            return int(s)
+        else:
+            return s
 
     def textBlock(self, txt):
         """Odstraní duplicitní mezery a nahradí odřádkování v textu mezerami.
@@ -97,14 +107,22 @@ class Parser:
         """Standardizace číselné hodnoty z textu.
 
         Odstraní z textu nečíselné znaky, zachovány jsou desetinné čárky/tečky.
-        Nahradí desetinnou čárku tečkou.
+        Nahradí desetinnou čárku tečkou. Řetězec je následně převeden na číselnou
+        hodnotu typu float.
+
+        Pokud vstupní text neobsahuje číselnou hodnotu a nebo není možné
+        text převést na typ float, je vrácen None.
 
         Parametry
         ---------
         txt: :class:`str`
             Vstupní text.
         """
-        return re.sub("[^0-9,.]", "", txt).replace(',', '.')
+        s = re.sub("[^0-9,.]", "", txt).replace(',', '.')
+        try:
+            return float(s)
+        except ValueError:
+            return None
 
     def reMatch(self, txt, reg):
         """Vrací výsledek aplikace regulárního výrazu na zadaný text.
