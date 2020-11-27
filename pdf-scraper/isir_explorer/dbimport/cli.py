@@ -1,5 +1,6 @@
 from .db_import import DbImport
 from ..config import AppConfig
+from asyncio import events
 import click
 import configparser
 
@@ -31,4 +32,6 @@ def validate_config_file(ctx, param, value):
 def isirDbImport(json_file, config, debug):
     config.set_opt("debug", debug)
     importer = DbImport(json_file, config)
-    importer.run()
+    loop = events.get_event_loop()
+    loop.run_until_complete(importer.run())
+

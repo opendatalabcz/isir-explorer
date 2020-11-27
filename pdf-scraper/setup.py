@@ -10,10 +10,10 @@ extras_require = {
         'sphinx==1.8.5',
     ],
     'postgresql': [
-        'databases[postgresql]>=0.4.1'
+        'asyncpg'
     ],
     'mysql': [
-        'databases[mysql]>=0.4.1'
+        'aiomysql'
     ],
 }
 
