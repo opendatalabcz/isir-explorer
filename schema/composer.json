@@ -1,0 +1,11 @@
+{
+    "require": {
+        "robmorgan/phinx": "^0.12.4"
+    },
+    "authors": [
+        {
+            "name": "Pavel Tuma",
+            "email": "pavel.tuma@yahoo.com"
+        }
+    ]
+}
