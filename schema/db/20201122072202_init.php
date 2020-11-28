@@ -34,21 +34,34 @@ final class Init extends AbstractMigration
         /* ====================================================================================== */
         /* ============ Prehledovy list ============ */
 
-        $table = $this->table('prehledovy_list');
-        $table->addColumn('celkova_vyse', 'float')
-              ->addColumn('vykonatelne', 'float')
-              ->addColumn('nevykonatelne', 'float')
-              ->addColumn('duplicitni', 'float')
-              ->addColumn('neprezkoumavano', 'float')
-              ->addColumn('odmitnuto', 'float')
-              ->addColumn('podmineno', 'float')
-              ->addColumn('popreno', 'float')
-              ->addColumn('zbyva_uspokojit', 'float')
-              ->addColumn('zjisteno', 'float')
+        $table = $this->table('prehledovy_list', ['comment' => 'Prehledovy list - souhrn pro nezajistene a zajistene veritele']);
+              // Nezajisteni veritele
+        $table->addColumn('n_celkova_vyse', 'float', ['null' => true])
+              ->addColumn('n_vykonatelne', 'float', ['null' => true])
+              ->addColumn('n_nevykonatelne', 'float', ['null' => true])
+              ->addColumn('n_duplicitni', 'float', ['null' => true])
+              ->addColumn('n_neprezkoumavano', 'float', ['null' => true])
+              ->addColumn('n_odmitnuto', 'float', ['null' => true])
+              ->addColumn('n_podmineno', 'float', ['null' => true])
+              ->addColumn('n_popreno', 'float', ['null' => true])
+              ->addColumn('n_zbyva_uspokojit', 'float', ['null' => true])
+              ->addColumn('n_zjisteno', 'float', ['null' => true])
+              // Zajisteni veritele
+              ->addColumn('z_celkova_vyse', 'float', ['null' => true])
+              ->addColumn('z_vykonatelne', 'float', ['null' => true])
+              ->addColumn('z_nevykonatelne', 'float', ['null' => true])
+              ->addColumn('z_duplicitni', 'float', ['null' => true])
+              ->addColumn('z_neprezkoumavano', 'float', ['null' => true])
+              ->addColumn('z_odmitnuto', 'float', ['null' => true])
+              ->addColumn('z_podmineno', 'float', ['null' => true])
+              ->addColumn('z_popreno', 'float', ['null' => true])
+              ->addColumn('z_zbyva_uspokojit', 'float', ['null' => true])
+              ->addColumn('z_zjisteno', 'float', ['null' => true])
               ->create();
 
         $table = $this->table('pl_pohledavka', ['comment' => 'Pohledavka v prehledovem listu']);
         $table->addColumn('pl_id', 'integer')
+              ->addColumn('typ', 'boolean', ['comment' => 'Nezajisteny/zajisteny veritel'])
               ->addColumn('celkova_vyse', 'float')
               ->addColumn('cislo_prihlasky', 'smallinteger')
               ->addColumn('cislo_veritele', 'smallinteger')
