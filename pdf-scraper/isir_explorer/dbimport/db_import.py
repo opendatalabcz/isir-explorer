@@ -3,15 +3,19 @@ import json
 from databases import Database
 from .errors import UnknownDocument
 from .importer.prihlaska_pohledavky import PrihlaskaImporter
+from .importer.prehledovy_list import PrehledovyListImporter
+from .importer.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeniImporter
+from .importer.zprava_pro_oddluzeni import ZpravaProOddluzeniImporter
+from .importer.zprava_splneni_oddluzeni import ZpravaSplneniOddluzeniImporter
 
 class DbImport:
 
     IMPORT_CLASS = {
         "PrihlaskaPohledavky": PrihlaskaImporter,
-        #"PrehledovyList": PrehledovyListImporter,
-        #"ZpravaProOddluzeni": ZpravaProOddluzeniImporter,
-        #"ZpravaPlneniOddluzeni": ZpravaPlneniOddluzeniImporter,
-        #"ZpravaSplneniOddluzeni": ZpravaSplneniOddluzeniImporter,
+        "PrehledovyList": PrehledovyListImporter,
+        "ZpravaProOddluzeni": ZpravaProOddluzeniImporter,
+        "ZpravaPlneniOddluzeni": ZpravaPlneniOddluzeniImporter,
+        "ZpravaSplneniOddluzeni": ZpravaSplneniOddluzeniImporter,
     }
 
     def __init__(self, filename, config):
