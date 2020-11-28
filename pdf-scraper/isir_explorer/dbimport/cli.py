@@ -11,6 +11,9 @@ def validate_config_file(ctx, param, value):
     str_content = value.read()
     config.read_string(str_content)
 
+    if "db" not in config:
+        raise click.BadParameter("V konfiguracnim souboru chybi sekce [db].")
+
     return AppConfig(config)
 
 
