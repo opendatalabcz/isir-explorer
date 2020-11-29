@@ -1,7 +1,12 @@
 from .isir_dokument import IsirDokument
 
 class PrijemDluznika:
-    pass
+    def __init__(self):
+        self.Nazev_platce = None
+        self.Adresa = None
+        self.ICO = None
+        self.Typ = None
+        self.Vyse = 0
 
 class ZaznamPohledavky():
     pass

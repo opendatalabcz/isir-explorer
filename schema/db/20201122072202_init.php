@@ -116,7 +116,7 @@ final class Init extends AbstractMigration
         $table->addColumn('zpro_id', 'integer', ['comment' => 'Zprava pro oddluzeni'])
             ->addColumn('nazev_platce', 'string', ['null' => true])
             ->addColumn('adresa', 'string', ['null' => true])
-            ->addColumn('ICO', 'string', ['limit' => 60, 'null' => true])
+            ->addColumn('ico', 'string', ['limit' => 60, 'null' => true])
             ->addColumn('typ', 'string', ['null' => true])
             ->addColumn('vyse', 'float')
             ->addForeignKey('zpro_id', 'zprava_pro_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
