@@ -45,6 +45,7 @@ class PrihlaskaImporter(IsirImporter):
                 'dalsi_okolnosti' : pohledavka['Dalsi_okolnosti'],
                 'duvod_vzniku'    : pohledavka['Duvod_vzniku'],
                 'splatna'         : pohledavka['Vlastnosti']['Splatna'],
+                'podrizena'       : pohledavka['Vlastnosti']['Podrizena'],
                 'vykonatelnost'   : bool(pohledavka['Vykonatelnost']),
             })
 

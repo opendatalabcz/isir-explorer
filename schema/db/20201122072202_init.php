@@ -26,10 +26,11 @@ final class Init extends AbstractMigration
               ->addColumn('dalsi_okolnosti', 'text', ['null' => true])
               ->addColumn('duvod_vzniku', 'text', ['null' => true])
               ->addColumn('splatna', 'boolean')
+              ->addColumn('podrizena', 'boolean')
               ->addColumn('vykonatelnost', 'boolean')
               ->addForeignKey('pp_id', 'prihlaska_pohledavky', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
               ->create();
-        // TODO detail splatnosti, prislusenstvi, vykonatelnost
+        // TODO detail splatnosti, prislusenstvi, vykonatelnost, podrizenost
 
         /* ====================================================================================== */
         /* ============ Prehledovy list ============ */
