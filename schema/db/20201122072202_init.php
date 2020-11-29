@@ -85,21 +85,21 @@ final class Init extends AbstractMigration
         /* ============ Zprava pro oddluzeni ============ */
 
         $table = $this->table('zprava_pro_oddluzeni');
-        $table->addColumn('odmena_za_sepsani_navrhu', 'float')
-              ->addColumn('povinnen_vydat_obydli', 'string')
-              ->addColumn('vyse_zalohy', 'float')
-              ->addColumn('vytezek_zpenezeni_obydli', 'float')
-              ->addColumn('zpracovatel_navrhu', 'string')
-              ->addColumn('prijmy_celkem', 'float')
-              ->addColumn('prijmy_komentar', 'text')
+        $table->addColumn('odmena_za_sepsani_navrhu', 'float', ['null' => true])
+              ->addColumn('povinnen_vydat_obydli', 'string', ['null' => true])
+              ->addColumn('vyse_zalohy', 'float', ['null' => true])
+              ->addColumn('vytezek_zpenezeni_obydli', 'float', ['null' => true])
+              ->addColumn('zpracovatel_navrhu', 'string', ['null' => true])
+              ->addColumn('prijmy_celkem', 'float', ['null' => true])
+              ->addColumn('prijmy_komentar', 'text', ['null' => true])
 
-              ->addColumn('celkem_majetek_oceneni', 'float')
-              ->addColumn('celkem_majetek_nezajisteno', 'float')
-              ->addColumn('celkem_majetek_zajisteno', 'float')
+              ->addColumn('celkem_majetek_oceneni', 'float', ['null' => true])
+              ->addColumn('celkem_majetek_nezajisteno', 'float', ['null' => true])
+              ->addColumn('celkem_majetek_zajisteno', 'float', ['null' => true])
               
-              ->addColumn('okolnosti_proti_oddluzeni', 'text')
-              ->addColumn('navrh_dluznika', 'text')
-              ->addColumn('navrh_spravce', 'text')
+              ->addColumn('okolnosti_proti_oddluzeni', 'text', ['null' => true])
+              ->addColumn('navrh_dluznika', 'text', ['null' => true])
+              ->addColumn('navrh_spravce', 'text', ['null' => true])
               
               ->create();
 
@@ -107,17 +107,17 @@ final class Init extends AbstractMigration
         $table->addColumn('zpro_id', 'integer', ['comment' => 'Zprava pro oddluzeni'])
             ->addColumn('typ_majetku', 'smallinteger')
             ->addColumn('oceneni', 'float')
-            ->addColumn('nezajisteno', 'float')
-            ->addColumn('zajisteno', 'float')
+            ->addColumn('nezajisteno', 'float', ['null' => true])
+            ->addColumn('zajisteno', 'float', ['null' => true])
             ->addForeignKey('zpro_id', 'zprava_pro_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
             ->create();
 
         $table = $this->table('zpro_prijem_dluznika', ['comment' => 'Prijem dluznika dle zpravy pro oddluzeni']);
         $table->addColumn('zpro_id', 'integer', ['comment' => 'Zprava pro oddluzeni'])
-            ->addColumn('nazev_platce', 'string')
-            ->addColumn('adresa', 'string')
-            ->addColumn('ICO', 'string', ['limit' => 60])
-            ->addColumn('typ', 'string')
+            ->addColumn('nazev_platce', 'string', ['null' => true])
+            ->addColumn('adresa', 'string', ['null' => true])
+            ->addColumn('ICO', 'string', ['limit' => 60, 'null' => true])
+            ->addColumn('typ', 'string', ['null' => true])
             ->addColumn('vyse', 'float')
             ->addForeignKey('zpro_id', 'zprava_pro_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
             ->create();
