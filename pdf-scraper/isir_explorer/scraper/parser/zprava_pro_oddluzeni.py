@@ -47,7 +47,7 @@ class ZpravaProOddluzeniParser(IsirParser):
                     prijem.Typ = self.reTextAfter(line, '^[\s]*Typ příjmu')
                 elif self.reMatch(line, '^[\s]*Výše př.jmu'):
                     prijem.Vyse = self.priceValue(self.reTextAfter(line, '^[\s]*Výše př.jmu'))
-            if hasattr(prijem, 'Vyse') and prijem.Vyse != '':
+            if hasattr(prijem, 'Vyse') and prijem.Vyse:
                 self.model.Prijmy_dluznika.Prijmy.append(prijem)
 
         # Renta dluznika
@@ -61,7 +61,7 @@ class ZpravaProOddluzeniParser(IsirParser):
                 prijem.Typ = self.reTextAfter(line, '^[\s]*Typ příjmu')
             elif self.reMatch(line, '^[\s]*Výše př.jmu'):
                 prijem.Vyse = self.priceValue(self.reTextAfter(line, '^[\s]*Výše př.jmu'))
-            if hasattr(prijem, 'Vyse') and prijem.Vyse != '':
+            if hasattr(prijem, 'Vyse') and prijem.Vyse:
                 self.model.Prijmy_dluznika.Prijmy.append(prijem)
                 prijem = PrijemDluznika()
 
