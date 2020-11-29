@@ -91,18 +91,43 @@ class PrihlaskaParser(IsirParser):
         with open('data/vlastnosti/'+repr(self.model.Dluznik)+'_'+str(len(self.model.Pohledavky.Pohledavky)+1), 'w') as f:
             f.write(txtVlastnosti)
 
-        splatna = False
+        STAV_ZPUSOB_PODRIZENI = 1
+        STAV_CASTKA_PODRIZENI = 2
+        STAV_SPLATNOST = 3
+        stav = 0
         for line in txtVlastnosti.split('\n'):
+            if stav == STAV_ZPUSOB_PODRIZENI:
+                if "Ve výši (Kč)" in line:
+                    stav = STAV_CASTKA_PODRIZENI
+                    pohledavka.Vlastnosti.PodrizenaZpusob = self.textBlock(pohledavka.Vlastnosti.PodrizenaZpusob)
+                    continue
+                if hasattr(pohledavka.Vlastnosti, "PodrizenaZpusob"):
+                    pohledavka.Vlastnosti.PodrizenaZpusob += line
+                else:
+                    pohledavka.Vlastnosti.PodrizenaZpusob = line
+                continue
+            elif stav == STAV_CASTKA_PODRIZENI:
+                pohledavka.Vlastnosti.PodrizenaCastka = self.priceValue(line)
+                stav = 0
+                continue
+
             if "Splatná:" in line:
-                pohledavka.Vlastnosti = Vlastnosti()
                 splatna = "Splatná od:" in line
                 pohledavka.Vlastnosti.Splatna = splatna
                 if splatna:
+                    stav = STAV_SPLATNOST
                     pohledavka.Vlastnosti.SplatnaOd = []
                     continue
+            if "Podřízená:" in line:
+                podrizena = "Způsob podřízení:" in line
+                pohledavka.Vlastnosti.Podrizena = podrizena
+                if podrizena:
+                    stav = STAV_ZPUSOB_PODRIZENI
+            # Konec sekce Vlastnosti pohledavky
             if "Pohledávka:" in line:
                 break
-            if splatna:
+
+            if stav == STAV_SPLATNOST:
                 splatnaTxt = line.strip()
                 columns = splatnaTxt.split('   ', 1)
                 vCastce = None
