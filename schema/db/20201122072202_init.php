@@ -218,12 +218,12 @@ final class Init extends AbstractMigration
               ->addColumn('doporuceni_spravce_oduvodneni', 'text')
               ->addColumn('zprava_o_prubehu', 'text')
 
-              ->addColumn('predpoklad_uspokojeni_nezaj_mira', 'float')
-              ->addColumn('predpoklad_uspokojeni_nezaj_vyse', 'float')
-              ->addColumn('uspokojeni_nezaj_mira', 'float')
-              ->addColumn('uspokojeni_nezaj_vyse', 'float')
-              ->addColumn('uspokojeni_zaj_mira', 'float')
-              ->addColumn('uspokojeni_zaj_vyse', 'float')
+              ->addColumn('n_predpoklad_uspokojeni_mira', 'float')
+              ->addColumn('n_predpoklad_uspokojeni_vyse', 'float')
+              ->addColumn('n_uspokojeni_mira', 'float')
+              ->addColumn('n_uspokojeni_vyse', 'float')
+              ->addColumn('z_uspokojeni_mira', 'float')
+              ->addColumn('z_uspokojeni_vyse', 'float')
               ->addColumn('preplatek', 'float')
 
               ->create();
