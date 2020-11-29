@@ -151,10 +151,10 @@ final class Init extends AbstractMigration
               ->addColumn('stanovisko_dluznika', 'text')
               ->addColumn('vyjadreni_spravce', 'text')
 
-              ->addColumn('uspokojeni_nez_ocekavana', 'float', ['null' => true, 'comment' => 'Ocekavana mira uspokojeni nezajistenych pohledavek'])
-              ->addColumn('uspokojeni_nez_aktualni', 'float' , ['null' => true, 'comment' => 'Aktualni mira uspokojeni nezajistenych pohledavek'])
-              ->addColumn('uspokojeni_zaj_ocekavana', 'float', ['null' => true, 'comment' => 'Ocekavana mira uspokojeni zajistenych pohledavek'])
-              ->addColumn('uspokojeni_zaj_aktualni', 'float',  ['null' => true, 'comment' => 'Aktualni mira uspokojeni zajistenych pohledavek'])
+              ->addColumn('n_uspokojeni_ocekavana', 'float', ['null' => true, 'comment' => 'Ocekavana mira uspokojeni nezajistenych pohledavek'])
+              ->addColumn('n_uspokojeni_aktualni', 'float' , ['null' => true, 'comment' => 'Aktualni mira uspokojeni nezajistenych pohledavek'])
+              ->addColumn('z_uspokojeni_ocekavana', 'float', ['null' => true, 'comment' => 'Ocekavana mira uspokojeni zajistenych pohledavek'])
+              ->addColumn('z_uspokojeni_aktualni', 'float',  ['null' => true, 'comment' => 'Aktualni mira uspokojeni zajistenych pohledavek'])
 
               ->create();
 
@@ -174,7 +174,7 @@ final class Init extends AbstractMigration
               ->addColumn('mimoradny_prijem', 'float')
               ->addColumn('darovaci_smlouva', 'float')
               ->addColumn('k_prerozdeleni', 'float')
-              ->addColumn('odmena_IS', 'float')
+              ->addColumn('odmena_is', 'float')
               ->addColumn('vyzivne', 'float')
               ->addColumn('ostatnim_veritelum', 'float')
 
