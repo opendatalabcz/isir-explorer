@@ -16,6 +16,16 @@ class AppConfig:
         "tmp_dir": "/tmp/isir",                             # Adresar pro docasne soubory
         "doctype": False,                                   # Typ dokumentu, nespecifikovan => autodetekce
         "debug": False,
+
+        # Isir ws
+        "last_id": None,
+        "min_id": None,
+        "max_id": None,
+        "retry_times": 5,
+        "concurrency": 2,
+        "request_timeout": 30,
+        "verbose": False,
+        "silent": False,
     }
 
     def __init__(self, conf):

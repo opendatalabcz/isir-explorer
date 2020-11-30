@@ -47,6 +47,7 @@ setup(
         'console_scripts': [
             'isir-scraper = isir_explorer.scraper.main:main',
             'isir-dbimport = isir_explorer.dbimport.main:main',
+            'isir-ws = isir_explorer.webservice.main:main',
         ],
     },
     install_requires=[
@@ -54,6 +55,8 @@ setup(
         'click>=7',
         'regex>=2020.10.28',
         'databases>=0.4.1',
+        'aiohttp>=3.6.2',
+        'python-dateutil>=2.8.1',
     ],
     extras_require=extras_require,
 )
