@@ -33,7 +33,7 @@ class IsirModel:
         for e in self.FLAGS:
             elem = self.poznamka.find(e)
             if elem is not None:
-                self.data[e] = 0 if elem.text in ["F", "f"] else 1
+                self.data[e] = False if elem.text in ["F", "f"] else True
             else:
                 self.data[e] = None
 

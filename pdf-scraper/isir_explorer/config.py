@@ -22,7 +22,7 @@ class AppConfig:
         "min_id": None,
         "max_id": None,
         "retry_times": 5,
-        "concurrency": 2,
+        "concurrency": 4,
         "request_timeout": 30,
         "verbose": False,
         "silent": False,
