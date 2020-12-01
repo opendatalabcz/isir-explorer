@@ -19,6 +19,8 @@ DRUH_SPRAVCE = {
     "PREDB.SPR.": 4,
     "VYR SPRÁV": 5,
     "ODDĚL SPR": 6,
+    "SPRÁVCE": 98,
+    "ZÁST SPR": 99,
 }
 
 #druhOsoby
@@ -51,10 +53,12 @@ DRUH_PRAVNI_FORMA = {
     "s.p.": 3,
     "s.p. likv": 4,
     "s.r.o.": 5,
+    "spol s r.o": 5,
     "v.o.s.": 6,
     "a.s.": 7,
     "evrop. sp.": 8,
     "družstvo": 9,
+    "S.V.J.": 99,
 }
 
 #druhStavRizeni
@@ -87,6 +91,7 @@ SOUDY = {
     "KSSTCAB": 9,
     "KSSCEUL": 10,
     "KSSECULP1": 11,
+    "CCA": 100,
 }
 
 SOUDY_INV_SHORT = {
