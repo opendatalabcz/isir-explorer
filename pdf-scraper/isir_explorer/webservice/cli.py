@@ -50,8 +50,12 @@ def validate_config_file(ctx, param, value):
               default='app.cfg',
               type=click.File('r'),
               callback=validate_config_file)
+@click.option('-l', '--last-id',
+              help='ID posledního archivovaného záznamu - od tohoto ID začne stahování nových záznamů. Pokud není uvedeno, použije se MAX(isir_udalost.id) hodnota z databáze.',
+              type=click.IntRange(min=-1, max=None))
+def isirClient(config, last_id):
 
-def isirClient(config):
+    config.set_opt("last_id", last_id)
 
     app = IsirClient(config)
     app.start_loop()
