@@ -1,7 +1,7 @@
 import aiohttp
 import xml.etree.ElementTree as ET
 from .exceptions import IsirServiceException, TooManyRetries, NoRecordsInResponse
-from .isir_models import IsirOsoba, IsirUdalost
+from .isir_models import IsirOsoba, IsirUdalost, IsirVec, IsirStavVeci
 from .enums import Udalosti
 import asyncio
 import time
@@ -216,7 +216,7 @@ class RequestTask:
         await self.save_records(records)
 
     async def model_change(self, model):
-        await self.db.execute(query=model.get_insert_query(self.parent.dialect), values=model.db_data)
+        await self.db.execute(query=model.get_insert_query(self.parent.dialect), values=model.get_db_data())
 
     def parseRows(self, records):
         udalost_rows = []
@@ -228,7 +228,7 @@ class RequestTask:
                 if u.oddil is None or u.cisloVOddilu is None:
                     pass
                 else:
-                    udalost_rows.append(u.db_data)
+                    udalost_rows.append(u.get_db_data())
 
             xml_elem = u.poznamka.find("osoba")
             if xml_elem is not None:
@@ -237,6 +237,11 @@ class RequestTask:
                 osoba.datumZalozeni = u.data["datumZalozeniUdalosti"]
                 osoba.idZalozeni = u.data["id"]
                 models.append(osoba)
+
+            xml_elem = u.poznamka.find("vec")
+            if xml_elem is not None:
+                models.append(IsirVec(xml_elem, u))
+                models.append(IsirStavVeci(xml_elem, u))
 
         end = time.time()
 

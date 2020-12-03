@@ -10,6 +10,8 @@ class AppConfig:
     # Klice v nastaveni, ktere je vzdy nutne specifikovat
     REQUIRED = []
 
+    CONVERT_INT = ['min_id', 'max_id', 'retry_times', 'last_id', 'concurrency', 'request_timeout']
+
     # Vychozi hodnoty v nastaveni a popis konfigurace
     DEFAULTS = {
         "pdftotext": "pdftotext",                           # Cesta ke spusteni programu pdftotext
@@ -33,6 +35,7 @@ class AppConfig:
         self.init(conf)
         self.validate_required()
         self.set_defaults()
+        self.validate_fields()
 
     def init(self, conf):
         sections = conf.sections()
@@ -57,6 +60,15 @@ class AppConfig:
         for key in self.DEFAULTS:
             if key not in self.data:
                 self.data[key] = self.DEFAULTS[key]
+
+    def validate_fields(self):
+        for key in self.CONVERT_INT:
+            if self.data[key] is None:
+                continue
+            try:
+                self.data[key] = int(self.data[key])
+            except ValueError:
+                raise click.BadParameter(key + " musi byt cislo.")
 
     def set_opt(self, key, val):
         if val is None:

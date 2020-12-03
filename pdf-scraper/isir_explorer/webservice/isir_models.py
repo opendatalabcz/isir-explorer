@@ -12,6 +12,7 @@ class IsirModel:
 
     ATTRS = []
     IGNORED = []
+    IGNORE_IN_UPDATE = []
     COMPUTED_FIELDS = []
     FLAGS = []
     TABLE_NAME = ""
@@ -55,10 +56,6 @@ class IsirModel:
     def db_columns(cls):
         return [item for item in cls.ATTRS if item not in cls.IGNORED]
 
-    @property
-    def db_data(self):
-        return [self.data[item] for item in self.db_columns]
-
     def __getattr__(self, attr_name):
         try:
             return self.data[attr_name]
@@ -72,10 +69,30 @@ class IsirModel:
             super().__setattr__(name, value)
 
     @classmethod
-    def get_insert_query(cls):
+    def get_insert_query(cls, dialect):
         column_order = ",".join(cls.db_columns)
-        column_placeholders = ("%s, " * len(cls.db_columns))[:-2]
-        return f"REPLACE INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders})"
+        
+        column_placeholders_list = []
+        for c in cls.db_columns:
+            column_placeholders_list.append(":"+c)
+        column_placeholders = ",".join(column_placeholders_list)
+
+        update_part = ""
+        i = 0
+        for a in cls.db_columns:
+            if a in cls.IGNORE_IN_UPDATE:
+                continue
+            if i != 0:
+                update_part += ", "
+            update_part += f"{a}=:{a}"
+            i += 1
+
+        if "mysql" == dialect:
+            return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
+                f"ON DUPLICATE KEY UPDATE {update_part}, edits=edits+1"
+        else:
+            return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
+                f"ON CONFLICT ON CONSTRAINT {cls.UNIQUE_CONSTRAINT} DO UPDATE SET {update_part}, edits=EXCLUDED.edits+1"
 
     @staticmethod
     def get_enum(enum, val):
@@ -87,6 +104,8 @@ class IsirModel:
 
     @staticmethod
     def parse_datetime(data):
+        if isinstance(data, datetime):
+            return data
         dt = dateutil.parser.parse(data)
         if dt.year > 2035:  # unix timestamp limits
             dt = dt.replace(year=2035)
@@ -100,6 +119,14 @@ class IsirModel:
             return None
         return datetimeobject
 
+    def get_db_data(self):
+        data = {}
+        for item in self.db_columns:
+            try:
+                data[item] = self.data[item]
+            except KeyError:
+                data[item] = None
+        return data
 
 class IsirUdalost(IsirModel):
 
@@ -110,6 +137,7 @@ class IsirUdalost(IsirModel):
     IGNORED = ['poznamka']
     IGNORE_IN_UPDATE = ['id', 'spisovaZnacka', 'oddil', 'cisloVOddilu', 'typUdalosti','datumZalozeni']
     TABLE_NAME = "isir_udalost"
+    UNIQUE_CONSTRAINT = "isir_udalost_pkey"
     COMPUTED_FIELDS = ['poznamka_json', 'stav', 'soud']
 
     UDALOST_FIELDS = ['datumUdalostZrusena', 'datumPravniMoci',
@@ -172,39 +200,6 @@ class IsirUdalost(IsirModel):
             return ET.fromstring(data)
         return data
 
-    @classmethod
-    def get_insert_query(cls, dialect):
-        column_order = ",".join(cls.db_columns)
-        
-        column_placeholders_list = []
-        for c in cls.db_columns:
-            column_placeholders_list.append(":"+c)
-        column_placeholders = ",".join(column_placeholders_list)
-
-        update_part = ""
-        i = 0
-        for a in cls.db_columns:
-            if a in cls.IGNORE_IN_UPDATE:
-                continue
-            if i != 0:
-                update_part += ", "
-            update_part += f"{a}=:{a}"
-            i += 1
-
-        if "mysql" == dialect:
-            return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
-                f"ON DUPLICATE KEY UPDATE {update_part}, edits=edits+1"
-        else:
-            return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
-                f"ON CONFLICT ON CONSTRAINT isir_udalost_pkey DO UPDATE SET {update_part}"
-
-    @property
-    def db_data(self):
-        data = {}
-        for item in self.db_columns:
-            data[item] = self.data[item]
-        return data
-
 
 class IsirOsoba(IsirModel):
 
@@ -213,39 +208,7 @@ class IsirOsoba(IsirModel):
              'datumOsobaVeVeciZrusena', 'datumNarozeni', 'soud', 'datumZalozeni', 'idZalozeni']
     IGNORE_IN_UPDATE = ['spisovaZnacka', 'idOsoby', 'datumZalozeni', 'idZalozeni']
     TABLE_NAME = "isir_osoba"
-
-    @classmethod
-    def get_insert_query(cls, dialect):
-        column_order = ",".join(cls.db_columns)
-        
-        column_placeholders_list = []
-        for c in cls.db_columns:
-            column_placeholders_list.append(":"+c)
-        column_placeholders = ",".join(column_placeholders_list)
-
-        update_part = ""
-        i = 0
-        for a in cls.db_columns:
-            if a in cls.IGNORE_IN_UPDATE:
-                continue
-            if i != 0:
-                update_part += ", "
-            update_part += f"{a}=:{a}"
-            i += 1
-
-        if "mysql" == dialect:
-            return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
-                f"ON DUPLICATE KEY UPDATE {update_part}, edits=edits+1"
-        else:
-            return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
-                f"ON CONFLICT ON CONSTRAINT isir_osoba_pkey DO UPDATE SET {update_part}"
-
-    @property
-    def db_data(self):
-        data = {}
-        for item in self.db_columns:
-            data[item] = self.data[item]
-        return data
+    UNIQUE_CONSTRAINT = "isir_osoba_pkey"
 
     @staticmethod
     def format_column(columnName, data):
@@ -276,3 +239,46 @@ class IsirOsoba(IsirModel):
         elif columnName == "druhRoleVRizeni":
             return IsirModel.get_enum(DRUH_ROLE_V_RIZENI, data)
         return data
+
+class IsirVec(IsirModel):
+
+    ATTRS = ['spisovaZnacka', 'druhStavRizeni', 'datumVecZrusena', 'datumKonecLhutyPrihlasek', 'datumSkonceniVeci', 'datumAktualizace']
+    IGNORE_IN_UPDATE = ['spisovaZnacka']
+    COMPUTED_FIELDS = ['datumAktualizace']
+    TABLE_NAME = "isir_vec"
+    UNIQUE_CONSTRAINT = "isir_vec_pkey"
+
+    @staticmethod
+    def format_column(columnName, data):
+        if data is None:
+            return data
+        if columnName == "druhStavRizeni":
+            return IsirModel.get_enum(DRUH_STAV_RIZENI, data)
+        elif columnName[0:5] == "datum":
+            return IsirModel.parse_datetime(data)
+        return data
+
+    def datumAktualizace(self):
+        return IsirModel.parse_datetime(self.record.datumZalozeniUdalosti)
+
+
+class IsirStavVeci(IsirModel):
+
+    ATTRS = ['spisovaZnacka', 'druhStavRizeni', 'datum', 'rid']
+    TABLE_NAME = "isir_vec_stav"
+    UNIQUE_CONSTRAINT = "isir_vec_stav_pkey"
+    COMPUTED_FIELDS = ['datum', 'rid']
+
+    @staticmethod
+    def format_column(columnName, data):
+        if data is None:
+            return data
+        if columnName == "druhStavRizeni":
+            return IsirModel.get_enum(DRUH_STAV_RIZENI, data)
+        return data
+
+    def datum(self):
+        return IsirModel.parse_datetime(self.record.datumZalozeniUdalosti)
+
+    def rid(self):
+        return self.record.id
