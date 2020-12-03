@@ -108,7 +108,7 @@ class IsirUdalost(IsirModel):
              'priznakAnVedlejsiUdalost', 'priznakAnVedlejsiDokument',
              'priznakPlatnyVeritel', 'priznakMylnyZapisVeritelPohled', 'stav', 'soud']
     IGNORED = ['poznamka']
-    IGNORE_IN_UPDATE = ['id', 'spisovaZnacka', 'oddil', 'cisloVOddilu', 'typUdalosti']
+    IGNORE_IN_UPDATE = ['id', 'spisovaZnacka', 'oddil', 'cisloVOddilu', 'typUdalosti','datumZalozeni']
     TABLE_NAME = "isir_udalost"
     COMPUTED_FIELDS = ['poznamka_json', 'stav', 'soud']
 
