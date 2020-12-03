@@ -15,6 +15,7 @@ class IsirModel:
     IGNORE_IN_UPDATE = []
     COMPUTED_FIELDS = []
     FLAGS = []
+    COUNT_EDITS = True
     TABLE_NAME = ""
 
     def __init__(self, xml_elem, record=None):
@@ -88,11 +89,13 @@ class IsirModel:
             i += 1
 
         if "mysql" == dialect:
+            edit_counter = ", edits=edits+1" if cls.COUNT_EDITS else ""
             return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
-                f"ON DUPLICATE KEY UPDATE {update_part}, edits=edits+1"
+                f"ON DUPLICATE KEY UPDATE {update_part} {edit_counter}"
         else:
+            edit_counter = ", edits=EXCLUDED.edits+1" if cls.COUNT_EDITS else ""
             return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
-                f"ON CONFLICT ON CONSTRAINT {cls.UNIQUE_CONSTRAINT} DO UPDATE SET {update_part}, edits=EXCLUDED.edits+1"
+                f"ON CONFLICT ON CONSTRAINT {cls.UNIQUE_CONSTRAINT} DO UPDATE SET {update_part} {edit_counter}"
 
     @staticmethod
     def get_enum(enum, val):
@@ -268,6 +271,7 @@ class IsirStavVeci(IsirModel):
     TABLE_NAME = "isir_vec_stav"
     UNIQUE_CONSTRAINT = "isir_vec_stav_pkey"
     COMPUTED_FIELDS = ['datum', 'rid']
+    COUNT_EDITS = False
 
     @staticmethod
     def format_column(columnName, data):
