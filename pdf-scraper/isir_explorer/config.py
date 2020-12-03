@@ -28,6 +28,7 @@ class AppConfig:
         "request_timeout": 30,
         "verbose": False,
         "silent": False,
+        "parse_in_executor": True,
     }
 
     def __init__(self, conf):

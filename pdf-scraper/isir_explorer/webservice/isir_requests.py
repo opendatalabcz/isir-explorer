@@ -249,7 +249,15 @@ class RequestTask:
 
 
     async def save_records(self, records):
-        udalost_rows, models = self.parseRows(records)
+        if self.parent.conf["parse_in_executor"]:
+            loop = asyncio.get_event_loop()
+            blocking_task = loop.run_in_executor(self.parent.executor, self.parseRows, records)
+            completed, pending = await asyncio.wait([blocking_task])
+            for e in completed:
+                break
+            udalost_rows, models = e.result()
+        else:
+            udalost_rows, models = self.parseRows(records)
 
         # Model updated must be done sequentially, wait until the current request is first in line
         while True:
