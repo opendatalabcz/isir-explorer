@@ -65,11 +65,12 @@ final class Isir extends AbstractMigration
               ->addColumn('edits', 'smallinteger', ['null' => false, 'default'=>0])
               ->create();
 
-        $table = $this->table('isir_vec_stav', ['id' => false, 'primary_key' => ['spisovaznacka']]);
+        $table = $this->table('isir_vec_stav');
         $table->addColumn('spisovaznacka', 'string', ['null' => false, 'limit'=>50])
             ->addColumn('druhstavrizeni', 'smallinteger', ['null' => false])
             ->addColumn('datum', 'timestamp', ['null' => false])
             ->addColumn('rid', 'integer', ['null' => true])
+            ->addIndex(['spisovaznacka'], ['unique' => false])
             ->create();
     }
 }
