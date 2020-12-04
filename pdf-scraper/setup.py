@@ -48,6 +48,7 @@ setup(
             'isir-scraper = isir_explorer.scraper.main:main',
             'isir-dbimport = isir_explorer.dbimport.main:main',
             'isir-ws = isir_explorer.webservice.main:main',
+            'isir-dl = isir_explorer.downloader.main:main',
         ],
     },
     install_requires=[
@@ -57,6 +58,7 @@ setup(
         'databases>=0.4.1',
         'aiohttp>=3.6.2',
         'python-dateutil>=2.8.1',
+        'aiofiles>=0.6.0',
     ],
     extras_require=extras_require,
 )
