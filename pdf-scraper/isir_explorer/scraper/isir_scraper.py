@@ -45,10 +45,9 @@ class IsirScraper:
                 return IsirScraper.PARSER_TYPES[key]
         return None
     
-    async def run(self):
-        # To text
-        output_path = self.tmp_path+'/'+self.document_name
-        process = await asyncio.create_subprocess_exec(self.config['pdftotext'], "-layout", "-nodiag", "-nopgbrk", self.filename, output_path)
+    async def readDocument(self, input_path, output_path, multidoc=True):
+        
+        process = await asyncio.create_subprocess_exec(self.config['pdftotext'], "-layout", "-nodiag", "-nopgbrk", input_path, output_path)
         retcode = await process.wait()
 
         if retcode != 0:
@@ -84,8 +83,19 @@ class IsirScraper:
             documents.append(parser.model)
 
             # Pokud neni aktivni --multidoc, zastavit hledani po prvnim parsovanem dokumentu
-            if not self.config['multidoc']:
+            if not multidoc:
                 break
+
+        return documents
+
+    async def run(self):
+        # To text
+        output_path = self.tmp_path+'/'+self.document_name
+        documents = await self.readDocument(
+            self.filename,
+            output_path,
+            multidoc=self.config['multidoc'],
+        )
         
         if not documents:
             print("Necitelny dokument", file=sys.stderr)
