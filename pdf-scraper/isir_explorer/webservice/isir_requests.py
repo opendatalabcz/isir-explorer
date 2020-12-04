@@ -6,6 +6,7 @@ from .enums import Udalosti
 import asyncio
 import time
 import concurrent.futures
+import re
 
 
 class IsirRequests:
@@ -24,6 +25,7 @@ class IsirRequests:
             max_workers=self.conf["concurrency"],
         )
         self.speedCounter = {"samples": 0}
+        self.ins_filter = re.compile(self.conf["ins_filter"]) if self.conf["ins_filter"] is not None else None
 
         # can be postgresql / postgres
         if "postgres" in self.db.url.scheme:
@@ -224,6 +226,11 @@ class RequestTask:
         start = time.time()
         for r in records:
             u = IsirUdalost(r)
+
+            if self.parent.ins_filter is not None:
+                if not self.parent.ins_filter.match(u.spisovaZnacka):
+                    continue            
+
             if u.typUdalosti not in self.NOT_STORED_UDALOST_TYPES:
                 if u.oddil is None or u.cisloVOddilu is None:
                     pass
