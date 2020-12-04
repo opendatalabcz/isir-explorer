@@ -2,6 +2,7 @@ from .isir_scraper import IsirScraper
 from ..config import AppConfig
 import click
 import configparser
+from asyncio import events
 
 
 def validate_config_file(ctx, param, value):
@@ -57,4 +58,5 @@ def isirScraper(pdf_file, output, config, doctype, multidoc, debug):
     config.set_opt("multidoc", multidoc)
     config.set_opt("_out", output)
     parser = IsirScraper(pdf_file, config)
-    parser.run()
+    loop = events.get_event_loop()
+    loop.run_until_complete(parser.run())

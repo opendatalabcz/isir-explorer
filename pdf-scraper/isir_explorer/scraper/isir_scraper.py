@@ -1,4 +1,4 @@
-import subprocess
+import asyncio
 import os
 import sys
 import json
@@ -45,10 +45,15 @@ class IsirScraper:
                 return IsirScraper.PARSER_TYPES[key]
         return None
     
-    def run(self):
+    async def run(self):
         # To text
         output_path = self.tmp_path+'/'+self.document_name
-        subprocess.run([self.config['pdftotext'], "-layout", "-nodiag", "-nopgbrk", self.filename, output_path])
+        process = await asyncio.create_subprocess_exec(self.config['pdftotext'], "-layout", "-nodiag", "-nopgbrk", self.filename, output_path)
+        retcode = await process.wait()
+
+        if retcode != 0:
+            print(f"Nepodarila se konverze pdftotext, retval: {retcode}", file=sys.stderr)
+            return
 
         with open(output_path, 'rb') as f:
             txtBytes = f.read()
