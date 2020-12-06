@@ -34,8 +34,9 @@ class DbImport:
         except KeyError:
             raise UnknownDocument()
 
-        importer = importerCls(self.db, doc)
-        await importer.startImport()
+        async with self.db.transaction():
+            importer = importerCls(self.db, doc)
+            await importer.startImport()
 
     async def run(self):
 
