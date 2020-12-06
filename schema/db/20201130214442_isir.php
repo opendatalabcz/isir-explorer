@@ -14,7 +14,7 @@ final class Isir extends AbstractMigration
               ->addColumn('oddil', 'string', ['null' => false, 'limit'=>10])
               ->addColumn('cislovoddilu', 'smallinteger', ['null' => false])
               ->addColumn('typudalosti', 'smallinteger', ['null' => false])
-              ->addColumn('dokumenturl', 'string', ['null' => true])
+              ->addColumn('dokumenturl', 'string', ['null' => true, 'limit' => 100])
               ->addColumn('datumzalozeniudalosti', 'timestamp', ['null' => true])
               ->addColumn('datumzverejneniudalosti', 'timestamp', ['null' => true])
               ->addColumn('poznamka_json', 'text', ['null' => true])

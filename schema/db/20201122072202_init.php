@@ -7,14 +7,26 @@ final class Init extends AbstractMigration
 {
     public function change(): void
     {
+
+      $table = $this->table('dokument', ['comment' => 'Asociace pdf dokumentu z ISIRu k prectenemu dokumentu']);
+      $table->addColumn('isir_id', 'string', ['null' => false, 'limit' => 100, 'comment' => 'ID dokumentu v ISIRu (dokumenturl)'])
+          ->addColumn('typ', 'smallinteger', ['null' => false, 'comment' => 'Typ parseru'])
+          ->addColumn('verze_dokumentu', 'string', ['null' => true, 'limit' => 10, 'comment' => 'Oznaceni verze pdf dokumentu (je-li dostupne)'])
+          ->addColumn('verze_parseru', 'smallinteger', ['null' => true, 'comment' => 'Verze parseru (pro dany typ dokumentu), ktery byl pouzit pro precteni'])
+          ->addColumn('datum', 'timestamp', ['null' => false, 'comment' => 'Datum precteni dokumentu'])
+          ->addIndex(['isir_id'], ['unique' => false])
+          ->create();
+
         /* ====================================================================================== */
         /* ============ Prihlaska pohledavky ============ */
 
-        $table = $this->table('prihlaska_pohledavky');
-        $table->addColumn('pocet_pohledavek', 'integer')
+        $table = $this->table('prihlaska_pohledavky', ['id' => false, 'primary_key' => ['id']]);
+        $table->addColumn('id', 'integer', ['null' => false])
+              ->addColumn('pocet_pohledavek', 'integer')
               ->addColumn('celkova_vyse', 'float')
               ->addColumn('celkova_vyse_nezajistenych', 'float')
               ->addColumn('celkova_vyse_zajistenych', 'float')
+              ->addForeignKey('id', 'dokument', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
               ->create();
             
         $table = $this->table('pp_pohledavka', ['comment' => 'Pohledavka v prihlasce']);
@@ -35,9 +47,10 @@ final class Init extends AbstractMigration
         /* ====================================================================================== */
         /* ============ Prehledovy list ============ */
 
-        $table = $this->table('prehledovy_list', ['comment' => 'Prehledovy list - souhrn pro nezajistene a zajistene veritele']);
+        $table = $this->table('prehledovy_list', ['id' => false, 'primary_key' => ['id'], 'comment' => 'Prehledovy list - souhrn pro nezajistene a zajistene veritele']);
               // Nezajisteni veritele
-        $table->addColumn('n_celkova_vyse', 'float', ['null' => true])
+        $table->addColumn('id', 'integer', ['null' => false])
+              ->addColumn('n_celkova_vyse', 'float', ['null' => true])
               ->addColumn('n_vykonatelne', 'float', ['null' => true])
               ->addColumn('n_nevykonatelne', 'float', ['null' => true])
               ->addColumn('n_duplicitni', 'float', ['null' => true])
@@ -58,6 +71,7 @@ final class Init extends AbstractMigration
               ->addColumn('z_popreno', 'float', ['null' => true])
               ->addColumn('z_zbyva_uspokojit', 'float', ['null' => true])
               ->addColumn('z_zjisteno', 'float', ['null' => true])
+              ->addForeignKey('id', 'dokument', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
               ->create();
 
         $table = $this->table('pl_pohledavka', ['comment' => 'Pohledavka v prehledovem listu']);
@@ -84,8 +98,9 @@ final class Init extends AbstractMigration
         /* ====================================================================================== */
         /* ============ Zprava pro oddluzeni ============ */
 
-        $table = $this->table('zprava_pro_oddluzeni');
-        $table->addColumn('odmena_za_sepsani_navrhu', 'float', ['null' => true])
+        $table = $this->table('zprava_pro_oddluzeni', ['id' => false, 'primary_key' => ['id']]);
+        $table->addColumn('id', 'integer', ['null' => false])
+              ->addColumn('odmena_za_sepsani_navrhu', 'float', ['null' => true])
               ->addColumn('povinnen_vydat_obydli', 'string', ['null' => true])
               ->addColumn('vyse_zalohy', 'float', ['null' => true])
               ->addColumn('vytezek_zpenezeni_obydli', 'float', ['null' => true])
@@ -100,7 +115,7 @@ final class Init extends AbstractMigration
               ->addColumn('okolnosti_proti_oddluzeni', 'text', ['null' => true])
               ->addColumn('navrh_dluznika', 'text', ['null' => true])
               ->addColumn('navrh_spravce', 'text', ['null' => true])
-              
+              ->addForeignKey('id', 'dokument', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
               ->create();
 
         $table = $this->table('zpro_soupis_majetku', ['comment' => 'Soupis majetku dle zpravy pro oddluzeni']);
@@ -143,8 +158,9 @@ final class Init extends AbstractMigration
         /* ====================================================================================== */
         /* ============ Zprava o plneni oddluzeni ============ */
 
-        $table = $this->table('zprava_plneni_oddluzeni');
-        $table->addColumn('doporuceni_spravce', 'text')
+        $table = $this->table('zprava_plneni_oddluzeni', ['id' => false, 'primary_key' => ['id']]);
+        $table->addColumn('id', 'integer', ['null' => false])
+              ->addColumn('doporuceni_spravce', 'text')
               ->addColumn('doporuceni_spravce_oduvodneni', 'text')
               ->addColumn('duvod_neplneni', 'text')
               ->addColumn('plni_povinnosti', 'string')
@@ -155,7 +171,7 @@ final class Init extends AbstractMigration
               ->addColumn('n_uspokojeni_aktualni', 'float' , ['null' => true, 'comment' => 'Aktualni mira uspokojeni nezajistenych pohledavek'])
               ->addColumn('z_uspokojeni_ocekavana', 'float', ['null' => true, 'comment' => 'Ocekavana mira uspokojeni zajistenych pohledavek'])
               ->addColumn('z_uspokojeni_aktualni', 'float',  ['null' => true, 'comment' => 'Aktualni mira uspokojeni zajistenych pohledavek'])
-
+              ->addForeignKey('id', 'dokument', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
               ->create();
 
         $table = $this->table('zplo_vykaz_plneni', ['comment' => 'Vykaz plneni oddluzeni po jednotlivych mesicich']);
@@ -206,8 +222,9 @@ final class Init extends AbstractMigration
         /* ====================================================================================== */
         /* ============ Zprava o splneni oddluzeni ============ */
 
-        $table = $this->table('zprava_splneni_oddluzeni');
-        $table->addColumn('oddluzeni_povoleno', 'date', ['null' => true])
+        $table = $this->table('zprava_splneni_oddluzeni', ['id' => false, 'primary_key' => ['id']]);
+        $table->addColumn('id', 'integer', ['null' => false])
+              ->addColumn('oddluzeni_povoleno', 'date', ['null' => true])
               ->addColumn('oddluzeni_schvaleno', 'date', ['null' => true])
               ->addColumn('zahajeno', 'date', ['null' => true])
               ->addColumn('zjisteni_upadku', 'date', ['null' => true])
@@ -225,7 +242,7 @@ final class Init extends AbstractMigration
               ->addColumn('z_uspokojeni_mira', 'float')
               ->addColumn('z_uspokojeni_vyse', 'float')
               ->addColumn('preplatek', 'float')
-
+              ->addForeignKey('id', 'dokument', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
               ->create();
 
         $table = $this->table('zspo_odmena_spravce');
