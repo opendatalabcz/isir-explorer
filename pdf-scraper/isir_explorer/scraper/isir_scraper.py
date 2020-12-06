@@ -2,6 +2,7 @@ import asyncio
 import os
 import sys
 import json
+import logging
 from .isir_decryptor import IsirDecryptor
 from .parser.prihlaska_pohledavky import PrihlaskaParser
 from .parser.prehledovy_list import PrehledovyListParser
@@ -23,6 +24,7 @@ class IsirScraper:
     def __init__(self, filename, config):
         self.config = config
         self.filename = filename
+        self.logger = None
 
         base = os.path.basename(self.filename)
         parts = os.path.splitext(base)
@@ -30,6 +32,16 @@ class IsirScraper:
 
         self.tmp_path = self.config['tmp_dir']
         self.tmpDir()
+        self.setupLogging()
+
+    def setupLogging(self):
+        self.logger = logging.getLogger()
+        logFormatter = logging.Formatter("%(asctime)s [%(levelname)-5.5s]  %(message)s")
+
+        if self.config['debug']:
+            consoleHandler = logging.StreamHandler()
+            consoleHandler.setFormatter(logFormatter)
+            self.logger.addHandler(consoleHandler)
 
     def tmpDir(self):
         if not os.path.exists(self.tmp_path):
@@ -45,8 +57,8 @@ class IsirScraper:
                 return IsirScraper.PARSER_TYPES[key]
         return None
     
-    async def readDocument(self, input_path, output_path, multidoc=True):
-        
+    async def readDocument(self, input_path, multidoc=True):
+        output_path = self.tmp_path+'/'+self.document_name
         process = await asyncio.create_subprocess_exec(self.config['pdftotext'], "-layout", "-nodiag", "-nopgbrk", input_path, output_path)
         retcode = await process.wait()
 
@@ -79,6 +91,10 @@ class IsirScraper:
                 parser.run()
             except UnreadableDocument:
                 continue
+            except:
+                self.logger.exception("Parser error")
+                # Neukladat vystup pokud behem parsovani nastala chyba
+                continue
 
             documents.append(parser.model)
 
@@ -90,10 +106,8 @@ class IsirScraper:
 
     async def run(self):
         # To text
-        output_path = self.tmp_path+'/'+self.document_name
         documents = await self.readDocument(
             self.filename,
-            output_path,
             multidoc=self.config['multidoc'],
         )
         

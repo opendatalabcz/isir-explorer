@@ -3,9 +3,11 @@ import json
 import asyncio
 import aiohttp
 import aiofiles
+import logging
 from databases import Database
 from .errors import DownloaderException, TooManyRetries
 from ..webservice.isir_models import IsirUdalost
+from ..scraper.isir_scraper import IsirScraper
 
 class Downloader:
 
@@ -14,12 +16,16 @@ class Downloader:
         self.db = Database(self.config['db.dsn'])
         self.tasks = []
 
-        self.tmp_path = self.config['tmp_dir'].rstrip("/") + "/pdf"
+        self.tmp_base = self.config['tmp_dir'].rstrip("/")
+        self.tmp_path = self.tmp_base + "/pdf"
+        self.log_path = self.tmp_base + "/log"
         self.tmpDir()
 
     def tmpDir(self):
         if not os.path.exists(self.tmp_path):
             os.makedirs(self.tmp_path)
+        if not os.path.exists(self.log_path):
+            os.makedirs(self.log_path)
 
     async def fetchRows(self, session):
         query = "SELECT * FROM isir_udalost WHERE typudalosti = :typudalosti ORDER BY id ASC LIMIT 10"
@@ -62,12 +68,31 @@ class DocumentTask:
 
     def __init__(self, downloader, sess, row):
         self.parent = downloader
+        self.config = self.parent.config
         self.sess = sess
         self.row = row
         self.doc_id = row['dokumenturl']
         self.url = IsirUdalost.DOC_PREFIX + self.doc_id
         self.retry_count = 0
         self.finished = False
+        self.pdf_path = self.parent.tmp_path + f"/{self.doc_id}.pdf"
+        
+        logFormatter = logging.Formatter("%(asctime)s [%(levelname)-5.5s]  %(message)s")
+        self.logger = logging.getLogger('dl.doc.' + str(self.doc_id))
+        self.logger.propagate = False
+        self.logger.setLevel(logging.DEBUG)
+
+        fileHandler = logging.FileHandler("{0}/{1}.log".format(self.parent.log_path, self.doc_id))
+        fileHandler.setFormatter(logFormatter)
+        fileHandler.setLevel(logging.ERROR if not self.config['debug'] else logging.DEBUG)
+        self.logger.addHandler(fileHandler)
+
+        if self.config['debug']:
+            consoleHandler = logging.StreamHandler()
+            consoleHandler.setLevel(logging.INFO)
+            consoleHandler.setFormatter(logFormatter)
+            self.logger.addHandler(consoleHandler)
+        self.logger.debug("Log opened")
 
     def retry(self):
         max_retry = self.parent.config["retry_times"]
@@ -80,10 +105,22 @@ class DocumentTask:
         return self
 
     async def run(self):
+        self.logger.info(f"Requesting {self.url}")
+
         async with self.sess.get(self.url) as resp:
             if resp.status == 200:
-                async with aiofiles.open(self.parent.tmp_dir + f"{self.doc_id}.pdf", mode='wb') as f:
+                async with aiofiles.open(self.pdf_path, mode='wb') as f:
                     async for chunk in resp.content.iter_chunked(8000):
                         await f.write(chunk)
-        print(f"Finished {self.doc_id}")
+        
+        self.logger.info(f"Downloaded {self.doc_id}")
+
+        scraper = IsirScraper(self.pdf_path, self.parent.config)
+        scraper.logger = self.logger
+        documents = await scraper.readDocument(self.pdf_path)
+
+        self.logger.info(f"Parsed {self.doc_id}")
+
+        self.logger.debug(json.dumps(documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False))
+
         self.finished = True

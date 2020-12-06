@@ -30,7 +30,8 @@ def validate_config_file(ctx, param, value):
               default=False,
               help='Debug výpis do stdout.')
 def isirDownloader(config, debug):
-    config.set_opt("debug", debug)
+    if debug:
+        config.set_opt("debug", True)
     dl = Downloader(config)
     loop = events.get_event_loop()
     loop.run_until_complete(dl.run())
