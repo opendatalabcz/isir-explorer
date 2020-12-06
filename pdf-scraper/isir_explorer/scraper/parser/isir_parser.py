@@ -15,17 +15,32 @@ class IsirParser(Parser):
         self.residue = ""
 
     def spisovaZnacka(self, txt):
+        """Rozdělí části spisové značky do struktury SpisovaZnacka.
+
+        V dokumentech nemusí být vždy značka kompletní. Může mít chybějící části, 
+        např "KSOS INS /". V Této situaci funkce vrátí None.
+
+        Parametry
+        ---------
+        txt: :class:`str`
+            Vstupní text.
+        """
+        if "INS" not in txt:
+            return None
         part1 = self.textBefore(txt, "INS")
         soudSenat = part1.split(" ", 2)
 
         part2 = self.textAfter(txt, "INS").split("/", 2)
 
         znacka = SpisovaZnacka()
-        znacka.Soud = soudSenat[0].strip()
-        znacka.Senat = soudSenat[1].strip()
-        znacka.Ins = "INS"
-        znacka.Cislo = part2[0].strip()
-        znacka.Rok = part2[1].strip()
+        try:
+            znacka.Soud = soudSenat[0].strip()
+            znacka.Senat = soudSenat[1].strip()
+            znacka.Ins = "INS"
+            znacka.Cislo = part2[0].strip()
+            znacka.Rok = part2[1].strip()
+        except IndexError:
+            return None
         return znacka
 
     def removeVersionLine(self):
