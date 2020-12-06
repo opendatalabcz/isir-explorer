@@ -10,8 +10,9 @@ class ZpravaSplneniOddluzeniImporter(IsirImporter):
 
         self.zpravaId = None
 
-    async def zpravaPlneniOddluzeni(self):
+    async def zpravaPlneniOddluzeni(self, dokumentId):
         self.zpravaId = await self.insert("zprava_splneni_oddluzeni",{
+            "id": dokumentId,
             "oddluzeni_povoleno": 
                 self.dateFormat(self.doc["Prubeh_rizeni"]["Oddluzeni_povoleno"]),
             "oddluzeni_schvaleno":
@@ -70,8 +71,8 @@ class ZpravaSplneniOddluzeniImporter(IsirImporter):
                 self.doc["Odmena_spravce"]["Zprava_spravce"],
         })
 
-    async def importDocument(self):
+    async def importDocument(self, dokumentId):
 
-        await self.zpravaPlneniOddluzeni()
+        await self.zpravaPlneniOddluzeni(dokumentId)
 
         await self.odmenaSpravce()

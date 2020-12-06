@@ -52,12 +52,17 @@ class PrehledovyListImporter(IsirImporter):
         return res
 
 
-    async def importDocument(self):
+    async def importDocument(self, dokumentId):
 
         # Vlozit prehledovy list
         nezajistene = self.sumarizaceTypuVeritele(False, self.doc["Nezajistene"]["Celkem"])
         zajistene = self.sumarizaceTypuVeritele(True, self.doc["Zajistene"]["Celkem"])
-        prehledovyList = {**nezajistene, **zajistene} # data radku tabulky
+        # data radku tabulky
+        prehledovyList = {
+            "id": dokumentId,
+            **nezajistene,
+            **zajistene
+        }
         prehledovyListId = await self.insert("prehledovy_list", prehledovyList)
 
         # Vlozit pohledavky k prehledovemu listu

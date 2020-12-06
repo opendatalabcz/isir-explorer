@@ -10,7 +10,7 @@ class ZpravaPlneniOddluzeniImporter(IsirImporter):
 
         self.zpravaId = None
 
-    async def zpravaPlneniOddluzeni(self):
+    async def zpravaPlneniOddluzeni(self, dokumentId):
 
         try:
             n_uspokojeni_ocekavana = self.doc["ZpravaSpravce"]["Mira_uspokojeni"]["Nezajistene_ocekavana"]
@@ -27,6 +27,7 @@ class ZpravaPlneniOddluzeniImporter(IsirImporter):
             z_uspokojeni_aktualni = None
 
         self.zpravaId = await self.insert("zprava_plneni_oddluzeni",{
+            "id": dokumentId,
             "doporuceni_spravce": 
                 self.doc["ZpravaSpravce"]["Doporuceni_spravce"],
             "doporuceni_spravce_oduvodneni":
@@ -109,9 +110,9 @@ class ZpravaPlneniOddluzeniImporter(IsirImporter):
         await self.insertMany("zplo_vykaz_prerozdeleni", vykazPrerozdeleni)
 
 
-    async def importDocument(self):
+    async def importDocument(self, dokumentId):
 
-        await self.zpravaPlneniOddluzeni()
+        await self.zpravaPlneniOddluzeni(dokumentId)
 
         # Vykaz plneni
         await self.vykazPlneni()

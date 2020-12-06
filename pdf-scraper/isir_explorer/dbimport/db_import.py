@@ -35,7 +35,7 @@ class DbImport:
             raise UnknownDocument()
 
         importer = importerCls(self.db, doc)
-        await importer.importDocument()
+        await importer.startImport()
 
     async def run(self):
 

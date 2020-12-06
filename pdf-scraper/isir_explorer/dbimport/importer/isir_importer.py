@@ -42,5 +42,21 @@ class IsirImporter:
             return None
         return datetimeobject
 
-    async def importDocument(self):
+    async def startImport(self):
+        dokumentId = await self.insert("dokument",{
+            "isir_id": 
+                None,
+            "typ":
+                0,
+            "verze_dokumentu":
+                "x",
+            "verze_parseru":
+                0,
+            "datum":
+                datetime.now(),
+        })
+
+        await self.importDocument(dokumentId)
+
+    async def importDocument(self, dokumentId):
         pass

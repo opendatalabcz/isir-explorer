@@ -16,13 +16,15 @@ class PrihlaskaImporter(IsirImporter):
         except KeyError:
             return None
 
-    async def importDocument(self):
+    async def importDocument(self, dokumentId):
 
         # Pocet pohledavek nekdy neni vyplnen
         if self.doc["Pohledavky"]["Pocet_pohledavek"] is None:
             self.doc["Pohledavky"]["Pocet_pohledavek"] = len(self.doc["Pohledavky"]["Pohledavky"])
 
         prihlaskaId = await self.insert("prihlaska_pohledavky",{
+            "id":
+                dokumentId,
             "pocet_pohledavek": 
                 self.doc["Pohledavky"]["Pocet_pohledavek"],
             "celkova_vyse":

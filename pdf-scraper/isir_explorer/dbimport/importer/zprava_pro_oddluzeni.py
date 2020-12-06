@@ -62,8 +62,9 @@ class ZpravaProOddluzeniImporter(IsirImporter):
                 res.append(predpoklad)
         return res
 
-    async def zpravaProOddluzeni(self):
+    async def zpravaProOddluzeni(self, dokumentId):
         self.zpravaId = await self.insert("zprava_pro_oddluzeni",{
+            "id": dokumentId,
             "odmena_za_sepsani_navrhu": 
                 self.doc["Hospodarska_situace"]["Odmena_za_sepsani_navrhu"],
             "povinnen_vydat_obydli":
@@ -140,9 +141,9 @@ class ZpravaProOddluzeniImporter(IsirImporter):
         predpokladUspokojeni = puNezajistene + puZajistene
         await self.insertMany("zpro_predpoklad_uspokojeni", predpokladUspokojeni)
 
-    async def importDocument(self):
+    async def importDocument(self, dokumentId):
 
-        await self.zpravaProOddluzeni()
+        await self.zpravaProOddluzeni(dokumentId)
 
         # Soupis majetku
         await self.soupisMajetku()

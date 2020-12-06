@@ -9,7 +9,7 @@ final class Init extends AbstractMigration
     {
 
       $table = $this->table('dokument', ['comment' => 'Asociace pdf dokumentu z ISIRu k prectenemu dokumentu']);
-      $table->addColumn('isir_id', 'string', ['null' => false, 'limit' => 100, 'comment' => 'ID dokumentu v ISIRu (dokumenturl)'])
+      $table->addColumn('isir_id', 'string', ['null' => true, 'limit' => 100, 'comment' => 'ID dokumentu v ISIRu (dokumenturl)'])
           ->addColumn('typ', 'smallinteger', ['null' => false, 'comment' => 'Typ parseru'])
           ->addColumn('verze_dokumentu', 'string', ['null' => true, 'limit' => 10, 'comment' => 'Oznaceni verze pdf dokumentu (je-li dostupne)'])
           ->addColumn('verze_parseru', 'smallinteger', ['null' => true, 'comment' => 'Verze parseru (pro dany typ dokumentu), ktery byl pouzit pro precteni'])
