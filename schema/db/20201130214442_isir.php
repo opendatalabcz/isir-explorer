@@ -24,6 +24,7 @@ final class Isir extends AbstractMigration
               ->addColumn('priznakmylnyzapisveritelpohled', 'boolean', ['null' => true])
               ->addColumn('stav', 'smallinteger', ['null' => true])
               ->addColumn('edits', 'smallinteger', ['null' => true, 'default'=>0])
+              ->addColumn('precteno', 'timestamp', ['null' => true, 'comment'=>'Datum scrapovani asociovaneho dokumentu'])
               ->addIndex(['id'], ['unique' => true])
               ->create();
 
