@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import logging
+import subprocess
 from .isir_decryptor import IsirDecryptor
 from .parser.prihlaska_pohledavky import PrihlaskaParser
 from .parser.prehledovy_list import PrehledovyListParser
@@ -59,7 +60,15 @@ class IsirScraper:
     
     async def readDocument(self, input_path, multidoc=True):
         output_path = self.tmp_path+'/'+self.document_name
-        process = await asyncio.create_subprocess_exec(self.config['pdftotext'], "-layout", "-nodiag", "-nopgbrk", input_path, output_path)
+        process = await asyncio.create_subprocess_exec(
+            self.config['pdftotext'],
+            "-layout",
+            "-nodiag",
+            "-nopgbrk",
+            input_path,
+            output_path,
+            stderr=subprocess.DEVNULL
+        )
         retcode = await process.wait()
 
         if retcode != 0:

@@ -119,7 +119,10 @@ class DocumentTask:
         scraper.logger = self.logger
         documents = await scraper.readDocument(self.pdf_path)
 
-        self.logger.info(f"Parsed {self.doc_id}")
+        if documents:
+            self.logger.info("Parsed {0}, pocet: {1}".format(self.doc_id, len(documents)))
+        else:
+            self.logger.info(f"Necitelny dokument {self.doc_id}")
 
         self.logger.debug(json.dumps(documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False))
 
