@@ -8,6 +8,10 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
     """Parser pro čtení formulářů typu Zpráva o plnění oddlužení.
     """
 
+    #: :obj:`int` : 
+    #: Verze scraperu tohoto typ dokumentu. Měla by být inkrementována při každé podstatné změně.
+    VERZE_SCRAPER = 1
+
     def __init__(self, data):
         super().__init__(data)
         self.model = ZpravaPlneniOddluzeni()

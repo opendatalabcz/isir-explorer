@@ -6,6 +6,10 @@ import re
 
 class IsirParser(Parser):
 
+    #: :obj:`int` : 
+    #: Verze scraperu tohoto typ dokumentu. Měla by být inkrementována při každé podstatné změně.
+    VERZE_SCRAPER = 0
+
     def __init__(self, data):
         super().__init__()
         self.txt = data
@@ -73,6 +77,7 @@ class IsirParser(Parser):
 
     def run(self):
         self.model.Metadata.Typ = self.model.TYP_DOKUMENTU
+        self.model.Metadata.Verze_scraper = self.VERZE_SCRAPER
 
         # Pokud pdf obsahuje vice typu dokumentu, vybrat text toho aktualniho
         try:

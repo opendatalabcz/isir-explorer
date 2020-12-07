@@ -8,6 +8,10 @@ class PrihlaskaParser(IsirParser):
     """Parser pro čtení formulářů typu Přihláška pohledávky.
     """
 
+    #: :obj:`int` : 
+    #: Verze scraperu tohoto typ dokumentu. Měla by být inkrementována při každé podstatné změně.
+    VERZE_SCRAPER = 1
+
     def __init__(self, data):
         super().__init__(data)
         self.model = PrihlaskaPohledavky()
