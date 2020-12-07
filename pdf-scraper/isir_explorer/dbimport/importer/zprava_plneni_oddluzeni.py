@@ -5,6 +5,8 @@ class ZpravaPlneniOddluzeniImporter(IsirImporter):
     """Třída pro databázový import dokumentů typu Zpráva o plnění oddlužení.
     """
 
+    TYP_DOKUMENTU = 4
+
     def __init__(self, db, document):
         super().__init__(db, document)
 

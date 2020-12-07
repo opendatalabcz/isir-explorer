@@ -5,6 +5,7 @@ class IsirImporter:
     def __init__(self, db, document):
         self.db = db
         self.doc = document
+        self.isir_id = None
         
         # can be postgresql / postgres
         if "postgres" in self.db.url.scheme:
@@ -43,15 +44,25 @@ class IsirImporter:
         return datetimeobject
 
     async def startImport(self):
+        try:
+            verze_dokument = typ = self.doc["Metadata"]["Verze"][:10]
+        except KeyError:
+            verze_dokument = None
+
+        try:
+            verze_scraper = typ = self.doc["Metadata"]["Verze_scraper"]
+        except KeyError:
+            verze_scraper = 1
+
         dokumentId = await self.insert("dokument",{
             "isir_id": 
-                None,
+                self.isir_id,
             "typ":
-                0,
-            "verze_dokumentu":
-                "x",
-            "verze_parseru":
-                0,
+                self.TYP_DOKUMENTU,
+            "verze_dokument":
+                verze_dokument,
+            "verze_scraper":
+                verze_scraper,
             "datum":
                 datetime.now(),
         })

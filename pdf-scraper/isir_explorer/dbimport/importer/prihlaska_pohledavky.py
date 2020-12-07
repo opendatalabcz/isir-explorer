@@ -5,6 +5,8 @@ class PrihlaskaImporter(IsirImporter):
     """Třída pro databázový import dokumentů typu Přihláška pohledávky.
     """
 
+    TYP_DOKUMENTU = 1
+
     TYP_POHLEDAVKY = {
         "nezajištěná - jednotlivě": 1,
         "nezajištěná - hromadně": 2,

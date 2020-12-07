@@ -5,6 +5,8 @@ class PrehledovyListImporter(IsirImporter):
     """Třída pro databázový import dokumentů typu Přehledový list.
     """
 
+    TYP_DOKUMENTU = 2
+
     def sumarizaceTypuVeritele(self, jeZajisteny, celkem):
         if len(celkem) < 1:
             return {}

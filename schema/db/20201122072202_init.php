@@ -11,8 +11,8 @@ final class Init extends AbstractMigration
       $table = $this->table('dokument', ['comment' => 'Asociace pdf dokumentu z ISIRu k prectenemu dokumentu']);
       $table->addColumn('isir_id', 'string', ['null' => true, 'limit' => 100, 'comment' => 'ID dokumentu v ISIRu (dokumenturl)'])
           ->addColumn('typ', 'smallinteger', ['null' => false, 'comment' => 'Typ parseru'])
-          ->addColumn('verze_dokumentu', 'string', ['null' => true, 'limit' => 10, 'comment' => 'Oznaceni verze pdf dokumentu (je-li dostupne)'])
-          ->addColumn('verze_parseru', 'smallinteger', ['null' => true, 'comment' => 'Verze parseru (pro dany typ dokumentu), ktery byl pouzit pro precteni'])
+          ->addColumn('verze_dokument', 'string', ['null' => true, 'limit' => 10, 'comment' => 'Oznaceni verze pdf dokumentu (je-li dostupne)'])
+          ->addColumn('verze_scraper', 'smallinteger', ['null' => true, 'comment' => 'Verze scraperu (pro dany typ dokumentu), ktery byl pouzit pro precteni'])
           ->addColumn('datum', 'timestamp', ['null' => false, 'comment' => 'Datum precteni dokumentu'])
           ->addIndex(['isir_id'], ['unique' => false])
           ->create();

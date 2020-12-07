@@ -22,6 +22,7 @@ class DbImport:
         self.config = config
         self.filename = filename
         self.db = Database(self.config['db.dsn'])
+        self.isir_id = None
 
         base = os.path.basename(self.filename)
         parts = os.path.splitext(base)
@@ -36,6 +37,7 @@ class DbImport:
 
         async with self.db.transaction():
             importer = importerCls(self.db, doc)
+            importer.isir_id = self.isir_id
             await importer.startImport()
 
     async def run(self):

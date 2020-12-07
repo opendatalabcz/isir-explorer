@@ -5,6 +5,8 @@ class ZpravaProOddluzeniImporter(IsirImporter):
     """Třída pro databázový import dokumentů typu Zpráva pro oddlužení.
     """
 
+    TYP_DOKUMENTU = 3
+
     #: :obj:`dict` : 
     #: Číselník stavů typu majetku v soupisu majetku
     SOUPIS_MAJETKU = {
