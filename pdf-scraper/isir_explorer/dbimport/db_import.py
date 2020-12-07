@@ -18,15 +18,13 @@ class DbImport:
         "ZpravaSplneniOddluzeni": ZpravaSplneniOddluzeniImporter,
     }
 
-    def __init__(self, filename, config):
+    def __init__(self, config, db=None):
         self.config = config
-        self.filename = filename
-        self.db = Database(self.config['db.dsn'])
+        if db is None:
+            self.db = Database(self.config['db.dsn'])
+        else:
+            self.db = db
         self.isir_id = None
-
-        base = os.path.basename(self.filename)
-        parts = os.path.splitext(base)
-        self.file_name = parts[0]
 
     async def importDocument(self, doc):
         try:
@@ -35,14 +33,13 @@ class DbImport:
         except KeyError:
             raise UnknownDocument()
 
-        async with self.db.transaction():
-            importer = importerCls(self.db, doc)
-            importer.isir_id = self.isir_id
-            await importer.startImport()
+        importer = importerCls(self.db, doc)
+        importer.isir_id = self.isir_id
+        await importer.startImport()
 
-    async def run(self):
+    async def run(self, filename):
 
-        with open(self.filename,'r') as f:
+        with open(filename,'r') as f:
             fileContent = f.read()
         obj = json.loads(fileContent)
 
@@ -54,6 +51,9 @@ class DbImport:
             documents.append(obj)
 
         await self.db.connect()
-        for document in documents:
-            await self.importDocument(document)
+        
+        async with self.db.transaction():
+            for document in documents:
+                await self.importDocument(document)
+        
         await self.db.disconnect()

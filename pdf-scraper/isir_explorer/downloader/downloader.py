@@ -5,16 +5,19 @@ import aiohttp
 import aiofiles
 import logging
 from databases import Database
+from datetime import datetime
 from .errors import DownloaderException, TooManyRetries
 from ..webservice.isir_models import IsirUdalost
 from ..scraper.isir_scraper import IsirScraper
+from ..dbimport.db_import import DbImport
 
 class Downloader:
 
     def __init__(self, config):
         self.config = config
-        self.db = Database(self.config['db.dsn'])
+        self.db = Database(self.config['db.dsn'], min_size=10, max_size=20)
         self.tasks = []
+        self.transaction_lock = asyncio.Lock()
 
         self.tmp_base = self.config['tmp_dir'].rstrip("/")
         self.tmp_path = self.tmp_base + "/pdf"
@@ -28,7 +31,7 @@ class Downloader:
             os.makedirs(self.log_path)
 
     async def fetchRows(self, session):
-        query = "SELECT * FROM isir_udalost WHERE typudalosti = :typudalosti ORDER BY id ASC LIMIT 10"
+        query = "SELECT * FROM isir_udalost WHERE precteno IS NULL AND typudalosti = :typudalosti ORDER BY id ASC LIMIT 5"
         rows = await self.db.fetch_all(query=query, values={"typudalosti": 63})
         
         for row in rows:
@@ -51,6 +54,8 @@ class Downloader:
                     self.log(f"Abort: {e}")
                     self.exit_code = 10
                     return
+            except:
+                front.logger.exception("Import processing error")
 
             #if len(self.tasks) < self.conf["concurrency"]:
             #    self.schedule_task(session, self.pos)
@@ -125,5 +130,27 @@ class DocumentTask:
             self.logger.info(f"Necitelny dokument {self.doc_id}")
 
         self.logger.debug(json.dumps(documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False))
+
+        importer = DbImport(self.config, db=self.parent.db)
+        importer.isir_id = self.doc_id
+
+        async with self.parent.transaction_lock:
+            async with self.parent.db.transaction():
+                # Import precteneho dokumentu
+                try:
+                    for documentObj in documents:
+                        await importer.importDocument(documentObj.toDict())
+                except:
+                    self.logger.exception("Import error")
+                    self.finished = True
+                    return
+
+                # Ulozit zaznam o precteni teto udalosti
+                query = "UPDATE isir_udalost SET precteno=:precteno WHERE id=:id"
+                values = {
+                    "precteno": datetime.now(),
+                    "id": self.row["id"]
+                }
+                await self.parent.db.execute(query=query, values=values)
 
         self.finished = True

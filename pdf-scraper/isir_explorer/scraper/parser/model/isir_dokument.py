@@ -17,6 +17,9 @@ class IsirDokument:
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
 
+    def toDict(self):
+        return json.loads(json.dumps(self, default=lambda o: o.__dict__))
+
     def setSoud(self, nazev, znacka):
 
         self.Insolvencni_soud = {

@@ -34,7 +34,7 @@ def validate_config_file(ctx, param, value):
               help='Debug výpis do stdout.')
 def isirDbImport(json_file, config, debug):
     config.set_opt("debug", debug)
-    importer = DbImport(json_file, config)
+    importer = DbImport(config)
     loop = events.get_event_loop()
-    loop.run_until_complete(importer.run())
+    loop.run_until_complete(importer.run(json_file))
 
