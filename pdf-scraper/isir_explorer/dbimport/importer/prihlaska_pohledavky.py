@@ -45,7 +45,7 @@ class PrihlaskaImporter(IsirImporter):
                 'cislo'           : pohledavka['Cislo'],
                 'celkova_vyse'    : pohledavka['Celkova_vyse'],
                 'vyse_jistiny'    : pohledavka['Vyse_jistiny'],
-                'typ'             : self.typPohledavky(pohledavka['Typ']),
+                'typ_text'        : pohledavka['Typ'][:50],
                 'dalsi_okolnosti' : pohledavka['Dalsi_okolnosti'],
                 'duvod_vzniku'    : pohledavka['Duvod_vzniku'],
                 'splatna'         : pohledavka['Vlastnosti']['Splatna'],

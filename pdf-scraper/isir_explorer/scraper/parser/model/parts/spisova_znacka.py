@@ -7,6 +7,7 @@ class Pohledavka:
     def __init__(self):
         self.Vlastnosti = Vlastnosti()
         self.Vykonatelnost = False
+        self.Vyse_jistiny = None
 
 class Vykonatelnost:
     pass
