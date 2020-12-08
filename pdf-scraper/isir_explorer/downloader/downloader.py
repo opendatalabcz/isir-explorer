@@ -30,14 +30,19 @@ class Downloader:
         if not os.path.exists(self.log_path):
             os.makedirs(self.log_path)
 
+    def schedule_task(self, session, row):
+        request_task = DocumentTask(self, session, row)
+        request_task.task = asyncio.create_task(request_task.run())
+        self.tasks.append(request_task)
+
     async def fetchRows(self, session):
-        query = "SELECT * FROM isir_udalost WHERE precteno IS NULL AND typudalosti = :typudalosti ORDER BY id ASC LIMIT 5"
+        query = "SELECT * FROM isir_udalost WHERE precteno IS NULL AND typudalosti = :typudalosti ORDER BY id ASC LIMIT 500"
         rows = await self.db.fetch_all(query=query, values={"typudalosti": 63})
         
-        for row in rows:
-            request_task = DocumentTask(self, session, row)
-            request_task.task = asyncio.create_task(request_task.run())
-            self.tasks.append(request_task)
+        while len(self.tasks) < self.config["concurrency"]:
+            if not rows:
+                break
+            self.schedule_task(session, rows.pop(0))
 
         while len(self.tasks):
             front = self.tasks.pop(0)
@@ -57,8 +62,9 @@ class Downloader:
             except:
                 front.logger.exception("Import processing error")
 
-            #if len(self.tasks) < self.conf["concurrency"]:
-            #    self.schedule_task(session, self.pos)
+            if len(self.tasks) < self.config["concurrency"]:
+                if rows:
+                    self.schedule_task(session, rows.pop(0))
 
     async def run(self):
         await self.db.connect()
