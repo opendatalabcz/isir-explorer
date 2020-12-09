@@ -78,7 +78,7 @@ class IsirScraper:
         with open(output_path, 'rb') as f:
             txtBytes = f.read()
 
-        decryptor = IsirDecryptor()
+        decryptor = IsirDecryptor(self.logger)
         data = decryptor.decrypt(txtBytes)
         
         with open(output_path+".dec", "w") as f:

@@ -1,4 +1,5 @@
 import re
+import logging
 
 class IsirDecryptor:
 
@@ -54,7 +55,10 @@ class IsirDecryptor:
 
     SHIFT = 31
 
-    def __init__(self):
+    def __init__(self, logger = None):
+        self.logger = logger
+        if logger is None:
+            self.logger = logging.getLogger()
         super().__init__()
 
 
@@ -103,6 +107,6 @@ class IsirDecryptor:
                 codes = c.encode('utf-8')
                 strCodes = ', '.join(map(str, codes))
 
-                print(f"Unknown char: '{c}' ({ord(c)}, [{strCodes}]), used in text '{txtPart}'")
+                self.logger.warning(f"Neznamny znak: '{c}' ({ord(c)}, [{strCodes}]), v textu '{txtPart}'")
 
         return res
