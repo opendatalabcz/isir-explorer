@@ -36,9 +36,28 @@ class Downloader:
         self.tasks.append(request_task)
 
     async def fetchRows(self, session):
-        query = "SELECT * FROM isir_udalost WHERE precteno IS NULL AND typudalosti = :typudalosti ORDER BY id ASC LIMIT 500"
-        rows = await self.db.fetch_all(query=query, values={"typudalosti": 63})
-        
+        query = """
+        SELECT * FROM isir_udalost
+            WHERE
+                priznakanvedlejsiudalost=false AND
+                precteno IS NULL AND
+                typudalosti = :typudalosti
+        UNION
+        SELECT iu2.* FROM isir_udalost iu
+            JOIN isir_udalost iu2
+            ON (
+                iu.spisovaznacka = iu2.spisovaznacka AND
+                iu.oddil = iu2.oddil AND
+                iu.cislovoddilu = iu2.cislovoddilu AND
+                iu2.priznakanvedlejsiudalost=false
+            )
+            WHERE
+                iu.priznakanvedlejsiudalost=true AND
+                iu2.precteno IS NULL AND
+                iu.typudalosti = :typudalosti
+        """
+        rows = await self.db.fetch_all(query=query, values={"typudalosti": 64})
+
         while len(self.tasks) < self.config["concurrency"]:
             if not rows:
                 break
@@ -51,7 +70,6 @@ class Downloader:
             except (asyncio.TimeoutError, aiohttp.ServerConnectionError) as e:
                 self.log(f"Retrying {front} due to error: {e.__class__.__name__}: {e}")
                 try:
-                    pass
                     self.tasks.insert(0, front.retry())
                 except Exception as e:
                     # Cannot retry(), application is expected to exit
