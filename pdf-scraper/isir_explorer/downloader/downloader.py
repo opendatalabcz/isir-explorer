@@ -87,22 +87,22 @@ class DocumentTask:
         self.retry_count = 0
         self.finished = False
         self.pdf_path = self.parent.tmp_path + f"/{self.doc_id}.pdf"
+        self.log_file = "{0}/{1}.log".format(self.parent.log_path, self.doc_id)
         
         logFormatter = logging.Formatter("%(asctime)s [%(levelname)-5.5s]  %(message)s")
         self.logger = logging.getLogger('dl.doc.' + str(self.doc_id))
         self.logger.propagate = False
         self.logger.setLevel(logging.DEBUG)
 
-        fileHandler = logging.FileHandler("{0}/{1}.log".format(self.parent.log_path, self.doc_id))
+        fileHandler = logging.FileHandler(self.log_file)
         fileHandler.setFormatter(logFormatter)
-        fileHandler.setLevel(logging.ERROR if not self.config['debug'] else logging.DEBUG)
+        fileHandler.setLevel(logging.WARNING if not self.config['debug'] else logging.DEBUG)
         self.logger.addHandler(fileHandler)
 
-        if self.config['debug']:
-            consoleHandler = logging.StreamHandler()
-            consoleHandler.setLevel(logging.INFO)
-            consoleHandler.setFormatter(logFormatter)
-            self.logger.addHandler(consoleHandler)
+        consoleHandler = logging.StreamHandler()
+        consoleHandler.setLevel(logging.INFO if not self.config['debug'] else logging.DEBUG)
+        consoleHandler.setFormatter(logFormatter)
+        self.logger.addHandler(consoleHandler)
         self.logger.debug("Log opened")
 
     def retry(self):
@@ -114,6 +114,10 @@ class DocumentTask:
         self.log(f"Retry {self.retry_count} of {max_retry} for {self}")
         self.task = asyncio.create_task(self.run())
         return self
+
+    def rmEmptyLog(self):
+        if os.path.getsize(self.log_file) == 0:
+            os.remove(self.log_file)
 
     async def run(self):
         self.logger.info(f"Requesting {self.url}")
@@ -160,3 +164,4 @@ class DocumentTask:
                 await self.parent.db.execute(query=query, values=values)
 
         self.finished = True
+        self.rmEmptyLog()
