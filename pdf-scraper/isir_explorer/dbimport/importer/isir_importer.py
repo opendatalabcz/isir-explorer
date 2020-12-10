@@ -25,6 +25,8 @@ class IsirImporter:
         return rowid
     
     async def insertMany(self, table, dataset):
+        if not dataset:
+            return
         data = dataset[0]
         column_names = list(data.keys())
         placeholders = map(lambda x:":"+x, column_names)
