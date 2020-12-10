@@ -35,6 +35,17 @@ class Downloader:
         request_task.task = asyncio.create_task(request_task.run())
         self.tasks.append(request_task)
 
+    async def cancel_tasks(self):
+        for download_task in self.tasks:
+            try:
+                download_task.task.cancel()
+                await download_task.task
+            except asyncio.CancelledError:
+                print(f"{download_task} cancelled")
+            except Exception as e:
+                print(f"{download_task} cancellation problem: {e}")
+        self.tasks = []
+
     async def fetchRows(self, session):
         query = """
         SELECT * FROM isir_udalost
@@ -68,14 +79,14 @@ class Downloader:
             try:
                 await front.task
             except (asyncio.TimeoutError, aiohttp.ServerConnectionError) as e:
-                self.log(f"Retrying {front} due to error: {e.__class__.__name__}: {e}")
+                front.logger.info(f"Retrying {front.doc_id} due to error: {e.__class__.__name__}: {e}")
                 try:
                     self.tasks.insert(0, front.retry())
                 except Exception as e:
                     # Cannot retry(), application is expected to exit
+                    front.logger.exception("Retry error")
+                    print(f"Abort: {e}")
                     await self.cancel_tasks()
-                    self.log(f"Abort: {e}")
-                    self.exit_code = 10
                     return
             except:
                 front.logger.exception("Import processing error")
@@ -123,13 +134,16 @@ class DocumentTask:
         self.logger.addHandler(consoleHandler)
         self.logger.debug("Log opened")
 
+    def __repr__(self):
+        return f"doc_id={self.doc_id}"
+
     def retry(self):
         max_retry = self.parent.config["retry_times"]
         self.finished = False
         self.retry_count += 1
         if self.retry_count > max_retry:
             raise TooManyRetries(f"Doc id={self.doc_id} failed even after max. amount of retries.")
-        self.log(f"Retry {self.retry_count} of {max_retry} for {self}")
+        self.logger.info(f"Retry {self.retry_count} of {max_retry} for {self}")
         self.task = asyncio.create_task(self.run())
         return self
 
