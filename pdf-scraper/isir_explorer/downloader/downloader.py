@@ -170,6 +170,13 @@ class DocumentTask:
                         await importer.importDocument(documentObj.toDict())
                 except:
                     self.logger.exception("Import error")
+
+                    # Ulozeni celeho json dokumentu, u ktereho nastal import error
+                    json_doc = json.dumps(documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
+                    filename = "{0}/{1}.error.json".format(self.parent.log_path, self.doc_id)
+                    async with aiofiles.open(filename, mode='w') as f:
+                        await f.write(json_doc)
+
                     self.finished = True
                     return
 
