@@ -47,12 +47,12 @@ class IsirImporter:
 
     async def startImport(self):
         try:
-            verze_dokument = typ = self.doc["Metadata"]["Verze"][:10]
-        except KeyError:
+            verze_dokument = self.doc["Metadata"]["Verze"][:10]
+        except (KeyError, TypeError):
             verze_dokument = None
 
         try:
-            verze_scraper = typ = self.doc["Metadata"]["Verze_scraper"]
+            verze_scraper = self.doc["Metadata"]["Verze_scraper"]
         except KeyError:
             verze_scraper = 1
 
