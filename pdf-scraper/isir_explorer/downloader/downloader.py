@@ -17,6 +17,7 @@ class Downloader:
         self.config = config
         self.db = Database(self.config['db.dsn'], min_size=10, max_size=20)
         self.tasks = []
+        self.typ_udalosti = []
         self.transaction_lock = asyncio.Lock()
 
         self.tmp_base = self.config['tmp_dir'].rstrip("/")
@@ -47,12 +48,13 @@ class Downloader:
         self.tasks = []
 
     async def fetchRows(self, session):
-        query = """
+        typyudalosti = ",".join(self.typ_udalosti)
+        query = f"""
         SELECT * FROM isir_udalost
             WHERE
                 priznakanvedlejsiudalost=false AND
                 precteno IS NULL AND
-                typudalosti = :typudalosti
+                typudalosti IN ({typyudalosti})
         UNION
         SELECT iu2.* FROM isir_udalost iu
             JOIN isir_udalost iu2
@@ -65,9 +67,9 @@ class Downloader:
             WHERE
                 iu.priznakanvedlejsiudalost=true AND
                 iu2.precteno IS NULL AND
-                iu.typudalosti = :typudalosti
+                iu.typudalosti IN ({typyudalosti})
         """
-        rows = await self.db.fetch_all(query=query, values={"typudalosti": 64})
+        rows = await self.db.fetch_all(query=query)
 
         while len(self.tasks) < self.config["dl.concurrency"]:
             if not rows:
@@ -97,6 +99,10 @@ class Downloader:
 
     async def run(self):
         await self.db.connect()
+
+        rows = await self.db.fetch_all(query="SELECT id, name FROM isir_cis_udalosti WHERE parser = 1")
+        for row in rows:
+            self.typ_udalosti.append(str(row["id"]))
 
         timeout = aiohttp.ClientTimeout(total=self.config["dl.request_timeout"])
         async with aiohttp.ClientSession(timeout=timeout, raise_for_status=False) as session:
