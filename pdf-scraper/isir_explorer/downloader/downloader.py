@@ -69,7 +69,7 @@ class Downloader:
         """
         rows = await self.db.fetch_all(query=query, values={"typudalosti": 64})
 
-        while len(self.tasks) < self.config["concurrency"]:
+        while len(self.tasks) < self.config["dl.concurrency"]:
             if not rows:
                 break
             self.schedule_task(session, rows.pop(0))
@@ -91,14 +91,14 @@ class Downloader:
             except:
                 front.logger.exception("Import processing error")
 
-            if len(self.tasks) < self.config["concurrency"]:
+            if len(self.tasks) < self.config["dl.concurrency"]:
                 if rows:
                     self.schedule_task(session, rows.pop(0))
 
     async def run(self):
         await self.db.connect()
 
-        timeout = aiohttp.ClientTimeout(total=self.config["request_timeout"])
+        timeout = aiohttp.ClientTimeout(total=self.config["dl.request_timeout"])
         async with aiohttp.ClientSession(timeout=timeout, raise_for_status=False) as session:
             await self.fetchRows(session)
 
@@ -138,7 +138,7 @@ class DocumentTask:
         return f"doc_id={self.doc_id}"
 
     def retry(self):
-        max_retry = self.parent.config["retry_times"]
+        max_retry = self.parent.config["dl.retry_times"]
         self.finished = False
         self.retry_count += 1
         if self.retry_count > max_retry:

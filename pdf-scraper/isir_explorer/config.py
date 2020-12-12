@@ -30,6 +30,10 @@ class AppConfig:
         "silent": False,
         "parse_in_executor": True,
         "ins_filter": "INS [0-9]+/20(19|20|20|21|22)",      # Filtr na spisove znacky ins. rizeni
+
+        "dl.concurrency": 5,
+        "dl.request_timeout": 300,
+        "dl.retry_times": 3,
     }
 
     def __init__(self, conf):
