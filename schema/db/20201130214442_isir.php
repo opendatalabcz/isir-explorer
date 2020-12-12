@@ -26,6 +26,7 @@ final class Isir extends AbstractMigration
               ->addColumn('edits', 'smallinteger', ['null' => true, 'default'=>0])
               ->addColumn('precteno', 'timestamp', ['null' => true, 'comment'=>'Datum scrapovani asociovaneho dokumentu'])
               ->addIndex(['id'], ['unique' => true])
+              ->addIndex(['spisovaznacka', 'oddil', 'cislovoddilu', 'typudalosti'], ['unique' => true])
               ->create();
 
         $table = $this->table('isir_osoba', ['id' => false, 'primary_key' => ['spisovaznacka', 'idosoby']]);
