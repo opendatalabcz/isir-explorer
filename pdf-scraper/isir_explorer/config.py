@@ -34,6 +34,7 @@ class AppConfig:
         "dl.concurrency": 5,
         "dl.request_timeout": 300,
         "dl.retry_times": 3,
+        "dl.limit": 100,
     }
 
     def __init__(self, conf):

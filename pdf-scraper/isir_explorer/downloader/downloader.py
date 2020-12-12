@@ -19,6 +19,7 @@ class Downloader:
         self.tasks = []
         self.typ_udalosti = []
         self.transaction_lock = asyncio.Lock()
+        self.stats = DownloadStats()
 
         self.tmp_base = self.config['tmp_dir'].rstrip("/")
         self.tmp_path = self.tmp_base + "/pdf"
@@ -47,16 +48,16 @@ class Downloader:
                 print(f"{download_task} cancellation problem: {e}")
         self.tasks = []
 
-    async def fetchRows(self, session):
+    async def fetchRows(self):
         typyudalosti = ",".join(self.typ_udalosti)
         query = f"""
-        SELECT * FROM isir_udalost
+        (SELECT * FROM isir_udalost
             WHERE
                 priznakanvedlejsiudalost=false AND
                 precteno IS NULL AND
-                typudalosti IN ({typyudalosti})
+                typudalosti IN ({typyudalosti}) LIMIT 1000)
         UNION
-        SELECT iu2.* FROM isir_udalost iu
+        (SELECT iu2.* FROM isir_udalost iu
             JOIN isir_udalost iu2
             ON (
                 iu.spisovaznacka = iu2.spisovaznacka AND
@@ -67,9 +68,13 @@ class Downloader:
             WHERE
                 iu.priznakanvedlejsiudalost=true AND
                 iu2.precteno IS NULL AND
-                iu.typudalosti IN ({typyudalosti})
+                iu.typudalosti IN ({typyudalosti}) LIMIT 1000)
         """
-        rows = await self.db.fetch_all(query=query)
+        return await self.db.fetch_all(query=query)
+
+    async def startDownloads(self, session):
+        rows = await self.fetchRows()
+        finalize = False
 
         while len(self.tasks) < self.config["dl.concurrency"]:
             if not rows:
@@ -92,10 +97,23 @@ class Downloader:
                     return
             except:
                 front.logger.exception("Import processing error")
+            finally:
+                self.stats.add(front)
 
-            if len(self.tasks) < self.config["dl.concurrency"]:
-                if rows:
-                    self.schedule_task(session, rows.pop(0))
+            if not finalize and len(self.tasks) < self.config["dl.concurrency"]:
+                if not rows:
+                    rows = await self.fetchRows()
+                    if not rows:
+                        finalize = True
+                        continue
+
+                if self.config["dl.limit"] and self.stats.rows + len(self.tasks) >= self.config["dl.limit"]:
+                    finalize = True
+                    continue
+                
+                self.schedule_task(session, rows.pop(0))
+
+        print(self.stats)
 
     async def run(self):
         await self.db.connect()
@@ -106,7 +124,7 @@ class Downloader:
 
         timeout = aiohttp.ClientTimeout(total=self.config["dl.request_timeout"])
         async with aiohttp.ClientSession(timeout=timeout, raise_for_status=False) as session:
-            await self.fetchRows(session)
+            await self.startDownloads(session)
 
         await self.db.disconnect()
 
@@ -121,6 +139,8 @@ class DocumentTask:
         self.url = IsirUdalost.DOC_PREFIX + self.doc_id
         self.retry_count = 0
         self.finished = False
+        self.success = False
+        self.documents = []
         self.pdf_path = self.parent.tmp_path + f"/{self.doc_id}.pdf"
         self.log_file = "{0}/{1}.log".format(self.parent.log_path, self.doc_id)
         
@@ -170,14 +190,14 @@ class DocumentTask:
 
         scraper = IsirScraper(self.pdf_path, self.parent.config)
         scraper.logger = self.logger
-        documents = await scraper.readDocument(self.pdf_path)
+        self.documents = await scraper.readDocument(self.pdf_path)
 
-        if documents:
-            self.logger.info("Parsed {0}, pocet: {1}".format(self.doc_id, len(documents)))
+        if self.documents:
+            self.logger.info("Parsed {0}, pocet: {1}".format(self.doc_id, len(self.documents)))
         else:
             self.logger.info(f"Necitelny dokument {self.doc_id}")
 
-        self.logger.debug(json.dumps(documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False))
+        self.logger.debug(json.dumps(self.documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False))
 
         importer = DbImport(self.config, db=self.parent.db)
         importer.isir_id = self.doc_id
@@ -186,13 +206,13 @@ class DocumentTask:
             async with self.parent.db.transaction():
                 # Import precteneho dokumentu
                 try:
-                    for documentObj in documents:
+                    for documentObj in self.documents:
                         await importer.importDocument(documentObj.toDict())
                 except:
                     self.logger.exception("Import error")
 
                     # Ulozeni celeho json dokumentu, u ktereho nastal import error
-                    json_doc = json.dumps(documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
+                    json_doc = json.dumps(self.documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
                     filename = "{0}/{1}.error.json".format(self.parent.log_path, self.doc_id)
                     async with aiofiles.open(filename, mode='w') as f:
                         await f.write(json_doc)
@@ -208,5 +228,31 @@ class DocumentTask:
                 }
                 await self.parent.db.execute(query=query, values=values)
 
+        self.success = True
         self.finished = True
         self.rmEmptyLog()
+
+class DownloadStats:
+
+    def __init__(self):
+        self.rows = 0
+        self.errors = 0
+        self.readable = 0
+        self.documents = 0
+
+    def add(self, task):
+        self.rows += 1
+        if not task.success:
+            self.errors += 1
+        if task.documents:
+            self.readable +=1
+            self.documents += len(task.documents)
+
+    def __repr__(self):
+        unreadable = self.rows - self.readable
+        res = ""
+        res += f"PDF dokumentů:     {self.rows}\n"
+        res += f"Z toho čitelných:  {self.readable}\n"
+        res += f"Importováno:       {self.documents}\n"
+        res += f"Chyb:              {self.errors}\n"
+        return res
