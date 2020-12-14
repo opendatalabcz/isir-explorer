@@ -5,7 +5,7 @@ import aiohttp
 import aiofiles
 import logging
 from databases import Database
-from datetime import datetime
+from datetime import datetime, timedelta
 from .errors import DownloaderException, TooManyRetries
 from ..webservice.isir_models import IsirUdalost
 from ..scraper.isir_scraper import IsirScraper
@@ -260,6 +260,7 @@ class DownloadTaskFinished(Exception):
 class DownloadStats:
 
     def __init__(self):
+        self.start = datetime.now()
         self.rows = 0
         self.errors = 0
         self.readable = 0
@@ -279,7 +280,11 @@ class DownloadStats:
             self.documents += len(task.documents)
 
     def __repr__(self):
+        now = datetime.now()
+        delta = now - self.start
+        delta_time = delta - timedelta(microseconds=delta.microseconds)
         unreadable = self.rows - self.readable
+        not_empty = self.rows - self.empty_documents
         size_mib = self.file_size / (1024 * 1024)
         if size_mib > 1024:
             size_str = "{:.2f} GiB".format(size_mib / 1024)
@@ -287,9 +292,10 @@ class DownloadStats:
             size_str = "{:.2f} MiB".format(size_mib)
 
         res = "=================================\n"
-        res += "PDF dokumentů:  {:>6} ({})\n".format(self.rows, size_str)
-        res += "Neprázdných:    {:>6}\n".format(self.rows - self.empty_documents)
-        res += "Čitelných:      {:>6}\n".format(self.readable)
-        res += "Importováno:    {:>6}\n".format(self.documents)
-        res += "Chyb:           {:>6}\n".format(self.errors)
+        res += "Čas:            {:>10}\n".format(str(delta_time))
+        res += "PDF dokumentů:  {:>10} ({})\n".format(self.rows, size_str)
+        res += "Neprázdných:    {:>10}\n".format(not_empty)
+        res += "Čitelných:      {:>10} ({:.1f}%)\n".format(self.readable, self.readable/(not_empty/100))
+        res += "Importováno:    {:>10}\n".format(self.documents)
+        res += "Chyb:           {:>10}\n".format(self.errors)
         return res
