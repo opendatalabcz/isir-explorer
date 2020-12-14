@@ -15,9 +15,11 @@ class AppConfig:
     # Vychozi hodnoty v nastaveni a popis konfigurace
     DEFAULTS = {
         "pdftotext": "pdftotext",                           # Cesta ke spusteni programu pdftotext
+        "pdftk": "pdftk",                                   # Cesta ke spusteni programu pdftk
         "tmp_dir": "/tmp/isir",                             # Adresar pro docasne soubory
         "doctype": False,                                   # Typ dokumentu, nespecifikovan => autodetekce
         "debug": False,
+        "unpack_filter": "^D-DS-",
 
         # Isir ws
         "last_id": None,

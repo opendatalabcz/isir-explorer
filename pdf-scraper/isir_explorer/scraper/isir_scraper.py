@@ -1,5 +1,7 @@
 import asyncio
 import os
+import shutil
+import re
 import sys
 import json
 import logging
@@ -10,7 +12,7 @@ from .parser.prehledovy_list import PrehledovyListParser
 from .parser.zprava_pro_oddluzeni import ZpravaProOddluzeniParser
 from .parser.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeniParser
 from .parser.zprava_splneni_oddluzeni import ZpravaSplneniOddluzeniParser
-from .parser.errors import UnreadableDocument
+from .parser.errors import UnreadableDocument, EmptyPdfPortfolio, NotPdfPortfolio
 
 class IsirScraper:
 
@@ -31,7 +33,9 @@ class IsirScraper:
         parts = os.path.splitext(base)
         self.document_name = parts[0]
 
-        self.tmp_path = self.config['tmp_dir']
+        self.is_empty = False
+        self.tmp_path = self.config['tmp_dir'].rstrip("/")
+        self.unpack_path = self.config['tmp_dir'] + "/unpack"
         self.tmpDir()
         self.setupLogging()
 
@@ -47,6 +51,8 @@ class IsirScraper:
     def tmpDir(self):
         if not os.path.exists(self.tmp_path):
             os.makedirs(self.tmp_path)
+        if not os.path.exists(self.unpack_path):
+            os.makedirs(self.unpack_path)
 
     @staticmethod
     def getParserByName(name):
@@ -58,7 +64,54 @@ class IsirScraper:
                 return IsirScraper.PARSER_TYPES[key]
         return None
     
-    async def readDocument(self, input_path, multidoc=True):
+    async def unpackPdf(self, input_path):
+        tmp_unpack_dir = self.unpack_path + "/" + self.document_name
+        if not os.path.exists(tmp_unpack_dir):
+            os.makedirs(tmp_unpack_dir)
+        unpack_process = await asyncio.create_subprocess_exec(
+            self.config['pdftk'],
+            input_path,
+            "unpack_files",
+            "output",
+            tmp_unpack_dir,
+            stderr=subprocess.DEVNULL
+        )
+        retcode = await unpack_process.wait()
+        files = os.listdir(tmp_unpack_dir)
+        if files:
+        
+            if self.config['unpack_filter']:
+                regex = re.compile(self.config['unpack_filter'])
+                files = [i for i in files if not regex.match(i)]
+
+            files = [tmp_unpack_dir + "/" + i for i in files]
+
+            if not files:
+                raise EmptyPdfPortfolio
+            
+            return files
+        else:
+            raise NotPdfPortfolio
+
+    async def readDocument(self, input_path, **kwargs):
+        # Zkusit pdf soubor rozbalit jako pdf-portfolio
+        try:
+            files = await self.unpackPdf(input_path)
+        except NotPdfPortfolio:
+            files = [input_path]
+        except EmptyPdfPortfolio:
+            self.is_empty = True
+            return []
+        except:
+            self.logger.exception("Unpack error")
+            return []
+
+        documents = []
+        for file in files:
+            documents += await self.readDocumentSingle(file, **kwargs)
+        return documents
+
+    async def readDocumentSingle(self, input_path, multidoc=True):
         output_path = self.tmp_path+'/'+self.document_name
         process = await asyncio.create_subprocess_exec(
             self.config['pdftotext'],
@@ -121,7 +174,8 @@ class IsirScraper:
         )
         
         if not documents:
-            print("Necitelny dokument", file=sys.stderr)
+            msg = "Nečitelný dokument" if not self.is_empty else "Prázdný dokument"
+            print(msg, file=sys.stderr)
             exit(1)
 
         # Pokud neni aktivni --multidoc, zobrazit vzdy jen prvni dokument
@@ -131,4 +185,3 @@ class IsirScraper:
         # Save output
         output = json.dumps(documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
         self.config['_out'].write(output)
-

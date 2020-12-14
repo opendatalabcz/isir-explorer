@@ -156,6 +156,7 @@ class DocumentTask:
         self.success = False
         self.documents = []
         self.file_size = 0
+        self.empty_document = False
         self.pdf_path = self.parent.tmp_path + f"/{self.doc_id}.pdf"
         self.log_file = "{0}/{1}.log".format(self.parent.log_path, self.doc_id)
         
@@ -211,7 +212,11 @@ class DocumentTask:
         if self.documents:
             self.logger.info("Parsed {0}, pocet: {1}".format(self.doc_id, len(self.documents)))
         else:
-            self.logger.info(f"Necitelny dokument {self.doc_id}")
+            if scraper.is_empty:
+                self.empty_document = True
+                self.logger.info(f"Prázdný dokument {self.doc_id}")
+            else:
+                self.logger.info(f"Nečitelný dokument {self.doc_id}")
 
         self.logger.debug(json.dumps(self.documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False))
 
@@ -259,6 +264,7 @@ class DownloadStats:
         self.errors = 0
         self.readable = 0
         self.documents = 0
+        self.empty_documents = 0
         self.file_size = 0
 
     def add(self, task):
@@ -266,6 +272,8 @@ class DownloadStats:
         self.file_size += task.file_size
         if not task.success:
             self.errors += 1
+        if task.empty_document:
+            self.empty_documents += 1
         if task.documents:
             self.readable +=1
             self.documents += len(task.documents)
@@ -279,8 +287,9 @@ class DownloadStats:
             size_str = "{:.2f} MiB".format(size_mib)
 
         res = "=================================\n"
-        res += "PDF dokumentů:   {:>6} ({})\n".format(self.rows, size_str)
-        res += "Z toho čitelných:{:>6}\n".format(self.readable)
-        res += "Importováno:     {:>6}\n".format(self.documents)
-        res += "Chyb:            {:>6}\n".format(self.errors)
+        res += "PDF dokumentů:  {:>6} ({})\n".format(self.rows, size_str)
+        res += "Neprázdných:    {:>6}\n".format(self.rows - self.empty_documents)
+        res += "Čitelných:      {:>6}\n".format(self.readable)
+        res += "Importováno:    {:>6}\n".format(self.documents)
+        res += "Chyb:           {:>6}\n".format(self.errors)
         return res

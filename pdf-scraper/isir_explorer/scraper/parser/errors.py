@@ -15,3 +15,14 @@ class UnreadableDocument(ParserException):
     očekávaný formát dokumentu.
     """
     pass
+
+class NotPdfPortfolio(Exception):
+    """PDF soubor není archivem typu pdf-portfolio.
+    """
+    pass
+
+class EmptyPdfPortfolio(Exception):
+    """PDF soubor je archivem typu pdf-portfolio ale je prázdný, nebo neobsahuje žádné soubory
+    po aplikaci filtru dle nastavení.
+    """
+    pass
