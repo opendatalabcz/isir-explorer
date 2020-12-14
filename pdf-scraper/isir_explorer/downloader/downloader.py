@@ -17,6 +17,7 @@ class Downloader:
         self.config = config
         self.db = Database(self.config['db.dsn'], min_size=10, max_size=20)
         self.tasks = []
+        self.dl_tasks = {}
         self.typ_udalosti = []
         self.transaction_lock = asyncio.Lock()
         self.stats = DownloadStats()
@@ -34,11 +35,14 @@ class Downloader:
 
     def schedule_task(self, session, row):
         request_task = DocumentTask(self, session, row)
-        request_task.task = asyncio.create_task(request_task.run())
-        self.tasks.append(request_task)
+        asyncio_task = asyncio.create_task(request_task.run())
+        request_task.task = asyncio_task
+        self.dl_tasks[asyncio_task] = request_task
+        self.tasks.append(asyncio_task)
 
     async def cancel_tasks(self):
-        for download_task in self.tasks:
+        for task in self.tasks:
+            download_task = self.dl_tasks[download_task]
             try:
                 download_task.task.cancel()
                 await download_task.task
@@ -82,23 +86,32 @@ class Downloader:
             self.schedule_task(session, rows.pop(0))
 
         while len(self.tasks):
-            front = self.tasks.pop(0)
-            try:
-                await front.task
-            except (asyncio.TimeoutError, aiohttp.ServerConnectionError) as e:
-                front.logger.info(f"Retrying {front.doc_id} due to error: {e.__class__.__name__}: {e}")
+            finished, panding = await asyncio.wait(self.tasks, return_when=asyncio.FIRST_EXCEPTION)
+            self.tasks = list(panding)
+            for task in finished:
+                dl_task = self.dl_tasks[task]
+                del self.dl_tasks[task]
                 try:
-                    self.tasks.insert(0, front.retry())
-                except Exception as e:
-                    # Cannot retry(), application is expected to exit
-                    front.logger.exception("Retry error")
-                    print(f"Abort: {e}")
-                    await self.cancel_tasks()
-                    return
-            except:
-                front.logger.exception("Import processing error")
-            finally:
-                self.stats.add(front)
+                    raise task.exception()
+                except DownloadTaskFinished:
+                    pass
+                except (asyncio.TimeoutError, aiohttp.ServerConnectionError) as e:
+                    dl_task.logger.info(f"Retrying {dl_task} due to error: {e.__class__.__name__}: {e}")
+                    try:
+                        dl_task.retry()
+                        self.dl_tasks[dl_task.task] = dl_task
+                        self.tasks.append(dl_task.task)
+                        continue
+                    except Exception as e:
+                        # Cannot retry(), application is expected to exit
+                        dl_task.logger.exception("Retry error")
+                        print(f"Abort: {e}")
+                        await self.cancel_tasks()
+                        return
+                except:
+                    dl_task.logger.exception("Import processing error")
+    
+                self.stats.add(dl_task)
 
             if not finalize and len(self.tasks) < self.config["dl.concurrency"]:
                 if not rows:
@@ -135,6 +148,7 @@ class DocumentTask:
         self.config = self.parent.config
         self.sess = sess
         self.row = row
+        self.task = None
         self.doc_id = row['dokumenturl']
         self.url = IsirUdalost.DOC_PREFIX + self.doc_id
         self.retry_count = 0
@@ -220,7 +234,7 @@ class DocumentTask:
                         await f.write(json_doc)
 
                     self.finished = True
-                    return
+                    raise DownloadTaskFinished()
 
                 # Ulozit zaznam o precteni teto udalosti
                 query = "UPDATE isir_udalost SET precteno=:precteno WHERE id=:id"
@@ -233,6 +247,10 @@ class DocumentTask:
         self.success = True
         self.finished = True
         self.rmEmptyLog()
+        raise DownloadTaskFinished()
+
+class DownloadTaskFinished(Exception):
+    pass
 
 class DownloadStats:
 
