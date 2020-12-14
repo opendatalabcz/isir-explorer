@@ -267,6 +267,7 @@ class DownloadStats:
         self.documents = 0
         self.empty_documents = 0
         self.file_size = 0
+        self.doc_types = {}
 
     def add(self, task):
         self.rows += 1
@@ -278,6 +279,12 @@ class DownloadStats:
         if task.documents:
             self.readable +=1
             self.documents += len(task.documents)
+        for doc in task.documents:
+            typ = doc.Metadata.Typ
+            if typ not in self.doc_types:
+                self.doc_types[typ] = 1
+            else:
+                self.doc_types[typ] += 1
 
     def __repr__(self):
         now = datetime.now()
@@ -290,12 +297,20 @@ class DownloadStats:
             size_str = "{:.2f} GiB".format(size_mib / 1024)
         else:
             size_str = "{:.2f} MiB".format(size_mib)
+        percent_readable = self.readable/(not_empty/100) if not_empty > 0 else 0
+        res = "\n========= Výsledek importu =========\n"
+        res += "Čas:                     {:>10}\n".format(str(delta_time))
+        res += "PDF dokumentů:           {:>10} ({})\n".format(self.rows, size_str)
+        res += "Neprázdných:             {:>10}\n".format(not_empty)
+        res += "Čitelných:               {:>10} ({:.1f}%)\n".format(self.readable, percent_readable)
+        res += "Importováno:             {:>10}\n".format(self.documents)
+        res += "Chyb:                    {:>10}\n".format(self.errors)
+        
+        res += "\n========== Typy dokumentů =========\n"
 
-        res = "=================================\n"
-        res += "Čas:            {:>10}\n".format(str(delta_time))
-        res += "PDF dokumentů:  {:>10} ({})\n".format(self.rows, size_str)
-        res += "Neprázdných:    {:>10}\n".format(not_empty)
-        res += "Čitelných:      {:>10} ({:.1f}%)\n".format(self.readable, self.readable/(not_empty/100))
-        res += "Importováno:    {:>10}\n".format(self.documents)
-        res += "Chyb:           {:>10}\n".format(self.errors)
+        doc_types_sorted = {k: v for k, v in sorted(self.doc_types.items(), reverse=True, key=lambda item: item[1])}
+        for doc in doc_types_sorted:
+            num = doc_types_sorted[doc]
+            res += doc.ljust(30) + "{:>5}\n".format(num)
+
         return res
