@@ -81,7 +81,7 @@ final class Init extends AbstractMigration
               ->addColumn('celkova_vyse', 'float')
               ->addColumn('cislo_prihlasky', 'smallinteger')
               ->addColumn('cislo_veritele', 'smallinteger')
-              ->addColumn('datum_doruceni', 'date')
+              ->addColumn('datum_doruceni', 'date', ['null' => true])
               ->addColumn('duplicitni', 'float')
               ->addColumn('neprezkoumavano', 'float')
               ->addColumn('nevykonatelne', 'float')
