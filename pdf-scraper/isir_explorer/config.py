@@ -20,6 +20,7 @@ class AppConfig:
         "doctype": False,                                   # Typ dokumentu, nespecifikovan => autodetekce
         "debug": False,
         "unpack_filter": "^D-DS-|^K-DS-",
+        "save_unreadable": True,
 
         # Isir ws
         "last_id": None,

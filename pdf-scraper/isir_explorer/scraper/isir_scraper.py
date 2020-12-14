@@ -36,6 +36,7 @@ class IsirScraper:
         self.is_empty = False
         self.tmp_path = self.config['tmp_dir'].rstrip("/")
         self.unpack_path = self.config['tmp_dir'] + "/unpack"
+        self.unreadable_path = self.config['tmp_dir'] + "/unreadable"
         self.tmpDir()
         self.setupLogging()
 
@@ -53,6 +54,8 @@ class IsirScraper:
             os.makedirs(self.tmp_path)
         if not os.path.exists(self.unpack_path):
             os.makedirs(self.unpack_path)
+        if self.config['save_unreadable'] and not os.path.exists(self.unreadable_path):
+            os.makedirs(self.unreadable_path)
 
     @staticmethod
     def getParserByName(name):
@@ -110,6 +113,10 @@ class IsirScraper:
         documents = []
         for file in files:
             documents += await self.readDocumentSingle(file, **kwargs)
+
+        if not documents and self.config['save_unreadable']:
+            os.rename(input_path, self.unreadable_path + "/" + self.document_name + ".pdf")
+
         return documents
 
     async def readDocumentSingle(self, input_path, multidoc=True):
