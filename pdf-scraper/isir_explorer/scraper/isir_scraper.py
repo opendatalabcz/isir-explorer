@@ -91,6 +91,7 @@ class IsirScraper:
             
             return files
         else:
+            shutil.rmtree(tmp_unpack_dir)
             raise NotPdfPortfolio
 
     async def readDocument(self, input_path, **kwargs):

@@ -19,7 +19,7 @@ class AppConfig:
         "tmp_dir": "/tmp/isir",                             # Adresar pro docasne soubory
         "doctype": False,                                   # Typ dokumentu, nespecifikovan => autodetekce
         "debug": False,
-        "unpack_filter": "^D-DS-",
+        "unpack_filter": "^D-DS-|^K-DS-",
 
         # Isir ws
         "last_id": None,
