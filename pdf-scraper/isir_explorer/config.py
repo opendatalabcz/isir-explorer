@@ -34,7 +34,7 @@ class AppConfig:
         "dl.concurrency": 5,
         "dl.request_timeout": 300,
         "dl.retry_times": 3,
-        "dl.limit": 100,
+        "dl.limit": 0,                                      # Omezit počet dokumentů ke stažení
     }
 
     def __init__(self, conf):

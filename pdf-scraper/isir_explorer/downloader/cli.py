@@ -25,13 +25,19 @@ def validate_config_file(ctx, param, value):
               default='app.cfg',
               type=click.File('r'),
               callback=validate_config_file)
+@click.option('--limit',
+              default=False,
+              type=click.INT,
+              help='Omezit počet dokumentů ke stažení.')
 @click.option('--debug',
               is_flag=True,
               default=False,
               help='Debug výpis do stdout.')
-def isirDownloader(config, debug):
+def isirDownloader(config, limit, debug):
     if debug:
         config.set_opt("debug", True)
+    if limit and limit >= config["dl.concurrency"]:
+        config.set_opt("dl.limit", limit)
     dl = Downloader(config)
     loop = events.get_event_loop()
     loop.run_until_complete(dl.run())
