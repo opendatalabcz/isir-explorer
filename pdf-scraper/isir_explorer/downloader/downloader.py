@@ -141,6 +141,7 @@ class DocumentTask:
         self.finished = False
         self.success = False
         self.documents = []
+        self.file_size = 0
         self.pdf_path = self.parent.tmp_path + f"/{self.doc_id}.pdf"
         self.log_file = "{0}/{1}.log".format(self.parent.log_path, self.doc_id)
         
@@ -184,6 +185,7 @@ class DocumentTask:
             if resp.status == 200:
                 async with aiofiles.open(self.pdf_path, mode='wb') as f:
                     async for chunk in resp.content.iter_chunked(8000):
+                        self.file_size += len(chunk)
                         await f.write(chunk)
         
         self.logger.info(f"Downloaded {self.doc_id}")
@@ -239,9 +241,11 @@ class DownloadStats:
         self.errors = 0
         self.readable = 0
         self.documents = 0
+        self.file_size = 0
 
     def add(self, task):
         self.rows += 1
+        self.file_size += task.file_size
         if not task.success:
             self.errors += 1
         if task.documents:
@@ -250,9 +254,15 @@ class DownloadStats:
 
     def __repr__(self):
         unreadable = self.rows - self.readable
-        res = ""
-        res += f"PDF dokumentů:     {self.rows}\n"
-        res += f"Z toho čitelných:  {self.readable}\n"
-        res += f"Importováno:       {self.documents}\n"
-        res += f"Chyb:              {self.errors}\n"
+        size_mib = self.file_size / (1024 * 1024)
+        if size_mib > 1024:
+            size_str = "{:.2f} GiB".format(size_mib / 1024)
+        else:
+            size_str = "{:.2f} MiB".format(size_mib)
+
+        res = "=================================\n"
+        res += "PDF dokumentů:   {:>6} ({})\n".format(self.rows, size_str)
+        res += "Z toho čitelných:{:>6}\n".format(self.readable)
+        res += "Importováno:     {:>6}\n".format(self.documents)
+        res += "Chyb:            {:>6}\n".format(self.errors)
         return res
