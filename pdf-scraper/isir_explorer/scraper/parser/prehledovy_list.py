@@ -2,6 +2,7 @@ from .model.prehledovy_list import PrehledovyList, ZaznamPohledavky
 from .isir_parser import IsirParser
 from .model.parts.osoba import *
 from .model.parts.spisova_znacka import *
+from .errors import IncompleteDocument
 import re
 
 class PrehledovyListParser(IsirParser):
@@ -124,3 +125,7 @@ class PrehledovyListParser(IsirParser):
 
         # C. Přehled přihlášených nezajištěných pohledávek
         self._prehledNezajistenych()
+
+        # Kontrola, ze Pohledavky byly precteny
+        if 0 == len(self.model.Nezajistene.Pohledavky) + len(self.model.Zajistene.Pohledavky):
+            raise IncompleteDocument("Prehledovy list je prazdny")

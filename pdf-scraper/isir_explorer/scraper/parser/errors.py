@@ -16,6 +16,11 @@ class UnreadableDocument(ParserException):
     """
     pass
 
+class IncompleteDocument(ParserException):
+    """Chyba, která nastane v případě, že dokument se nepodařilo přečíst kompletní.
+    """
+    pass
+
 class NotPdfPortfolio(Exception):
     """PDF soubor není archivem typu pdf-portfolio.
     """
