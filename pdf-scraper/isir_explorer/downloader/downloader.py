@@ -58,7 +58,7 @@ class Downloader:
         (SELECT * FROM isir_udalost
             WHERE
                 priznakanvedlejsiudalost=false AND
-                precteno IS NULL AND
+                dl_precteno IS NULL AND
                 typudalosti IN ({typyudalosti}) LIMIT 1000)
         UNION
         (SELECT iu2.* FROM isir_udalost iu
@@ -71,7 +71,7 @@ class Downloader:
             )
             WHERE
                 iu.priznakanvedlejsiudalost=true AND
-                iu2.precteno IS NULL AND
+                iu2.dl_precteno IS NULL AND
                 iu.typudalosti IN ({typyudalosti}) LIMIT 1000)
         """
         return await self.db.fetch_all(query=query)
@@ -242,9 +242,9 @@ class DocumentTask:
                     raise DownloadTaskFinished()
 
                 # Ulozit zaznam o precteni teto udalosti
-                query = "UPDATE isir_udalost SET precteno=:precteno WHERE id=:id"
+                query = "UPDATE isir_udalost SET dl_precteno=:precteno WHERE id=:id"
                 values = {
-                    "precteno": datetime.now(),
+                    "dl_precteno": datetime.now(),
                     "id": self.row["id"]
                 }
                 await self.parent.db.execute(query=query, values=values)

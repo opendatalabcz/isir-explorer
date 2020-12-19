@@ -89,11 +89,11 @@ class IsirModel:
             i += 1
 
         if "mysql" == dialect:
-            edit_counter = ", edits=edits+1" if cls.COUNT_EDITS else ""
+            edit_counter = ", pocet_zmen=pocet_zmen+1" if cls.COUNT_EDITS else ""
             return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
                 f"ON DUPLICATE KEY UPDATE {update_part} {edit_counter}"
         else:
-            edit_counter = ", edits=EXCLUDED.edits+1" if cls.COUNT_EDITS else ""
+            edit_counter = ", pocet_zmen=EXCLUDED.pocet_zmen+1" if cls.COUNT_EDITS else ""
             return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
                 f"ON CONFLICT ON CONSTRAINT {cls.UNIQUE_CONSTRAINT} DO UPDATE SET {update_part} {edit_counter}"
 
