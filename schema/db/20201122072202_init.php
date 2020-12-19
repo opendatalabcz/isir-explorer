@@ -24,7 +24,7 @@ final class Init extends AbstractMigration
         /* ====================================================================================== */
         /* ============ Prihlaska pohledavky ============ */
 
-        $table = $this->table('prihlaska_pohledavky', ['id' => false, 'primary_key' => ['id']]);
+        $table = $this->table('prihlaska_pohledavky', ['id' => false, 'primary_key' => ['id'], 'comment' => 'Dokument - Prihlaska pohledavky (z pdf)']);
         $table->addColumn('id', 'integer', ['null' => false])
               ->addColumn('pocet_pohledavek', 'integer')
               ->addColumn('celkova_vyse', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
@@ -35,7 +35,7 @@ final class Init extends AbstractMigration
             
         $table = $this->table('pp_pohledavka', ['comment' => 'Pohledavka v prihlasce']);
         $table->addColumn('pp_id', 'integer', ['comment' => 'Prihlaska pohledavky'])
-              ->addColumn('cislo', 'integer')
+              ->addColumn('cislo', 'integer', ['comment' => 'Cislo pohledavky v ramci prihlasky pohledavky'])
               ->addColumn('celkova_vyse', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addColumn('vyse_jistiny', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC, 'null' => true])
               ->addColumn('typ', 'smallinteger', ['null' => true])
@@ -52,7 +52,7 @@ final class Init extends AbstractMigration
         /* ====================================================================================== */
         /* ============ Prehledovy list ============ */
 
-        $table = $this->table('prehledovy_list', ['id' => false, 'primary_key' => ['id'], 'comment' => 'Prehledovy list - souhrn pro nezajistene a zajistene veritele']);
+        $table = $this->table('prehledovy_list', ['id' => false, 'primary_key' => ['id'], 'comment' => 'Dokument - Prehledovy list - souhrn pro nezajistene a zajistene veritele (z pdf)']);
               // Nezajisteni veritele
         $table->addColumn('id', 'integer', ['null' => false])
               ->addColumn('n_celkova_vyse', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
@@ -103,7 +103,7 @@ final class Init extends AbstractMigration
         /* ====================================================================================== */
         /* ============ Zprava pro oddluzeni ============ */
 
-        $table = $this->table('zprava_pro_oddluzeni', ['id' => false, 'primary_key' => ['id']]);
+        $table = $this->table('zprava_pro_oddluzeni', ['id' => false, 'primary_key' => ['id'], 'comment' => 'Dokument - Zprava pro oddluzeni (z pdf)']);
         $table->addColumn('id', 'integer', ['null' => false])
               ->addColumn('odmena_za_sepsani_navrhu', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addColumn('povinnen_vydat_obydli', 'string', ['null' => true])
@@ -163,7 +163,7 @@ final class Init extends AbstractMigration
         /* ====================================================================================== */
         /* ============ Zprava o plneni oddluzeni ============ */
 
-        $table = $this->table('zprava_plneni_oddluzeni', ['id' => false, 'primary_key' => ['id']]);
+        $table = $this->table('zprava_plneni_oddluzeni', ['id' => false, 'primary_key' => ['id'], 'comment' => 'Dokument - Zprava o plneni oddluzeni (z pdf)']);
         $table->addColumn('id', 'integer', ['null' => false])
               ->addColumn('doporuceni_spravce', 'text')
               ->addColumn('doporuceni_spravce_oduvodneni', 'text')
@@ -227,7 +227,7 @@ final class Init extends AbstractMigration
         /* ====================================================================================== */
         /* ============ Zprava o splneni oddluzeni ============ */
 
-        $table = $this->table('zprava_splneni_oddluzeni', ['id' => false, 'primary_key' => ['id']]);
+        $table = $this->table('zprava_splneni_oddluzeni', ['id' => false, 'primary_key' => ['id'], 'comment' => 'Dokument - Zprava o splneni oddluzeni (z pdf)']);
         $table->addColumn('id', 'integer', ['null' => false])
               ->addColumn('oddluzeni_povoleno', 'date', ['null' => true])
               ->addColumn('oddluzeni_schvaleno', 'date', ['null' => true])
@@ -250,7 +250,7 @@ final class Init extends AbstractMigration
               ->addForeignKey('id', 'dokument', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
               ->create();
 
-        $table = $this->table('zspo_odmena_spravce');
+        $table = $this->table('zspo_odmena_spravce', ['comment' => 'Informace o odmene ins. spravce dle zpravy o splneni oddluzeni']);
         $table->addColumn('zspo_id', 'integer', ['comment' => 'Zprava o splneni oddluzeni'])
             ->addColumn('celkova_odmena', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addColumn('celkova_odmena_uhrazeno', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
