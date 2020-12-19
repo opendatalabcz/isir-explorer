@@ -131,7 +131,7 @@ class Downloader:
     async def run(self):
         await self.db.connect()
 
-        rows = await self.db.fetch_all(query="SELECT id, name FROM isir_cis_udalosti WHERE parser = 1")
+        rows = await self.db.fetch_all(query="SELECT id, nazev FROM isir_cis_udalosti WHERE je_citelna = 1")
         for row in rows:
             self.typ_udalosti.append(str(row["id"]))
 
