@@ -47,9 +47,9 @@ class Downloader:
                 download_task.task.cancel()
                 await download_task.task
             except asyncio.CancelledError:
-                print(f"{download_task} cancelled")
+                print(f"{download_task} zrušen")
             except Exception as e:
-                print(f"{download_task} cancellation problem: {e}")
+                print(f"{download_task} se nepodařilo zrušit: {e}")
         self.tasks = []
 
     async def fetchRows(self):
@@ -96,7 +96,7 @@ class Downloader:
                 except DownloadTaskFinished:
                     pass
                 except (asyncio.TimeoutError, aiohttp.ServerConnectionError) as e:
-                    dl_task.logger.info(f"Retrying {dl_task} due to error: {e.__class__.__name__}: {e}")
+                    dl_task.logger.info(f"Opakování {dl_task} kvůli chybě: {e.__class__.__name__}: {e}")
                     try:
                         dl_task.retry()
                         self.dl_tasks[dl_task.task] = dl_task
@@ -104,12 +104,12 @@ class Downloader:
                         continue
                     except Exception as e:
                         # Cannot retry(), application is expected to exit
-                        dl_task.logger.exception("Retry error")
+                        dl_task.logger.exception("Nelze opakovat")
                         print(f"Abort: {e}")
                         await self.cancel_tasks()
                         return
                 except:
-                    dl_task.logger.exception("Import processing error")
+                    dl_task.logger.exception("Chyba během zpracování importu")
     
                 self.stats.add(dl_task)
 
@@ -174,7 +174,7 @@ class DocumentTask:
         consoleHandler.setLevel(logging.INFO if not self.config['debug'] else logging.DEBUG)
         consoleHandler.setFormatter(logFormatter)
         self.logger.addHandler(consoleHandler)
-        self.logger.debug("Log opened")
+        self.logger.debug("Počátek logu")
 
     def __repr__(self):
         return f"doc_id={self.doc_id}"
@@ -184,8 +184,8 @@ class DocumentTask:
         self.finished = False
         self.retry_count += 1
         if self.retry_count > max_retry:
-            raise TooManyRetries(f"Doc id={self.doc_id} failed even after max. amount of retries.")
-        self.logger.info(f"Retry {self.retry_count} of {max_retry} for {self}")
+            raise TooManyRetries(f"Dokument id={self.doc_id} se nepodařilo stáhnou po max. počtu opakování.")
+        self.logger.info(f"Pokus {self.retry_count} z {max_retry} pro {self}")
         self.task = asyncio.create_task(self.run())
         return self
 
@@ -194,7 +194,7 @@ class DocumentTask:
             os.remove(self.log_file)
 
     async def run(self):
-        self.logger.info(f"Requesting {self.url}")
+        self.logger.info(f"Požadavek na dokument {self.url}")
 
         async with self.sess.get(self.url) as resp:
             if resp.status == 200:
@@ -203,14 +203,14 @@ class DocumentTask:
                         self.file_size += len(chunk)
                         await f.write(chunk)
         
-        self.logger.info(f"Downloaded {self.doc_id}")
+        self.logger.info(f"Stažen dokument {self.doc_id}")
 
         scraper = IsirScraper(self.pdf_path, self.parent.config)
         scraper.logger = self.logger
         self.documents = await scraper.readDocument(self.pdf_path)
 
         if self.documents:
-            self.logger.info("Parsed {0}, pocet: {1}".format(self.doc_id, len(self.documents)))
+            self.logger.info("Přečten dokument {0}, dokumentů: {1}".format(self.doc_id, len(self.documents)))
         else:
             if scraper.is_empty:
                 self.empty_document = True
@@ -230,7 +230,7 @@ class DocumentTask:
                     for documentObj in self.documents:
                         await importer.importDocument(documentObj.toDict())
                 except:
-                    self.logger.exception("Import error")
+                    self.logger.exception("Chyba importu")
 
                     # Ulozeni celeho json dokumentu, u ktereho nastal import error
                     json_doc = json.dumps(self.documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
