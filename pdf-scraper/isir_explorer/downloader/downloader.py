@@ -131,7 +131,7 @@ class Downloader:
     async def run(self):
         await self.db.connect()
 
-        rows = await self.db.fetch_all(query="SELECT id, nazev FROM isir_cis_udalosti WHERE je_citelna = 1")
+        rows = await self.db.fetch_all(query="SELECT id, nazev FROM isir_cis_udalosti WHERE je_citelna = TRUE")
         for row in rows:
             self.typ_udalosti.append(str(row["id"]))
 
@@ -194,7 +194,7 @@ class DocumentTask:
             os.remove(self.log_file)
 
     async def run(self):
-        self.logger.info(f"Požadavek na dokument {self.url}")
+        self.logger.info(f"Stahování {self.url}")
 
         async with self.sess.get(self.url) as resp:
             if resp.status == 200:
@@ -242,7 +242,7 @@ class DocumentTask:
                     raise DownloadTaskFinished()
 
                 # Ulozit zaznam o precteni teto udalosti
-                query = "UPDATE isir_udalost SET dl_precteno=:precteno WHERE id=:id"
+                query = "UPDATE isir_udalost SET dl_precteno=:dl_precteno WHERE id=:id"
                 values = {
                     "dl_precteno": datetime.now(),
                     "id": self.row["id"]

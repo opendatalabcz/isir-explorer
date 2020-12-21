@@ -134,7 +134,7 @@ class IsirScraper:
 
         if retcode != 0:
             print(f"Nepodarila se konverze pdftotext, retval: {retcode}", file=sys.stderr)
-            return
+            return []
 
         with open(output_path, 'rb') as f:
             txtBytes = f.read()
