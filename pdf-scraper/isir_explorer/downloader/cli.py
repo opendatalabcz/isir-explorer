@@ -36,8 +36,13 @@ def validate_config_file(ctx, param, value):
 def isirDownloader(config, limit, debug):
     if debug:
         config.set_opt("debug", True)
-    if limit and limit >= config["dl.concurrency"]:
+
+    if limit and limit > 0:
+        # Kontrola, ze pocet soubezne stahovanych nebude vetsi nez limit pro stahovani
+        if config["dl.concurrency"] > limit:
+            config.set_opt("dl.concurrency", limit)
         config.set_opt("dl.limit", limit)
+
     dl = Downloader(config)
     loop = events.get_event_loop()
     loop.run_until_complete(dl.run())
