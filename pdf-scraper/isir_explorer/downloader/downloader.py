@@ -13,12 +13,18 @@ from ..dbimport.db_import import DbImport
 
 class Downloader:
 
+    NOT_FINISHED = 0
+    ALL_COMPLETED = 1
+    CHUNK_COMPLETED = 2
+
+
     def __init__(self, config):
         self.config = config
         self.db = Database(self.config['db.dsn'], min_size=10, max_size=20)
         self.tasks = []
         self.dl_tasks = {}
         self.typ_udalosti = []
+        self.rows = []
         self.transaction_lock = asyncio.Lock()
         self.stats = DownloadStats()
 
@@ -74,20 +80,31 @@ class Downloader:
                 iu2.dl_precteno IS NULL AND
                 iu.typudalosti IN ({typyudalosti}) LIMIT 1000)
         """
-        return await self.db.fetch_all(query=query)
+        self.rows = await self.db.fetch_all(query=query)
 
     async def startDownloads(self, session):
-        rows = await self.fetchRows()
-        finalize = False
+        while True:
+            finalizeState = await self.downloadChunk(self.config["dl.delay_after"], session)
+            if finalizeState == self.ALL_COMPLETED:
+                break
+            if self.config["dl.delay"]:
+                print("Čekání {0}s".format(self.config["dl.delay"]))
+                await asyncio.sleep(self.config["dl.delay"])
+        print(self.stats)
+
+    async def downloadChunk(self, chunk_size, session):
+        await self.fetchRows()
+        finishedTasks = 0
+        finalizeState = self.NOT_FINISHED
 
         while len(self.tasks) < self.config["dl.concurrency"]:
-            if not rows:
+            if not self.rows:
                 break
-            self.schedule_task(session, rows.pop(0))
+            self.schedule_task(session, self.rows.pop(0))
 
         while len(self.tasks):
-            finished, panding = await asyncio.wait(self.tasks, return_when=asyncio.FIRST_EXCEPTION)
-            self.tasks = list(panding)
+            finished, pending = await asyncio.wait(self.tasks, return_when=asyncio.FIRST_EXCEPTION)
+            self.tasks = list(pending)
             for task in finished:
                 dl_task = self.dl_tasks[task]
                 del self.dl_tasks[task]
@@ -107,26 +124,36 @@ class Downloader:
                         dl_task.logger.exception("Nelze opakovat")
                         print(f"Abort: {e}")
                         await self.cancel_tasks()
-                        return
+                        return self.ALL_COMPLETED
                 except:
                     dl_task.logger.exception("Chyba během zpracování importu")
     
+                finishedTasks += 1
                 self.stats.add(dl_task)
 
-            if not finalize and len(self.tasks) < self.config["dl.concurrency"]:
-                if not rows:
-                    rows = await self.fetchRows()
-                    if not rows:
-                        finalize = True
+            # Nahradit dokoncenou ulohu novym stahovanim
+            if not finalizeState and len(self.tasks) < self.config["dl.concurrency"]:
+                # Zpracovany vsechny dokumenty z databaze?
+                if not self.rows:
+                    await self.fetchRows()
+                    if not self.rows:   
+                        finalizeState = self.ALL_COMPLETED
                         continue
 
+                # Dosazen limit na pocet stazenych dokumentu?
                 if self.config["dl.limit"] and self.stats.rows + len(self.tasks) >= self.config["dl.limit"]:
-                    finalize = True
+                    finalizeState = self.ALL_COMPLETED
                     continue
-                
-                self.schedule_task(session, rows.pop(0))
 
-        print(self.stats)
+                # Dosazen limit velikosti aktualni skupiny?
+                if finishedTasks + len(self.tasks) >= chunk_size:
+                    finalizeState = self.CHUNK_COMPLETED
+                    continue
+
+                # Pridat novou ulohu pro stazeni dokumentu
+                self.schedule_task(session, self.rows.pop(0))
+
+        return finalizeState or self.ALL_COMPLETED
 
     async def run(self):
         await self.db.connect()
