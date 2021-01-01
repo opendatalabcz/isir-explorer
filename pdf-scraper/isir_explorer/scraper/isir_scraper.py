@@ -71,14 +71,20 @@ class IsirScraper:
         tmp_unpack_dir = self.unpack_path + "/" + self.document_name
         if not os.path.exists(tmp_unpack_dir):
             os.makedirs(tmp_unpack_dir)
-        unpack_process = await asyncio.create_subprocess_exec(
-            self.config['pdftk'],
-            input_path,
-            "unpack_files",
-            "output",
-            tmp_unpack_dir,
-            stderr=subprocess.DEVNULL
-        )
+        try:
+            unpack_process = await asyncio.create_subprocess_exec(
+                self.config['pdftk'],
+                input_path,
+                "unpack_files",
+                "output",
+                tmp_unpack_dir,
+                stderr=subprocess.DEVNULL
+            )
+        except FileNotFoundError:
+            self.logger.error("Nenalezen program pdftk")
+            # Pokud neni pdftk k dispozici, pokus o rozbaleni pdf portfolia je preskocen
+            raise NotPdfPortfolio
+
         retcode = await unpack_process.wait()
         files = os.listdir(tmp_unpack_dir)
         if files:
