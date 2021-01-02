@@ -27,6 +27,7 @@ class Downloader:
         self.rows = []
         self.transaction_lock = asyncio.Lock()
         self.stats = DownloadStats()
+        self.lastId = 0
 
         self.tmp_base = self.config['tmp_dir'].rstrip("/")
         self.tmp_path = self.tmp_base + "/pdf"
@@ -63,7 +64,8 @@ class Downloader:
         query = f"""
         (SELECT * FROM isir_udalost
             WHERE
-                priznakanvedlejsiudalost=false AND
+                id > {self.lastId} AND
+                priznakanvedlejsiudalost = false AND
                 dl_precteno IS NULL AND
                 typudalosti IN ({typyudalosti}) LIMIT 1000)
         UNION
@@ -73,10 +75,11 @@ class Downloader:
                 iu.spisovaznacka = iu2.spisovaznacka AND
                 iu.oddil = iu2.oddil AND
                 iu.cislovoddilu = iu2.cislovoddilu AND
-                iu2.priznakanvedlejsiudalost=false
+                iu2.priznakanvedlejsiudalost = false
             )
             WHERE
-                iu.priznakanvedlejsiudalost=true AND
+                iu.id > {self.lastId} AND
+                iu.priznakanvedlejsiudalost = true AND
                 iu2.dl_precteno IS NULL AND
                 iu.typudalosti IN ({typyudalosti}) LIMIT 1000)
         """
@@ -87,6 +90,8 @@ class Downloader:
         self.rows = []
         lastDocument = None
         for row in rows:
+            if not self.lastId or row['id'] > self.lastId:
+                self.lastId = row['id']
             if lastDocument is None or lastDocument != row['dokumenturl']:
                 self.rows.append(row)
             lastDocument = row['dokumenturl']
@@ -102,7 +107,8 @@ class Downloader:
         print(self.stats)
 
     async def downloadChunk(self, chunk_size, session):
-        await self.fetchRows()
+        if not self.rows:
+            await self.fetchRows()
         finishedTasks = 0
         finalizeState = self.NOT_FINISHED
 
