@@ -25,6 +25,7 @@ class AppConfig:
         "unpack_filter": "^D-DS-|^K-DS-",
         "save_unreadable": True,
         "sc.save_text": False,
+        "sc.save_unpacked": False,
 
         # Isir ws
         "last_id": None,

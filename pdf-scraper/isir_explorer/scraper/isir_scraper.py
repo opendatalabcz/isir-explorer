@@ -34,6 +34,7 @@ class IsirScraper:
         self.document_name = parts[0]
 
         self.is_empty = False
+        self.unpacked_dir = None
         self.tmp_path = self.config['tmp_dir'].rstrip("/")
         self.unpack_path = self.config['tmp_dir'] + "/unpack"
         self.unreadable_path = self.config['tmp_dir'] + "/unreadable"
@@ -88,7 +89,7 @@ class IsirScraper:
         retcode = await unpack_process.wait()
         files = os.listdir(tmp_unpack_dir)
         if files:
-        
+            self.unpacked_dir = tmp_unpack_dir
             if self.config['unpack_filter']:
                 regex = re.compile(self.config['unpack_filter'])
                 files = [i for i in files if not regex.match(i)]
@@ -122,6 +123,9 @@ class IsirScraper:
 
         if not documents and self.config['save_unreadable']:
             os.rename(input_path, self.unreadable_path + "/" + self.document_name + ".pdf")
+
+        if self.unpacked_dir and not self.config['sc.save_unpacked']:
+            shutil.rmtree(self.unpacked_dir)
 
         return documents
 

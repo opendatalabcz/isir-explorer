@@ -224,8 +224,12 @@ class DocumentTask:
         self.rmEmptyLog()
 
         # Odstranit vstupni pdf soubor
-        if not self.parent.config["dl.keep_pdf"]
-            os.remove(self.pdf_path)
+        if not self.parent.config["dl.keep_pdf"]:
+            try:
+                os.remove(self.pdf_path)
+            except FileNotFoundError:
+                # Pokud je aktivni save_unreadable, soubor mohl byt jiz presunut
+                pass
 
 
     async def run(self):
