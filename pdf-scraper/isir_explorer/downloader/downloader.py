@@ -220,6 +220,14 @@ class DocumentTask:
         if os.path.getsize(self.log_file) == 0:
             os.remove(self.log_file)
 
+    def cleanup(self):
+        self.rmEmptyLog()
+
+        # Odstranit vstupni pdf soubor
+        if not self.parent.config["dl.keep_pdf"]
+            os.remove(self.pdf_path)
+
+
     async def run(self):
         self.logger.info(f"Stahování {self.url}")
 
@@ -278,7 +286,7 @@ class DocumentTask:
 
         self.success = True
         self.finished = True
-        self.rmEmptyLog()
+        self.cleanup()
         raise DownloadTaskFinished()
 
 class DownloadTaskFinished(Exception):

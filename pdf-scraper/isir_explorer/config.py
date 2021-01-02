@@ -41,6 +41,7 @@ class AppConfig:
         "dl.concurrency": 5,
         "dl.request_timeout": 300,
         "dl.retry_times": 3,
+        "dl.keep_pdf": False,                               # Zachovat vsechny stazene pdf soubory
         "dl.limit": 0,                                      # Omezit počet dokumentů ke stažení
         "dl.delay": 3,                                      # Zpozdeni v sekundach
         "dl.delay_after": 100,                              # Po kolika dokumentech aplikovat zpozdeni
