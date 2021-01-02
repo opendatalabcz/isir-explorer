@@ -112,9 +112,11 @@ class IsirScraper:
             files = [input_path]
         except EmptyPdfPortfolio:
             self.is_empty = True
+            self.cleanup()
             return []
         except:
             self.logger.exception("Unpack error")
+            self.cleanup()
             return []
 
         documents = []
@@ -124,10 +126,12 @@ class IsirScraper:
         if not documents and self.config['save_unreadable']:
             os.rename(input_path, self.unreadable_path + "/" + self.document_name + ".pdf")
 
+        self.cleanup()
+        return documents
+
+    def cleanup(self): 
         if self.unpacked_dir and not self.config['sc.save_unpacked']:
             shutil.rmtree(self.unpacked_dir)
-
-        return documents
 
     async def readDocumentSingle(self, input_path, multidoc=True):
         output_path = self.tmp_path+'/'+self.document_name
