@@ -80,7 +80,16 @@ class Downloader:
                 iu2.dl_precteno IS NULL AND
                 iu.typudalosti IN ({typyudalosti}) LIMIT 1000)
         """
-        self.rows = await self.db.fetch_all(query=query)
+
+        # Odstranit duplicitni udalosti, ktere odkazuji na stejny dokument
+        rows = await self.db.fetch_all(query=query)
+        rows = sorted(rows, key = lambda i: i['dokumenturl'])
+        self.rows = []
+        lastDocument = None
+        for row in rows:
+            if lastDocument is None or lastDocument != row['dokumenturl']:
+                self.rows.append(row)
+            lastDocument = row['dokumenturl']
 
     async def startDownloads(self, session):
         while True:
@@ -280,11 +289,18 @@ class DocumentTask:
                     self.finished = True
                     raise DownloadTaskFinished()
 
-                # Ulozit zaznam o precteni teto udalosti
-                query = "UPDATE isir_udalost SET dl_precteno=:dl_precteno WHERE id=:id"
+                # Ulozit zaznam o precteni tohoto dokumentu (vsechny jeho odalosti)
+                query = """UPDATE isir_udalost SET dl_precteno=:dl_precteno
+                    WHERE
+                        spisovaznacka=:spisovaznacka AND
+                        oddil=:oddil AND
+                        cislovoddilu=:cislovoddilu
+                """
                 values = {
                     "dl_precteno": datetime.now(),
-                    "id": self.row["id"]
+                    "spisovaznacka": self.row["spisovaznacka"],
+                    "oddil": self.row["oddil"],
+                    "cislovoddilu": self.row["cislovoddilu"],
                 }
                 await self.parent.db.execute(query=query, values=values)
 
