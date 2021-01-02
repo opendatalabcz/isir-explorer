@@ -14,13 +14,17 @@ class AppConfig:
 
     # Vychozi hodnoty v nastaveni a popis konfigurace
     DEFAULTS = {
+        # Globalni
+        "tmp_dir": "/tmp/isir",                             # Adresar pro docasne soubory
+        "debug": False,
+
+        # Scraper
         "pdftotext": "pdftotext",                           # Cesta ke spusteni programu pdftotext
         "pdftk": "pdftk",                                   # Cesta ke spusteni programu pdftk
-        "tmp_dir": "/tmp/isir",                             # Adresar pro docasne soubory
         "doctype": False,                                   # Typ dokumentu, nespecifikovan => autodetekce
-        "debug": False,
         "unpack_filter": "^D-DS-|^K-DS-",
         "save_unreadable": True,
+        "sc.save_text": False,
 
         # Isir ws
         "last_id": None,

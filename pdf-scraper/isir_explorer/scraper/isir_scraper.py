@@ -139,17 +139,20 @@ class IsirScraper:
         retcode = await process.wait()
 
         if retcode != 0:
-            print(f"Nepodarila se konverze pdftotext, retval: {retcode}", file=sys.stderr)
+            print(f"Nepodarila se konverze pdftotext, kod: {retcode}", file=sys.stderr)
             return []
 
         with open(output_path, 'rb') as f:
             txtBytes = f.read()
+        os.remove(output_path)
 
         decryptor = IsirDecryptor(self.logger)
         data = decryptor.decrypt(txtBytes)
-        
-        with open(output_path+".dec", "w") as f:
-            f.write(data)
+
+        # Ulozit desifrovany textovy vystup
+        if self.config['sc.save_text']:
+            with open(output_path+".dec", "w") as f:
+                f.write(data)
 
         # Parse
         documents = []
