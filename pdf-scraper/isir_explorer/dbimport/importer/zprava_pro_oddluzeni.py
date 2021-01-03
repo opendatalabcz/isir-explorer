@@ -33,6 +33,9 @@ class ZpravaProOddluzeniImporter(IsirImporter):
     def _typVeriteleDistribSchematu(self, jeZajisteny, zpravaId, schema):
         res = []
         for veritel in schema:
+            # Muze byt None pokud je napr. prihlaska zpetvzata
+            if veritel["Castka"] is None:
+                veritel["Castka"] = 0
             res.append({
                 'zpro_id': zpravaId,
                 'typ': jeZajisteny,
