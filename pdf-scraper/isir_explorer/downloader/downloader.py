@@ -67,6 +67,7 @@ class Downloader:
                 id > {self.lastId} AND
                 priznakanvedlejsiudalost = false AND
                 dl_precteno IS NULL AND
+                dokumenturl IS NOT NULL AND
                 typudalosti IN ({typyudalosti}) LIMIT 1000)
         UNION
         (SELECT iu2.* FROM isir_udalost iu
@@ -81,6 +82,7 @@ class Downloader:
                 iu.id > {self.lastId} AND
                 iu.priznakanvedlejsiudalost = true AND
                 iu2.dl_precteno IS NULL AND
+                iu2.dokumenturl IS NOT NULL AND
                 iu.typudalosti IN ({typyudalosti}) LIMIT 1000)
         """
 
@@ -231,15 +233,17 @@ class DocumentTask:
         self.task = asyncio.create_task(self.run())
         return self
 
-    def rmEmptyLog(self):
-        if os.path.getsize(self.log_file) == 0:
+    def cleanup(self):
+        has_logfile = (os.path.getsize(self.log_file) > 0)
+        if not has_logfile:
             os.remove(self.log_file)
 
-    def cleanup(self):
-        self.rmEmptyLog()
+        remove_pdf = not self.parent.config["dl.keep_pdf"]
+        if "log" == self.parent.config["dl.keep_pdf"]:
+            remove_pdf = not has_logfile
 
         # Odstranit vstupni pdf soubor
-        if not self.parent.config["dl.keep_pdf"]:
+        if remove_pdf:
             try:
                 os.remove(self.pdf_path)
             except FileNotFoundError:
