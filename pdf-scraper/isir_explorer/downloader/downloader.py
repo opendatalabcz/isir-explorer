@@ -5,6 +5,7 @@ import aiohttp
 import aiofiles
 import logging
 from databases import Database
+from databases.core import Connection
 from datetime import datetime, timedelta
 from .errors import DownloaderException, TooManyRetries
 from ..webservice.isir_models import IsirUdalost
@@ -281,8 +282,11 @@ class DocumentTask:
         importer = DbImport(self.config, db=self.parent.db)
         importer.isir_id = self.doc_id
 
-        async with self.parent.transaction_lock:
-            async with self.parent.db.transaction():
+        # Manualni vytvoreni Connection objektu kvuli nedostatku v issue #230 (encode/databases)
+        conn = Connection(self.parent.db._backend)
+        self.logger.debug(f"Dokument {self.doc_id}, connId="+str(id(conn)))
+        async with conn:
+            async with conn.transaction():
                 # Import precteneho dokumentu
                 try:
                     for documentObj in self.documents:
