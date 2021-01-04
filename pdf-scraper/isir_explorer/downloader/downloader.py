@@ -28,7 +28,7 @@ class Downloader:
         self.rows = []
         self.transaction_lock = asyncio.Lock()
         self.stats = DownloadStats()
-        self.lastId = 0
+        self.lastId = [0,0] #hlavni, vedlejsi
 
         self.tmp_base = self.config['tmp_dir'].rstrip("/")
         self.tmp_path = self.tmp_base + "/pdf"
@@ -65,11 +65,11 @@ class Downloader:
         query = f"""
         (SELECT * FROM isir_udalost
             WHERE
-                id > {self.lastId} AND
+                id > {self.lastId[0]} AND
                 priznakanvedlejsiudalost = false AND
                 dl_precteno IS NULL AND
                 dokumenturl IS NOT NULL AND
-                typudalosti IN ({typyudalosti}) LIMIT 1000)
+                typudalosti IN ({typyudalosti}) ORDER BY id ASC LIMIT 1000)
         UNION
         (SELECT iu2.* FROM isir_udalost iu
             JOIN isir_udalost iu2
@@ -80,11 +80,11 @@ class Downloader:
                 iu2.priznakanvedlejsiudalost = false
             )
             WHERE
-                iu.id > {self.lastId} AND
+                iu.id > {self.lastId[1]} AND
                 iu.priznakanvedlejsiudalost = true AND
                 iu2.dl_precteno IS NULL AND
                 iu2.dokumenturl IS NOT NULL AND
-                iu.typudalosti IN ({typyudalosti}) LIMIT 1000)
+                iu.typudalosti IN ({typyudalosti}) ORDER BY iu.id ASC LIMIT 1000)
         """
 
         # Odstranit duplicitni udalosti, ktere odkazuji na stejny dokument
@@ -93,8 +93,11 @@ class Downloader:
         self.rows = []
         lastDocument = None
         for row in rows:
-            if not self.lastId or row['id'] > self.lastId:
-                self.lastId = row['id']
+            if not row['priznakanvedlejsiudalost'] and row['id'] > self.lastId[0]:
+                self.lastId[0] = row['id']
+            elif row['priznakanvedlejsiudalost'] and row['id'] > self.lastId[1]:
+                self.lastId[1] = row['id']
+
             if lastDocument is None or lastDocument != row['dokumenturl']:
                 self.rows.append(row)
             lastDocument = row['dokumenturl']
