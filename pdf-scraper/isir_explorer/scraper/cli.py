@@ -48,14 +48,19 @@ def validate_doctype(ctx, param, value):
               is_flag=True,
               default=False,
               help='Aktivuje čtení více dokumentů z jednoho vstupního PDF. Výstupem je pole objektů s nalezenými dokumenty.')
+@click.option('--save-text',
+              is_flag=True,
+              default=False,
+              help='Do dočasného adresáře bude zapsána dekódovaná textová podoba PDF formuláře.')
 @click.option('--debug',
               is_flag=True,
               default=False,
               help='Debug výpis do stdout.')
-def isirScraper(pdf_file, output, config, doctype, multidoc, debug):
+def isirScraper(pdf_file, output, config, doctype, multidoc, save_text, debug):
     config.set_opt("debug", debug)
     config.set_opt("doctype", doctype)
     config.set_opt("multidoc", multidoc)
+    config.set_opt("sc.save_text", save_text)
     config.set_opt("_out", output)
     parser = IsirScraper(pdf_file, config)
     loop = events.get_event_loop()
