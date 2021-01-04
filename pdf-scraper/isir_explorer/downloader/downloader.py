@@ -238,6 +238,12 @@ class DocumentTask:
         return self
 
     def cleanup(self):
+        # Uzavrit otevrene log soubory
+        handlers = self.logger.handlers[:]
+        for handler in handlers:
+            handler.close()
+            self.logger.removeHandler(handler)
+            
         has_logfile = (os.path.getsize(self.log_file) > 0)
         if not has_logfile:
             os.remove(self.log_file)
