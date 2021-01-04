@@ -290,6 +290,7 @@ class DocumentTask:
 
         importer = DbImport(self.config, db=self.parent.db)
         importer.isir_id = self.doc_id
+        importer.isir_ins = self.row["spisovaznacka"]
 
         # Manualni vytvoreni Connection objektu kvuli nedostatku v issue #230 (encode/databases)
         conn = Connection(self.parent.db._backend)

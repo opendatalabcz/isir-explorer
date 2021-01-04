@@ -6,6 +6,7 @@ class IsirImporter:
         self.db = db
         self.doc = document
         self.isir_id = None
+        self.isir_ins = None
         
         # can be postgresql / postgres
         if "postgres" in self.db.url.scheme:
@@ -59,6 +60,8 @@ class IsirImporter:
         dokumentId = await self.insert("dokument",{
             "isir_id": 
                 self.isir_id,
+            "spisova_znacka":
+                self.isir_ins,
             "typ":
                 self.TYP_DOKUMENTU,
             "verze_dokument":

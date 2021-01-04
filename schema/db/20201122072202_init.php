@@ -14,11 +14,14 @@ final class Init extends AbstractMigration
 
       $table = $this->table('dokument', ['comment' => 'Asociace pdf dokumentu z ISIRu k prectenemu dokumentu']);
       $table->addColumn('isir_id', 'string', ['null' => true, 'limit' => 100, 'comment' => 'ID dokumentu v ISIRu (dokumenturl)'])
+          ->addColumn('spisova_znacka', 'string', ['null' => false, 'limit' => 50])
           ->addColumn('typ', 'smallinteger', ['null' => false, 'comment' => 'Typ parseru'])
           ->addColumn('verze_dokument', 'string', ['null' => true, 'limit' => 10, 'comment' => 'Oznaceni verze pdf dokumentu (je-li dostupne)'])
           ->addColumn('verze_scraper', 'smallinteger', ['null' => true, 'comment' => 'Verze scraperu (pro dany typ dokumentu), ktery byl pouzit pro precteni'])
           ->addColumn('datum', 'timestamp', ['null' => false, 'comment' => 'Datum precteni dokumentu'])
           ->addIndex(['isir_id'], ['unique' => false])
+          ->addIndex(['spisova_znacka'], ['unique' => false])
+          ->addForeignKey('spisova_znacka', 'isir_vec', 'spisovaznacka', ['delete'=> 'CASCADE', 'update'=> 'RESTRICT'])
           ->create();
 
         /* ====================================================================================== */
