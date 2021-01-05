@@ -18,7 +18,7 @@ final class Init extends AbstractMigration
           ->addColumn('typ', 'smallinteger', ['null' => false, 'comment' => 'Typ parseru'])
           ->addColumn('verze_dokument', 'string', ['null' => true, 'limit' => 10, 'comment' => 'Oznaceni verze pdf dokumentu (je-li dostupne)'])
           ->addColumn('verze_scraper', 'smallinteger', ['null' => true, 'comment' => 'Verze scraperu (pro dany typ dokumentu), ktery byl pouzit pro precteni'])
-          ->addColumn('pdf_velikost', 'decimal', ['null' => true, 'scale' => 6, 'precision' => 6, 'comment' => 'Datovy objem pdf souboru v MiB'])
+          ->addColumn('pdf_velikost', 'decimal', ['null' => true, 'scale' => 3, 'precision' => 9, 'comment' => 'Datovy objem pdf souboru v MiB'])
           ->addColumn('datum', 'timestamp', ['null' => false, 'comment' => 'Datum precteni dokumentu'])
           ->addIndex(['isir_id'], ['unique' => false])
           ->addIndex(['spisova_znacka'], ['unique' => false])

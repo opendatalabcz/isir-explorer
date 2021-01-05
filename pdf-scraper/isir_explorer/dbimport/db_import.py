@@ -24,7 +24,7 @@ class DbImport:
             self.db = Database(self.config['db.dsn'])
         else:
             self.db = db
-        self.isir_id = None
+        self.metadata = {}
 
     async def importDocument(self, doc):
         try:
@@ -34,7 +34,14 @@ class DbImport:
             raise UnknownDocument()
 
         importer = importerCls(self.db, doc)
-        importer.isir_id = self.isir_id
+
+        if "isir_record" in self.metadata:
+            importer.isir_id = self.metadata["isir_record"]["dokumenturl"]
+            importer.isir_ins = self.metadata["isir_record"]["spisovaznacka"]
+
+        if "pdf_file_size" in self.metadata:
+            importer.pdf_file_size = round(self.metadata["pdf_file_size"], 3)
+
         await importer.startImport()
 
     async def run(self, filename):

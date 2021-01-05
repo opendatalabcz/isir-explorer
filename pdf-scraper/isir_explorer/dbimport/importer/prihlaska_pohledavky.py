@@ -49,9 +49,9 @@ class PrihlaskaImporter(IsirImporter):
             return None
 
     async def _importAdresyOsoby(self, idOsoby, adresa):
-        data_sidlo = [
-            "osoba_id": idOsoby
-        ]
+        data_sidlo = {
+            "osoba_id": idOsoby,
+        }
 
         try:
             data_sidlo["ulice"] = adresa["Ulice"] or None
@@ -154,7 +154,7 @@ class PrihlaskaImporter(IsirImporter):
         except:
             data_osoby["reg_cislo"] = None
 
-        if len(data_osoby["ic"]) > 9:
+        if data_osoby["ic"] and len(data_osoby["ic"]) > 9:
             data_osoby["ic"] = None
             if data_osoby["reg_cislo"] is None:
                 data_osoby["reg_cislo"] = str(data_osoby["ic"])

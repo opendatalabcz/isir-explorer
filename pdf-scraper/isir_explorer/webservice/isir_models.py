@@ -95,7 +95,7 @@ class IsirModel:
         else:
             edit_counter = ", pocet_zmen=EXCLUDED.pocet_zmen+1" if cls.COUNT_EDITS else ""
             return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
-                f"ON CONFLICT ON CONSTRAINT {cls.UNIQUE_CONSTRAINT} DO UPDATE SET {update_part} {edit_counter}"
+                f"ON CONFLICT {cls.UNIQUE_CONSTRAINT} DO UPDATE SET {update_part} {edit_counter}"
 
     @staticmethod
     def get_enum(enum, val):
@@ -140,7 +140,7 @@ class IsirUdalost(IsirModel):
     IGNORED = ['poznamka']
     IGNORE_IN_UPDATE = ['id', 'spisovaZnacka', 'oddil', 'cisloVOddilu', 'typUdalosti','datumZalozeni']
     TABLE_NAME = "isir_udalost"
-    UNIQUE_CONSTRAINT = "isir_udalost_pkey"
+    UNIQUE_CONSTRAINT = "ON CONSTRAINT isir_udalost_pkey"
     COMPUTED_FIELDS = ['poznamka_json', 'stav', 'soud']
 
     UDALOST_FIELDS = ['datumUdalostZrusena', 'datumPravniMoci',
@@ -211,7 +211,7 @@ class IsirOsoba(IsirModel):
              'datumOsobaVeVeciZrusena', 'datumNarozeni', 'soud', 'datumZalozeni', 'idZalozeni']
     IGNORE_IN_UPDATE = ['spisovaZnacka', 'idOsoby', 'datumZalozeni', 'idZalozeni']
     TABLE_NAME = "isir_osoba"
-    UNIQUE_CONSTRAINT = "isir_osoba_pkey"
+    UNIQUE_CONSTRAINT = "(spisovaznacka, idosoby)"
 
     @staticmethod
     def format_column(columnName, data):
@@ -249,7 +249,7 @@ class IsirVec(IsirModel):
     IGNORE_IN_UPDATE = ['spisovaZnacka']
     COMPUTED_FIELDS = ['datumAktualizace']
     TABLE_NAME = "isir_vec"
-    UNIQUE_CONSTRAINT = "isir_vec_pkey"
+    UNIQUE_CONSTRAINT = "ON CONSTRAINT isir_vec_pkey"
 
     @staticmethod
     def format_column(columnName, data):
@@ -269,7 +269,7 @@ class IsirStavVeci(IsirModel):
 
     ATTRS = ['spisovaZnacka', 'druhStavRizeni', 'datum', 'rid']
     TABLE_NAME = "isir_vec_stav"
-    UNIQUE_CONSTRAINT = "isir_vec_stav_pkey"
+    UNIQUE_CONSTRAINT = "ON CONSTRAINT isir_vec_stav_pkey"
     COMPUTED_FIELDS = ['datum', 'rid']
     COUNT_EDITS = False
 
