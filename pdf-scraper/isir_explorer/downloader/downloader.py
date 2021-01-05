@@ -149,11 +149,7 @@ class Downloader:
                         self.tasks.append(dl_task.task)
                         continue
                     except Exception as e:
-                        # Cannot retry(), application is expected to exit
                         dl_task.logger.exception("Nelze opakovat")
-                        print(f"Abort: {e}")
-                        await self.cancel_tasks()
-                        return self.ALL_COMPLETED
                 except KeyboardInterrupt:
                     raise
                 except:
@@ -284,7 +280,7 @@ class DocumentTask:
         async with self.sess.get(self.url) as resp:
             if resp.status == 200:
                 async with aiofiles.open(self.pdf_path, mode='wb') as f:
-                    async for chunk in resp.content.iter_chunked(4096):
+                    async for chunk, _ in resp.content.iter_chunks():
                         self.file_size += len(chunk)
                         await f.write(chunk)
             else:
