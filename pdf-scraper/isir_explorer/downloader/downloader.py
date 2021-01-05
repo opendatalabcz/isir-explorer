@@ -111,6 +111,7 @@ class Downloader:
                 print("Čekání {0}s".format(self.config["dl.delay"]))
                 await asyncio.sleep(self.config["dl.delay"])
         print(self.stats)
+        await self.stats.save(self.db)
 
     async def downloadChunk(self, chunk_size, session):
         if not self.rows:
@@ -349,6 +350,7 @@ class DownloadStats:
         self.empty_documents = 0
         self.file_size = 0
         self.doc_types = {}
+        self.stats_record = {}
 
     def add(self, task):
         self.rows += 1
@@ -366,6 +368,12 @@ class DownloadStats:
                 self.doc_types[typ] = 1
             else:
                 self.doc_types[typ] += 1
+
+    async def save(self, db):
+        column_names = list(self.stats_record.keys())
+        placeholders = map(lambda x:":"+x, column_names)
+        query = f"INSERT INTO dl_stats (" + ",".join(column_names) + ") VALUES ("+ ",".join(placeholders) +")"
+        await db.execute(query=query, values=self.stats_record)
 
     def __repr__(self):
         now = datetime.now()
@@ -393,5 +401,17 @@ class DownloadStats:
         for doc in doc_types_sorted:
             num = doc_types_sorted[doc]
             res += doc.ljust(30) + "{:>5}\n".format(num)
+
+        self.stats_record = {
+            "tstart": self.start,
+            "tend": now,
+            "seconds": int(delta_time.total_seconds()),
+            "mib": round(size_mib,6),
+            "docs": self.rows,
+            "not_empty": not_empty,
+            "readable": self.readable,
+            "imported": self.documents,
+            "errors": self.errors,
+        }
 
         return res
