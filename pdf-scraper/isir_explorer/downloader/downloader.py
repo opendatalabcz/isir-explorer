@@ -141,7 +141,7 @@ class Downloader:
                     raise task.exception()
                 except DownloadTaskFinished:
                     pass
-                except (asyncio.TimeoutError, aiohttp.ServerConnectionError) as e:
+                except (asyncio.TimeoutError, aiohttp.ClientConnectionError) as e:
                     dl_task.logger.info(f"Opakování {dl_task} kvůli chybě: {e.__class__.__name__}: {e}")
                     try:
                         dl_task.retry()
