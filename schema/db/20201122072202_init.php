@@ -29,6 +29,7 @@ final class Init extends AbstractMigration
 
         $table = $this->table('prihlaska_pohledavky', ['id' => false, 'primary_key' => ['id'], 'comment' => 'Dokument - Prihlaska pohledavky (z pdf)']);
         $table->addColumn('id', 'integer', ['null' => false])
+              ->addColumn('cislo_prihlasky', 'integer', ['null' => true, 'comment' => 'Cislo prihlasky pohledavky v ins. rizeni (dle cisla v oddilu P)'])
               ->addColumn('pocet_pohledavek', 'integer')
               ->addColumn('celkova_vyse', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addColumn('celkova_vyse_nezajistenych', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])

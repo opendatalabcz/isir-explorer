@@ -34,6 +34,12 @@ class IsirImporter:
         query = f"INSERT INTO {table} (" + ",".join(column_names) + ") VALUES ("+ ",".join(placeholders) +")"
         await self.db.execute_many(query=query, values=dataset)
 
+    def addIsirRecord(self, record):
+        """Asociace importovaneho dokumentu k radku v isir_udalost
+        """
+        self.isir_id = self.row['dokumenturl']
+        self.isir_ins = self.row["spisovaznacka"]
+
     def dateFormat(self, date):
         """ Konverze data do formátu data pro databázi (datetimeobject)
         Vstupní formát je české zadání typu d.m.r

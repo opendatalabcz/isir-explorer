@@ -18,6 +18,30 @@ class PrihlaskaImporter(IsirImporter):
         "uspokojovaná pouze z majetku poskytnutého k zajištění": 6,
     }
 
+    def __init__(self, db, document):
+        super().__init__(db, document)
+
+        self.prihlaskaId = None
+        self.cisloPrihlasky = None
+
+    def addIsirRecord(self, record):
+        """Asociace importovaneho dokumentu k radku v isir_udalost
+        """
+        super().__init__(record)
+
+        # Nastavit cislo prihlasky dle cisla oddilu v sekci P
+        # Text. vyjadreni oddilu, napr. P10
+        oddil = self.row['oddil']
+
+        if oddil[0] != "P":
+            return
+
+        try:
+            self.cisloPrihlasky = int(oddil[1:])
+        except:
+            return
+        
+
     def typPohledavky(self, typ):
         try:
             return self.TYP_POHLEDAVKY[typ]
@@ -149,6 +173,8 @@ class PrihlaskaImporter(IsirImporter):
         self.prihlaskaId = await self.insert("prihlaska_pohledavky",{
             "id":
                 dokumentId,
+            "cislo_prihlasky":
+                self.cisloPrihlasky,
             "pocet_pohledavek": 
                 self.doc["Pohledavky"]["Pocet_pohledavek"],
             "celkova_vyse":

@@ -289,8 +289,7 @@ class DocumentTask:
         self.logger.debug(json.dumps(self.documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False))
 
         importer = DbImport(self.config, db=self.parent.db)
-        importer.isir_id = self.doc_id
-        importer.isir_ins = self.row["spisovaznacka"]
+        importer.addIsirRecord(self.row)
 
         # Manualni vytvoreni Connection objektu kvuli nedostatku v issue #230 (encode/databases)
         conn = Connection(self.parent.db._backend)
