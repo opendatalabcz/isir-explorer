@@ -35,8 +35,6 @@ final class Isir extends AbstractMigration
             ->create();
 
         $table = $this->table('isir_osoba', [
-            'id' => false,
-            'primary_key' => ['spisovaznacka', 'idosoby'],
             'comment' => 'Subjekty evidovane v insolvencnim rejstriku (zdroj: isir-ws)'
         ]);
         $table->addColumn('spisovaznacka', 'string', ['null' => false, 'limit' => 50])
@@ -59,9 +57,11 @@ final class Isir extends AbstractMigration
             ->addColumn('datumzalozeni', 'timestamp', ['null' => true, 'comment' => 'Datum prvniho vlozeni zaznamu teto osoby do ins. rejstriku'])
             ->addColumn('idzalozeni', 'integer', ['null' => true, 'comment' => 'Id udalosti (isir_udalost), ktera zalozila tuto osobu'])
             ->addColumn('pocet_zmen', 'smallinteger', ['null' => true, 'default' => 0, 'comment' => 'Kolikrat byl zaznam teto osoby v rejstriku zmenen'])
+            ->addColumn('cislo_veritele', 'smallinteger', ['null' => true, 'comment' => 'Pokud jde o veritele, cislo veritele v tomto rizeni - nejde o hodnotu z API, je doplnena dle prehledoveho listu'])
 
             ->addIndex(['ic'], ['unique' => false])
             ->addIndex(['rc'], ['unique' => false])
+            ->addIndex(['spisovaznacka', 'idosoby'], ['unique' => true])
             ->addIndex(['nazevosoby', 'jmeno', 'datumnarozeni'], ['unique' => false])
 
             ->create();

@@ -183,11 +183,14 @@ final class Init extends AbstractMigration
         $table = $this->table('zpro_distribucni_schema', ['comment' => 'Distribucni schema dle zpravy pro oddluzeni']);
         $table->addColumn('zpro_id', 'integer', ['comment' => 'Zprava pro oddluzeni'])
             ->addColumn('typ', 'boolean', ['comment' => 'Nezajisteny/zajisteny veritel'])
-            ->addColumn('veritel', 'integer', ['comment' => 'Cislo veritele'])
+            ->addColumn('veritel', 'integer', ['comment' => 'Cislo veritele, jak je uvedeno v dokumentu'])
+            ->addColumn('veritel_id', 'integer', ['comment' => 'Asociace veritele na isir_osoba, je doplneno dle cisla veritele a nemusi byt vzdy presne', 'null' => true])
             ->addColumn('castka', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addColumn('podil', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addForeignKey('zpro_id', 'zprava_pro_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+            ->addForeignKey('veritel_id', 'isir_osoba', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
             ->addIndex(['zpro_id'], ['unique' => false])
+            ->addIndex(['veritel_id'], ['unique' => false])
             ->create();
 
         $table = $this->table('zpro_predpoklad_uspokojeni', ['comment' => 'Predpoklad uspokojeni dle zpravy pro oddluzeni']);
@@ -249,11 +252,14 @@ final class Init extends AbstractMigration
 
         $table = $this->table('zplo_vykaz_prerozdeleni_veritel', ['comment' => 'Vykaz prerozdeleni pro jednotlive veritele']);
         $table->addColumn('zplo_id', 'integer', ['comment' => 'Zprava o plneni oddluzeni'])
-              ->addColumn('veritel', 'string')
+              ->addColumn('veritel', 'string', ['comment' => 'Textove oznaceni veritele, tak jak je to uvedeno v dokumentu'])
+              ->addColumn('veritel_id', 'integer', ['comment' => 'Asociace veritele na isir_osoba, je doplneno dle textoveho popisu a nemusi byt vzdy presne', 'null' => true])
               ->addColumn('castka', 'decimal', ['comment' => 'Celkova dluzna castka', 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addColumn('podil', 'decimal', ['comment' => 'Podil veritele na distr. schematu', 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addForeignKey('zplo_id', 'zprava_plneni_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+              ->addForeignKey('veritel_id', 'isir_osoba', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
               ->addIndex(['zplo_id'], ['unique' => false])
+              ->addIndex(['veritel_id'], ['unique' => false])
               ->create();
 
         $table = $this->table('zplo_vykaz_prerozdeleni', ['comment' => 'Vykaz prerozdeleni po jednotlivych mesicich pro jednotlive veritele']);
