@@ -24,6 +24,7 @@ class Downloader:
         self.db = Database(self.config['db.dsn'], min_size=10, max_size=20)
         self.tasks = []
         self.dl_tasks = {}
+        self.forceStop = False
         self.typ_udalosti = []
         self.rows = []
         self.transaction_lock = asyncio.Lock()
@@ -48,9 +49,15 @@ class Downloader:
         self.dl_tasks[asyncio_task] = request_task
         self.tasks.append(asyncio_task)
 
+    def cancel_tasks_sync(self):
+        for task in self.tasks:
+            download_task = self.dl_tasks[task]
+            download_task.task.cancel()
+        self.tasks = []
+
     async def cancel_tasks(self):
         for task in self.tasks:
-            download_task = self.dl_tasks[download_task]
+            download_task = self.dl_tasks[task]
             try:
                 download_task.task.cancel()
                 await download_task.task
@@ -105,7 +112,7 @@ class Downloader:
     async def startDownloads(self, session):
         while True:
             finalizeState = await self.downloadChunk(self.config["dl.delay_after"], session)
-            if finalizeState == self.ALL_COMPLETED:
+            if self.forceStop or finalizeState == self.ALL_COMPLETED:
                 break
             if self.config["dl.delay"]:
                 print("Čekání {0}s".format(self.config["dl.delay"]))
@@ -147,6 +154,8 @@ class Downloader:
                         print(f"Abort: {e}")
                         await self.cancel_tasks()
                         return self.ALL_COMPLETED
+                except KeyboardInterrupt:
+                    raise
                 except:
                     dl_task.logger.exception("Chyba během zpracování importu")
     
@@ -155,6 +164,10 @@ class Downloader:
 
             # Nahradit dokoncenou ulohu novym stahovanim
             if not finalizeState and len(self.tasks) < self.config["dl.concurrency"]:
+                if self.forceStop:
+                    finalizeState = self.ALL_COMPLETED
+                    continue
+
                 # Zpracovany vsechny dokumenty z databaze?
                 if not self.rows:
                     await self.fetchRows()
@@ -189,6 +202,9 @@ class Downloader:
             await self.startDownloads(session)
 
         await self.db.disconnect()
+
+        if self.forceStop:
+            asyncio.get_event_loop().stop()
 
 class DocumentTask:
 
@@ -304,6 +320,8 @@ class DocumentTask:
                 try:
                     for documentObj in self.documents:
                         await importer.importDocument(documentObj.toDict())
+                except KeyboardInterrupt:
+                    raise
                 except:
                     self.logger.exception("Chyba importu")
 

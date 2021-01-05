@@ -45,5 +45,10 @@ def isirDownloader(config, limit, debug):
 
     dl = Downloader(config)
     loop = events.get_event_loop()
-    loop.run_until_complete(dl.run())
+    try:
+        loop.run_until_complete(dl.run())
+    except KeyboardInterrupt:
+        dl.forceStop = True
+        loop.run_forever()
+        loop.close()
 
