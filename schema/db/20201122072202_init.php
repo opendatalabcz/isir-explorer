@@ -50,8 +50,11 @@ final class Init extends AbstractMigration
               ->addColumn('reg_cislo', 'string', ['null' => true, 'limit' => 255, 'comment' => 'Jine registracni cislo (napr. pro zahranicni subjekty)'])
               ->addColumn('datumnarozeni', 'date', ['null' => true, 'comment' => 'Datum narozeni fyzicke osoby'])
               ->addColumn('cislo_uctu', 'string', ['null' => true, 'limit' => 255])
+              ->addColumn('isir_osoba', 'integer', ['null' => true, 'comment' => 'Asociace isir_osoba, je doplneno dle dostupnych udaju o osobe a nemusi byt vzdy presne'])
               ->addForeignKey('pp_id', 'prihlaska_pohledavky', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+              ->addForeignKey('isir_osoba', 'isir_osoba', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
               ->addIndex(['pp_id'], ['unique' => false])
+              ->addIndex(['isir_osoba'], ['unique' => false])
               ->create();
 
       $table = $this->table('pp_osoba_sidlo', ['comment' => 'Adresa sidla osoby dle udaju v prihlasce']);
@@ -128,12 +131,15 @@ final class Init extends AbstractMigration
               ->addColumn('podmineno', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addColumn('popreno', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addColumn('procent', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
-              ->addColumn('veritel', 'text')
+              ->addColumn('veritel', 'text', ['comment' => 'Textova identifikace veritele, jak je uvedena ve formulari', 'null' => true])
+              ->addColumn('veritel_id', 'integer', ['comment' => 'Asociace veritele na isir_osoba, je doplneno dle cisla veritele a nemusi byt vzdy presne', 'null' => true])
               ->addColumn('vykonatelne', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addColumn('zbyva_uspokojit', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addColumn('zjisteno', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addForeignKey('pl_id', 'prehledovy_list', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+              ->addForeignKey('veritel_id', 'isir_osoba', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
               ->addIndex(['pl_id'], ['unique' => false])
+              ->addIndex(['veritel_id'], ['unique' => false])
               ->create();
 
         /* ====================================================================================== */
