@@ -141,7 +141,7 @@ class Downloader:
                     raise task.exception()
                 except DownloadTaskFinished:
                     pass
-                except (asyncio.TimeoutError, aiohttp.ClientConnectionError) as e:
+                except (asyncio.TimeoutError, aiohttp.ClientResponseError, aiohttp.ClientConnectionError, aiohttp.ClientPayloadError) as e:
                     dl_task.logger.info(f"Opakování {dl_task} kvůli chybě: {e.__class__.__name__}: {e}")
                     try:
                         dl_task.retry()
@@ -284,9 +284,11 @@ class DocumentTask:
         async with self.sess.get(self.url) as resp:
             if resp.status == 200:
                 async with aiofiles.open(self.pdf_path, mode='wb') as f:
-                    async for chunk in resp.content.iter_chunked(8000):
+                    async for chunk in resp.content.iter_chunked(4096):
                         self.file_size += len(chunk)
                         await f.write(chunk)
+            else:
+                raise aiohttp.ClientResponseError(f"HTTP {resp.status}")
         
         self.logger.info(f"Stažen dokument {self.doc_id}")
 
