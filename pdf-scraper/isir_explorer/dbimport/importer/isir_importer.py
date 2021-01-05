@@ -7,6 +7,7 @@ class IsirImporter:
         self.doc = document
         self.isir_id = None
         self.isir_ins = None
+        self.pdf_file_size = None
         
         # can be postgresql / postgres
         if "postgres" in self.db.url.scheme:
@@ -74,6 +75,8 @@ class IsirImporter:
                 verze_dokument,
             "verze_scraper":
                 verze_scraper,
+            "pdf_velikost":
+                self.pdf_file_size,
             "datum":
                 datetime.now(),
         })
