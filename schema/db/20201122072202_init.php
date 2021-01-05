@@ -35,20 +35,51 @@ final class Init extends AbstractMigration
               ->addColumn('celkova_vyse_zajistenych', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addForeignKey('id', 'dokument', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
               ->create();
-            
+
+      $table = $this->table('pp_osoba', ['comment' => 'Osoba v prihlasce pohledavky (zejmena veritel)']);
+      $table->addColumn('pp_id', 'integer', ['comment' => 'Prihlaska pohledavky'])
+              ->addColumn('druhrolevrizeni', 'smallinteger', ['null' => false, 'comment' => '1=dluznik, 2=spravce, 3=veritel, 4=veritel-navr, dle webservice.enums'])
+              ->addColumn('nazevosoby', 'string', ['null' => true, 'limit' => 255, 'comment' => 'Prijmeni fyzicke osoby nebo nazev pravnicke osoby'])
+              ->addColumn('druhosoby', 'smallinteger', ['null' => true, 'comment' => '1=fyzicka, 2=organizace_resortu, 3=pravnicka, 4=spravce, ..., viz webservice.enums'])
+              ->addColumn('jmeno', 'string', ['null' => true, 'limit' => 255, 'comment' => 'Jmeno fyzicke osoby pokud jde o fyzickou osobu'])
+              ->addColumn('titulpred', 'string', ['null' => true, 'limit' => 50, 'comment' => 'Titul fyzicke osoby pokud jde o fyzickou osobu'])
+              ->addColumn('titulza', 'string', ['null' => true, 'limit' => 50, 'comment' => 'Titul fyzicke osoby pokud jde o fyzickou osobu'])
+              ->addColumn('ic', 'string', ['null' => true, 'limit' => 9, 'comment' => 'Identifikacni cislo (pravnicka osoba nebo fyz. osoba podnikatel)'])
+              ->addColumn('rc', 'string', ['null' => true, 'limit' => 11, 'comment' => 'Rodne cislo fyzicke osoby'])
+              ->addColumn('reg_cislo', 'string', ['null' => true, 'limit' => 255, 'comment' => 'Jine registracni cislo (napr. pro zahranicni subjekty)'])
+              ->addColumn('datumnarozeni', 'date', ['null' => true, 'comment' => 'Datum narozeni fyzicke osoby'])
+              ->addColumn('cislo_uctu', 'string', ['null' => true, 'limit' => 255])
+              ->addForeignKey('pp_id', 'prihlaska_pohledavky', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+              ->addIndex(['pp_id'], ['unique' => false])
+              ->create();
+
+      $table = $this->table('pp_osoba_sidlo', ['comment' => 'Adresa sidla osoby dle udaju v prihlasce']);
+      $table->addColumn('osoba_id', 'integer', ['comment' => 'Id osoby v prihlasce (pp_osoba.id)'])
+              ->addColumn('ulice', 'string', ['null' => true])
+              ->addColumn('cp', 'string', ['null' => true, 'limit' => 10])
+              ->addColumn('co', 'string', ['null' => true, 'limit' => 10])
+              ->addColumn('obec', 'string', ['null' => true, 'limit' => 255])
+              ->addColumn('psc', 'string', ['null' => true, 'limit' => 10])
+              ->addColumn('cast_obce', 'string', ['null' => true, 'limit' => 255])
+              ->addColumn('stat', 'string', ['null' => true, 'limit' => 255])
+              ->addForeignKey('osoba_id', 'pp_osoba', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+              ->addIndex(['osoba_id'], ['unique' => false])
+              ->create();
+
         $table = $this->table('pp_pohledavka', ['comment' => 'Pohledavka v prihlasce']);
         $table->addColumn('pp_id', 'integer', ['comment' => 'Prihlaska pohledavky'])
               ->addColumn('cislo', 'integer', ['comment' => 'Cislo pohledavky v ramci prihlasky pohledavky'])
               ->addColumn('celkova_vyse', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addColumn('vyse_jistiny', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC, 'null' => true])
-              ->addColumn('typ', 'smallinteger', ['null' => true])
-              ->addColumn('typ_text', 'string', ['null' => true, 'limit' => 50])
+              ->addColumn('typ', 'smallinteger', ['null' => true, 'comment' => 'Typ pohledavky (z textu preveden na cis. hodnotu dle enum PrihlaskaImporter)'])
+              ->addColumn('typ_text', 'string', ['null' => true, 'limit' => 50, 'comment' => 'Textove vyjadreni typu jak je uvedeno v dokumentu'])
               ->addColumn('dalsi_okolnosti', 'text', ['null' => true])
               ->addColumn('duvod_vzniku', 'text', ['null' => true])
               ->addColumn('splatna', 'boolean')
               ->addColumn('podrizena', 'boolean')
               ->addColumn('vykonatelnost', 'boolean')
               ->addForeignKey('pp_id', 'prihlaska_pohledavky', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+              ->addIndex(['pp_id'], ['unique' => false])
               ->create();
         // TODO detail splatnosti, prislusenstvi, vykonatelnost, podrizenost
 
@@ -101,6 +132,7 @@ final class Init extends AbstractMigration
               ->addColumn('zbyva_uspokojit', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addColumn('zjisteno', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addForeignKey('pl_id', 'prehledovy_list', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+              ->addIndex(['pl_id'], ['unique' => false])
               ->create();
 
         /* ====================================================================================== */
@@ -133,6 +165,7 @@ final class Init extends AbstractMigration
             ->addColumn('nezajisteno', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addColumn('zajisteno', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addForeignKey('zpro_id', 'zprava_pro_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+            ->addIndex(['zpro_id'], ['unique' => false])
             ->create();
 
         $table = $this->table('zpro_prijem_dluznika', ['comment' => 'Prijem dluznika dle zpravy pro oddluzeni']);
@@ -143,6 +176,7 @@ final class Init extends AbstractMigration
             ->addColumn('typ', 'string', ['null' => true])
             ->addColumn('vyse', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addForeignKey('zpro_id', 'zprava_pro_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+            ->addIndex(['zpro_id'], ['unique' => false])
             ->create();
 
         $table = $this->table('zpro_distribucni_schema', ['comment' => 'Distribucni schema dle zpravy pro oddluzeni']);
@@ -152,6 +186,7 @@ final class Init extends AbstractMigration
             ->addColumn('castka', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addColumn('podil', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addForeignKey('zpro_id', 'zprava_pro_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+            ->addIndex(['zpro_id'], ['unique' => false])
             ->create();
 
         $table = $this->table('zpro_predpoklad_uspokojeni', ['comment' => 'Predpoklad uspokojeni dle zpravy pro oddluzeni']);
@@ -161,6 +196,7 @@ final class Init extends AbstractMigration
             ->addColumn('mira', 'decimal', ['comment' => 'Procent', 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addColumn('vyse', 'decimal', ['comment' => 'Castka v Kc', 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addForeignKey('zpro_id', 'zprava_pro_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+            ->addIndex(['zpro_id'], ['unique' => false])
             ->create();
 
         /* ====================================================================================== */
@@ -207,6 +243,7 @@ final class Init extends AbstractMigration
               ->addColumn('mira_uspkojeni_ocekavana', 'decimal', ['comment' => 'Ocekavana mira uspokojeni k tomuto mesici', 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
 
               ->addForeignKey('zplo_id', 'zprava_plneni_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+              ->addIndex(['zplo_id'], ['unique' => false])
               ->create();
 
         $table = $this->table('zplo_vykaz_prerozdeleni_veritel', ['comment' => 'Vykaz prerozdeleni pro jednotlive veritele']);
@@ -215,6 +252,7 @@ final class Init extends AbstractMigration
               ->addColumn('castka', 'decimal', ['comment' => 'Celkova dluzna castka', 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addColumn('podil', 'decimal', ['comment' => 'Podil veritele na distr. schematu', 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addForeignKey('zplo_id', 'zprava_plneni_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+              ->addIndex(['zplo_id'], ['unique' => false])
               ->create();
 
         $table = $this->table('zplo_vykaz_prerozdeleni', ['comment' => 'Vykaz prerozdeleni po jednotlivych mesicich pro jednotlive veritele']);
@@ -225,6 +263,7 @@ final class Init extends AbstractMigration
 
               ->addColumn('vyplaceno', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
               ->addForeignKey('zplo_veritel_id', 'zplo_vykaz_prerozdeleni_veritel', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+              ->addIndex(['zplo_veritel_id'], ['unique' => false])
               ->create();
 
         /* ====================================================================================== */
@@ -265,6 +304,7 @@ final class Init extends AbstractMigration
             ->addColumn('vytezek_zpenezeni_zaji_uhrazeno', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addColumn('zprava_spravce', 'text')
             ->addForeignKey('zspo_id', 'zprava_splneni_oddluzeni', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
+            ->addIndex(['zspo_id'], ['unique' => true])
             ->create();
     }
 }
