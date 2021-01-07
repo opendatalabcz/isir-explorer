@@ -120,6 +120,29 @@ class Downloader:
         print(self.stats)
         await self.stats.save(self.db)
 
+    async def refillTasks(self, finishedTasks, chunk_size, session):
+        # Program ukoncen
+        if self.forceStop:
+            return self.ALL_COMPLETED
+
+        # Zpracovany vsechny dokumenty z databaze?
+        if not self.rows:
+            await self.fetchRows()
+            if not self.rows:   
+                return self.ALL_COMPLETED
+
+        # Dosazen limit na pocet stazenych dokumentu?
+        if self.config["dl.limit"] and self.stats.rows + len(self.tasks) >= self.config["dl.limit"]:
+            return self.ALL_COMPLETED
+
+        # Dosazen limit velikosti aktualni skupiny?
+        if finishedTasks + len(self.tasks) >= chunk_size:
+            return self.CHUNK_COMPLETED
+
+        # Pridat novou ulohu pro stazeni dokumentu
+        self.schedule_task(session, self.rows.pop(0))
+        return self.NOT_FINISHED
+
     async def downloadChunk(self, chunk_size, session):
         if not self.rows:
             await self.fetchRows()
@@ -151,7 +174,7 @@ class Downloader:
                     except Exception as e:
                         dl_task.logger.exception("Nelze opakovat")
                 except KeyboardInterrupt:
-                    raise
+                    pass
                 except:
                     dl_task.logger.exception("Chyba během zpracování importu")
     
@@ -159,30 +182,8 @@ class Downloader:
                 self.stats.add(dl_task)
 
             # Nahradit dokoncenou ulohu novym stahovanim
-            if not finalizeState and len(self.tasks) < self.config["dl.concurrency"]:
-                if self.forceStop:
-                    finalizeState = self.ALL_COMPLETED
-                    continue
-
-                # Zpracovany vsechny dokumenty z databaze?
-                if not self.rows:
-                    await self.fetchRows()
-                    if not self.rows:   
-                        finalizeState = self.ALL_COMPLETED
-                        continue
-
-                # Dosazen limit na pocet stazenych dokumentu?
-                if self.config["dl.limit"] and self.stats.rows + len(self.tasks) >= self.config["dl.limit"]:
-                    finalizeState = self.ALL_COMPLETED
-                    continue
-
-                # Dosazen limit velikosti aktualni skupiny?
-                if finishedTasks + len(self.tasks) >= chunk_size:
-                    finalizeState = self.CHUNK_COMPLETED
-                    continue
-
-                # Pridat novou ulohu pro stazeni dokumentu
-                self.schedule_task(session, self.rows.pop(0))
+            while not finalizeState and len(self.tasks) < self.config["dl.concurrency"]:
+                finalizeState = await self.refillTasks(finishedTasks, chunk_size, session)
 
         return finalizeState or self.ALL_COMPLETED
 
@@ -273,8 +274,28 @@ class DocumentTask:
                 # Pokud je aktivni save_unreadable, soubor mohl byt jiz presunut
                 pass
 
-
+    async def markAsRead(self, conn):
+        # Ulozit zaznam o precteni tohoto dokumentu (vsechny jeho udalosti)
+        query = """UPDATE isir_udalost SET dl_precteno=:dl_precteno
+            WHERE
+                spisovaznacka=:spisovaznacka AND
+                oddil=:oddil AND
+                cislovoddilu=:cislovoddilu
+        """
+        values = {
+            "dl_precteno": datetime.now(),
+            "spisovaznacka": self.row["spisovaznacka"],
+            "oddil": self.row["oddil"],
+            "cislovoddilu": self.row["cislovoddilu"],
+        }
+        async with conn:
+            await conn.execute(query=query, values=values)
+        
     async def run(self):
+        # Manualni vytvoreni Connection objektu kvuli nedostatku v issue #230 (encode/databases)
+        conn = Connection(self.parent.db._backend)
+        await self.markAsRead(conn)
+
         self.logger.info(f"Stahování {self.url}")
 
         async with self.sess.get(self.url) as resp:
@@ -283,8 +304,10 @@ class DocumentTask:
                     async for chunk, _ in resp.content.iter_chunks():
                         self.file_size += len(chunk)
                         await f.write(chunk)
+            elif resp.status == 404:
+                raise DocumentRemoved(f"Dokument {self.doc_id} neexistuje")
             else:
-                raise aiohttp.ClientResponseError(f"HTTP {resp.status}")
+                raise aiohttp.http_exceptions.HttpProcessingError(code=resp.status, message=f"HTTP {resp.status}")
         
         self.logger.info(f"Stažen dokument {self.doc_id}")
 
@@ -302,17 +325,15 @@ class DocumentTask:
                 self.logger.info(f"Nečitelný dokument {self.doc_id}")
 
         self.logger.debug(json.dumps(self.documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False))
-
-        importer = DbImport(self.config, db=self.parent.db)
-        importer.metadata = {
-            "pdf_file_size": self.file_size / 1048576,   # MiB
-            "isir_record": self.row,
-        }
-
-        # Manualni vytvoreni Connection objektu kvuli nedostatku v issue #230 (encode/databases)
-        conn = Connection(self.parent.db._backend)
-        self.logger.debug(f"Dokument {self.doc_id}, connId="+str(id(conn)))
         async with conn:
+
+            importer = DbImport(self.config, db=self.parent.db)
+            importer.metadata = {
+                "pdf_file_size": self.file_size / 1048576,   # MiB
+                "isir_record": self.row,
+                "db_conn": conn,
+            }
+
             async with conn.transaction():
                 # Import precteneho dokumentu
                 try:
@@ -332,27 +353,14 @@ class DocumentTask:
                     self.finished = True
                     raise DownloadTaskFinished()
 
-                # Ulozit zaznam o precteni tohoto dokumentu (vsechny jeho odalosti)
-                query = """UPDATE isir_udalost SET dl_precteno=:dl_precteno
-                    WHERE
-                        spisovaznacka=:spisovaznacka AND
-                        oddil=:oddil AND
-                        cislovoddilu=:cislovoddilu
-                """
-                values = {
-                    "dl_precteno": datetime.now(),
-                    "spisovaznacka": self.row["spisovaznacka"],
-                    "oddil": self.row["oddil"],
-                    "cislovoddilu": self.row["cislovoddilu"],
-                }
-                await self.parent.db.execute(query=query, values=values)
-
         self.success = True
         self.finished = True
         self.cleanup()
         raise DownloadTaskFinished()
 
 class DownloadTaskFinished(Exception):
+    pass
+class DocumentRemoved(Exception):
     pass
 
 class DownloadStats:

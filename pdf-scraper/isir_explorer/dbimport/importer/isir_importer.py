@@ -4,6 +4,7 @@ class IsirImporter:
 
     def __init__(self, db, document):
         self.db = db
+        self.db_conn = db
         self.doc = document
         self.isir_id = None
         self.isir_ins = None
@@ -23,7 +24,7 @@ class IsirImporter:
         if "postgres" == self.dbtype:
             query += " RETURNING id"
 
-        rowid = await self.db.execute(query=query, values=data)
+        rowid = await self.db_conn.execute(query=query, values=data)
         return rowid
     
     async def insertMany(self, table, dataset):
@@ -33,13 +34,13 @@ class IsirImporter:
         column_names = list(data.keys())
         placeholders = map(lambda x:":"+x, column_names)
         query = f"INSERT INTO {table} (" + ",".join(column_names) + ") VALUES ("+ ",".join(placeholders) +")"
-        await self.db.execute_many(query=query, values=dataset)
+        await self.db_conn.execute_many(query=query, values=dataset)
 
     def addIsirRecord(self, record):
         """Asociace importovaneho dokumentu k radku v isir_udalost
         """
-        self.isir_id = self.row['dokumenturl']
-        self.isir_ins = self.row["spisovaznacka"]
+        self.isir_id = record['dokumenturl']
+        self.isir_ins = record["spisovaznacka"]
 
     def dateFormat(self, date):
         """ Konverze data do formátu data pro databázi (datetimeobject)

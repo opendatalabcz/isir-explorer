@@ -36,11 +36,13 @@ class DbImport:
         importer = importerCls(self.db, doc)
 
         if "isir_record" in self.metadata:
-            importer.isir_id = self.metadata["isir_record"]["dokumenturl"]
-            importer.isir_ins = self.metadata["isir_record"]["spisovaznacka"]
+            importer.addIsirRecord(self.metadata["isir_record"])
 
         if "pdf_file_size" in self.metadata:
             importer.pdf_file_size = round(self.metadata["pdf_file_size"], 3)
+
+        if "db_conn" in self.metadata:
+            importer.db_conn = self.metadata["db_conn"]
 
         await importer.startImport()
 

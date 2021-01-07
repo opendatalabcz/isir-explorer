@@ -27,11 +27,11 @@ class PrihlaskaImporter(IsirImporter):
     def addIsirRecord(self, record):
         """Asociace importovaneho dokumentu k radku v isir_udalost
         """
-        super().__init__(record)
+        super().addIsirRecord(record)
 
         # Nastavit cislo prihlasky dle cisla oddilu v sekci P
         # Text. vyjadreni oddilu, napr. P10
-        oddil = self.row['oddil']
+        oddil = record['oddil']
 
         if oddil[0] != "P":
             return
