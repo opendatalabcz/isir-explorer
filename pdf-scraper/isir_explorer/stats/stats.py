@@ -3,6 +3,7 @@ import json
 from databases import Database
 from .tasks.link_prihlaska_osoba import LinkPrihlaskaOsoba
 from .tasks.doplnit_cislo_prihlasky import DoplnitCisloPrihlasky
+from .tasks.odstranit_duplicitni_zmeny_stavu import OdstranitDuplicitniZmenyStavu
 
 class IsirStats:
 
@@ -17,7 +18,9 @@ class IsirStats:
         await self.db.connect()
 
         #task = LinkPrihlaskaOsoba(self.config, self.db)
-        task = DoplnitCisloPrihlasky(self.config, self.db)
+        #task = DoplnitCisloPrihlasky(self.config, self.db)
+        task = OdstranitDuplicitniZmenyStavu(self.config, self.db)
+        
         await task.run()
 
         await self.db.disconnect()
