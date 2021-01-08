@@ -49,6 +49,7 @@ setup(
             'isir-dbimport = isir_explorer.dbimport.main:main',
             'isir-ws = isir_explorer.webservice.main:main',
             'isir-dl = isir_explorer.downloader.main:main',
+            'isir-stats = isir_explorer.stats.main:main',
         ],
     },
     install_requires=[
