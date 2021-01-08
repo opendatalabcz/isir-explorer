@@ -2,6 +2,7 @@ import os
 import json
 from databases import Database
 from .tasks.link_prihlaska_osoba import LinkPrihlaskaOsoba
+from .tasks.doplnit_cislo_prihlasky import DoplnitCisloPrihlasky
 
 class IsirStats:
 
@@ -14,9 +15,9 @@ class IsirStats:
 
     async def run(self, name):
         await self.db.connect()
-        print("OK")
 
-        task = LinkPrihlaskaOsoba(self.config, self.db)
+        #task = LinkPrihlaskaOsoba(self.config, self.db)
+        task = DoplnitCisloPrihlasky(self.config, self.db)
         await task.run()
 
         await self.db.disconnect()
