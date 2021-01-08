@@ -1,11 +1,11 @@
 import os
 import json
 from databases import Database
-from .tasks.link_prihlaska_osoba import LinkPrihlaskaOsoba
-from .tasks.doplnit_cislo_prihlasky import DoplnitCisloPrihlasky
-from .tasks.odstranit_duplicitni_zmeny_stavu import OdstranitDuplicitniZmenyStavu
+import importlib
 
 class IsirStats:
+
+    TASKS_PACKAGE = 'isir_explorer.stats.tasks'
 
     def __init__(self, config, db=None):
         self.config = config
@@ -14,12 +14,23 @@ class IsirStats:
         else:
             self.db = db
 
-    async def run(self, name):
-        await self.db.connect()
+    def prevodNaClassName(self, name):
+        tmp = name.replace("_", " ").replace(".","")
+        return ''.join(x for x in tmp.title() if not x.isspace())
 
-        #task = LinkPrihlaskaOsoba(self.config, self.db)
-        #task = DoplnitCisloPrihlasky(self.config, self.db)
-        task = OdstranitDuplicitniZmenyStavu(self.config, self.db)
+    async def run(self, name):
+        clsName = self.prevodNaClassName(name)
+
+        import_name = "." + name
+        try:
+            taskCls = mymethod = getattr(importlib.import_module(import_name, package=self.TASKS_PACKAGE), clsName)
+        except ModuleNotFoundError:
+            print(f"Uloha s nazvem \"{name}\" neexistuje!")
+            exit(1)
+
+        task = taskCls(self.config, db=self.db)
+
+        await self.db.connect()
         
         await task.run()
 

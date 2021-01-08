@@ -2,17 +2,14 @@ import os
 import json
 import re
 from databases import Database
+from ..task import Task
 
-class OdstranitDuplicitniZmenyStavu:
+class OdstranitDuplicitniZmenyStavu(Task):
     """2019: 1710718 radku -> 64463 -> 96.2% zaznamu bylo redundantnich
     """
 
-    def __init__(self, config, db=None):
-        self.config = config
-        if db is None:
-            self.db = Database(self.config['db.dsn'])
-        else:
-            self.db = db
+    def __init__(self, config, **kwargs):
+        super().__init__(config, **kwargs)
 
         self.duplicit = 0
 

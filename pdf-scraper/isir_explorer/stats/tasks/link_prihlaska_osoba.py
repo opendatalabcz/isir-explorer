@@ -2,8 +2,9 @@ import os
 import json
 import re
 from databases import Database
+from ..task import Task
 
-class LinkPrihlaskaOsoba:
+class LinkPrihlaskaOsoba(Task):
 
     TYP_SPOJENI_OSOBA_NENALEZNA = 0
     TYP_SPOJENI_RC = 1
@@ -13,12 +14,8 @@ class LinkPrihlaskaOsoba:
     TYP_SPOJENI_JMENO_PRIJMENI_PREHOZENO = 5
     TYP_SPOJENI_CASTECNA_PODMNOZINA_NAZVU = 6
 
-    def __init__(self, config, db=None):
-        self.config = config
-        if db is None:
-            self.db = Database(self.config['db.dsn'])
-        else:
-            self.db = db
+    def __init__(self, config, **kwargs):
+        super().__init__(config, **kwargs)
 
         self.osobyRizeniCache = {}
         self.nalezeno = 0
