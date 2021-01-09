@@ -235,7 +235,7 @@ class RequestTask:
                 if u.oddil is None or u.cisloVOddilu is None:
                     pass
                 else:
-                    udalost_rows.append(u.get_db_data())
+                    udalost_rows.append(u)
 
             xml_elem = u.poznamka.find("osoba")
             if xml_elem is not None:
@@ -273,10 +273,12 @@ class RequestTask:
             await self.parent.front_task_done.wait()
             self.parent.front_task_done.clear()
 
-        query = IsirUdalost.get_insert_query(self.parent.dialect)
         async with self.db.transaction():
-            for row in udalost_rows:
-                await self.db.execute(query=query, values=row)
+            for u in udalost_rows:
+                await self.db.execute(query=u.get_insert_query(self.parent.dialect), values=u.get_db_data())
+                dd=u.get_db_data()
+                if "id" in dd and dd["spisovaZnacka"] == 'INS 6/2019' and dd["oddil"] == "A" and dd["cisloVOddilu"] == 2:
+                    print(u.get_db_data())
 
         # Make all updates in 1 transaction (application can be stopped during iteration)
         async with self.db.transaction():

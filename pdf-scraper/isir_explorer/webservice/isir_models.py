@@ -28,16 +28,16 @@ class IsirModel:
                 data = self.child_text(xml_elem, e)
                 self.data[e] = self.format_column(e, data)
 
-        for e in self.COMPUTED_FIELDS:
-            method_to_call = getattr(self, e)
-            self.data[e] = method_to_call()
-
         for e in self.FLAGS:
             elem = self.poznamka.find(e)
             if elem is not None:
                 self.data[e] = False if elem.text in ["F", "f"] else True
             else:
                 self.data[e] = None
+
+        for e in self.COMPUTED_FIELDS:
+            method_to_call = getattr(self, e)
+            self.data[e] = method_to_call()
 
         if record is not None:
             self.spisovaZnacka = record.spisovaZnacka
@@ -53,9 +53,9 @@ class IsirModel:
     def format_column(columnName, data):
         return data
 
-    @classproperty
-    def db_columns(cls):
-        return [item for item in cls.ATTRS if item not in cls.IGNORED]
+    @property
+    def db_columns(self):
+        return [item for item in self.ATTRS if item not in self.IGNORED]
 
     def __getattr__(self, attr_name):
         try:
@@ -69,19 +69,21 @@ class IsirModel:
         else:
             super().__setattr__(name, value)
 
-    @classmethod
-    def get_insert_query(cls, dialect):
-        column_order = ",".join(cls.db_columns)
+    def include_in_update(self, col):
+        return col not in self.IGNORE_IN_UPDATE
+
+    def get_insert_query(self, dialect):
+        column_order = ",".join(self.db_columns)
         
         column_placeholders_list = []
-        for c in cls.db_columns:
+        for c in self.db_columns:
             column_placeholders_list.append(":"+c)
         column_placeholders = ",".join(column_placeholders_list)
 
         update_part = ""
         i = 0
-        for a in cls.db_columns:
-            if a in cls.IGNORE_IN_UPDATE:
+        for a in self.db_columns:
+            if not self.include_in_update(a):
                 continue
             if i != 0:
                 update_part += ", "
@@ -89,13 +91,13 @@ class IsirModel:
             i += 1
 
         if "mysql" == dialect:
-            edit_counter = ", pocet_zmen=pocet_zmen+1" if cls.COUNT_EDITS else ""
-            return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
+            edit_counter = ", pocet_zmen=pocet_zmen+1" if self.COUNT_EDITS else ""
+            return f"INSERT INTO {self.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
                 f"ON DUPLICATE KEY UPDATE {update_part} {edit_counter}"
         else:
-            edit_counter = ", pocet_zmen=EXCLUDED.pocet_zmen+1" if cls.COUNT_EDITS else ""
-            return f"INSERT INTO {cls.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
-                f"ON CONFLICT {cls.UNIQUE_CONSTRAINT} DO UPDATE SET {update_part} {edit_counter}"
+            edit_counter = f", pocet_zmen={self.TABLE_NAME}.pocet_zmen+1" if self.COUNT_EDITS else ""
+            return f"INSERT INTO {self.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " \
+                f"ON CONFLICT {self.UNIQUE_CONSTRAINT} DO UPDATE SET {update_part} {edit_counter}"
 
     @staticmethod
     def get_enum(enum, val):
@@ -133,7 +135,7 @@ class IsirModel:
 
 class IsirUdalost(IsirModel):
 
-    ATTRS = ['id', 'spisovaZnacka', 'oddil', 'cisloVOddilu', 'typUdalosti', 'dokumentUrl',
+    ATTRS = ['id', 'spisovaZnacka', 'oddil', 'cisloVOddilu', 'typUdalosti', 'dokumentUrl', 'dokumentUrl2',
              'datumZalozeniUdalosti', 'datumZverejneniUdalosti', 'poznamka', 'poznamka_json',
              'priznakAnVedlejsiUdalost', 'priznakAnVedlejsiDokument',
              'priznakPlatnyVeritel', 'priznakMylnyZapisVeritelPohled', 'stav', 'soud']
@@ -141,7 +143,7 @@ class IsirUdalost(IsirModel):
     IGNORE_IN_UPDATE = ['id', 'spisovaZnacka', 'oddil', 'cisloVOddilu', 'typUdalosti','datumZalozeni']
     TABLE_NAME = "isir_udalost"
     UNIQUE_CONSTRAINT = "ON CONSTRAINT isir_udalost_pkey"
-    COMPUTED_FIELDS = ['poznamka_json', 'stav', 'soud']
+    COMPUTED_FIELDS = ['poznamka_json', 'stav', 'soud', 'dokumentUrl2']
 
     UDALOST_FIELDS = ['datumUdalostZrusena', 'datumPravniMoci',
                       'datumSpojeni', 'datumOddeleni',
@@ -165,6 +167,23 @@ class IsirUdalost(IsirModel):
             return None
 
         return json.dumps(j)
+
+    def dokumentUrl2(self):
+        if "dokumentUrl2" in self.data:
+            return self.data["dokumentUrl2"]
+        if self.priznakAnVedlejsiDokument:
+            self.data["dokumentUrl2"] = self.data["dokumentUrl"]
+            self.data["dokumentUrl"] = None
+            return self.data["dokumentUrl2"]
+        else:
+            return None
+
+    def include_in_update(self, col):
+        if col == "dokumentUrl":
+            return False == self.priznakAnVedlejsiDokument and self.dokumentUrl is not None
+        if col == "dokumentUrl2":
+            return self.priznakAnVedlejsiDokument and self.dokumentUrl2 is not None
+        return col not in self.IGNORE_IN_UPDATE
 
     def stav(self):
         vec = self.poznamka.find("vec")

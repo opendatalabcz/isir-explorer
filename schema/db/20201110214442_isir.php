@@ -20,6 +20,7 @@ final class Isir extends AbstractMigration
             ->addColumn('cislovoddilu', 'smallinteger', ['null' => false])
             ->addColumn('typudalosti', 'smallinteger', ['null' => false, 'comment' => 'Typ udalosti dle ciselniku udalosti ISIR'])
             ->addColumn('dokumenturl', 'string', ['null' => true, 'limit' => 100, 'comment' => 'Identifikator, pod kterym lze stahnout PDF dokument z webu ISIRu'])
+            ->addColumn('dokumenturl2', 'string', ['null' => true, 'limit' => 100, 'comment' => 'Identifikator, pod kterym lze stahnout vedlejsi PDF dokument z webu ISIRu'])
             ->addColumn('datumzalozeniudalosti', 'timestamp', ['null' => true])
             ->addColumn('datumzverejneniudalosti', 'timestamp', ['null' => true])
             ->addColumn('poznamka_json', 'text', ['null' => true, 'comment' => 'Dodatecne informace k udalosti'])
