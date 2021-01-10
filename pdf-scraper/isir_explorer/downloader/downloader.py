@@ -68,9 +68,14 @@ class Downloader:
         self.tasks = []
 
     async def fetchRows(self):
+        """
+        Omezeni dotazu dle id je pouzito proto, ze funkce fetchRows muze byt volana pro
+        doplneni seznamu dokumentu pro stazeni i v okamziku, kdy nejake ulohy z predchoziho
+        seznamu jiz bezi a jeste se u nich neulozila informace dl_precteno.
+        """
         typyudalosti = ",".join(self.typ_udalosti)
         query = f"""
-        (SELECT * FROM isir_udalost
+        (SELECT id as uid, false as vedlejsi, * FROM isir_udalost
             WHERE
                 id > {self.lastId[0]} AND
                 priznakanvedlejsiudalost = false AND
@@ -78,7 +83,7 @@ class Downloader:
                 dokumenturl IS NOT NULL AND
                 typudalosti IN ({typyudalosti}) ORDER BY id ASC LIMIT 1000)
         UNION
-        (SELECT iu2.* FROM isir_udalost iu
+        (SELECT iu.id AS uid, true as vedlejsi, iu2.* FROM isir_udalost iu
             JOIN isir_udalost iu2
             ON (
                 iu.spisovaznacka = iu2.spisovaznacka AND
@@ -100,10 +105,10 @@ class Downloader:
         self.rows = []
         lastDocument = None
         for row in rows:
-            if not row['priznakanvedlejsiudalost'] and row['id'] > self.lastId[0]:
-                self.lastId[0] = row['id']
-            elif row['priznakanvedlejsiudalost'] and row['id'] > self.lastId[1]:
-                self.lastId[1] = row['id']
+            if not row['vedlejsi'] and row['uid'] > self.lastId[0]:
+                self.lastId[0] = row['uid']
+            elif row['vedlejsi'] and row['uid'] > self.lastId[1]:
+                self.lastId[1] = row['uid']
 
             if lastDocument is None or lastDocument != row['dokumenturl']:
                 self.rows.append(row)
