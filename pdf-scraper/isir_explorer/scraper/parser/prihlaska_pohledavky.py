@@ -206,6 +206,11 @@ class PrihlaskaParser(IsirParser):
 
         for cislo, pohledavkaText in enumerate(pohledavkyText):
             pohledavka = self._pohledavka(pohledavkaText)
+
+            # Filtrovat prazdne pohledavky (kdyz se nekdo prepsal a zadal prazdnou pohledavku)
+            if not pohledavka.Typ and not pohledavka.Celkova_vyse:
+                continue
+
             pohledavka.Cislo = cislo+1
             self.model.Pohledavky.Pohledavky.append(pohledavka)
 

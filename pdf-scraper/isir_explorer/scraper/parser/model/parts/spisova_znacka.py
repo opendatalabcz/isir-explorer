@@ -8,6 +8,7 @@ class Pohledavka:
         self.Vlastnosti = Vlastnosti()
         self.Vykonatelnost = False
         self.Vyse_jistiny = None
+        self.Celkova_vyse = None
 
 class Vykonatelnost:
     pass
