@@ -26,6 +26,7 @@ class AppConfig:
         "save_unreadable": True,
         "sc.save_text": False,
         "sc.save_unpacked": False,
+        "sc._cli": False,
 
         # Isir ws
         "last_id": None,

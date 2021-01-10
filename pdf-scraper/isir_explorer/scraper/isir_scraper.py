@@ -123,7 +123,7 @@ class IsirScraper:
         for file in files:
             documents += await self.readDocumentSingle(file, **kwargs)
 
-        if not documents and self.config['save_unreadable']:
+        if not documents and self.config['save_unreadable'] and not self.config['sc._cli']:
             os.rename(input_path, self.unreadable_path + "/" + self.document_name + ".pdf")
 
         self.cleanup()

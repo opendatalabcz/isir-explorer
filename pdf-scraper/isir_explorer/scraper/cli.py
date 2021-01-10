@@ -61,6 +61,7 @@ def isirScraper(pdf_file, output, config, doctype, multidoc, save_text, debug):
     config.set_opt("doctype", doctype)
     config.set_opt("multidoc", multidoc)
     config.set_opt("sc.save_text", save_text)
+    config.set_opt("sc._cli", True)
     config.set_opt("_out", output)
     parser = IsirScraper(pdf_file, config)
     loop = events.get_event_loop()
