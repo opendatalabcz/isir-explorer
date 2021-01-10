@@ -47,6 +47,8 @@ class IsirImporter:
         Vstupní formát je české zadání typu d.m.r
 
         """
+        if date is None:
+            return None
         date.replace(' ', '')
         try:
             datetimeobject = datetime.strptime(date, '%d.%m.%Y')
