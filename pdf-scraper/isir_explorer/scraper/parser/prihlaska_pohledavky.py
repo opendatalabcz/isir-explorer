@@ -10,7 +10,7 @@ class PrihlaskaParser(IsirParser):
 
     #: :obj:`int` : 
     #: Verze scraperu tohoto typ dokumentu. Měla by být inkrementována při každé podstatné změně.
-    VERZE_SCRAPER = 1
+    VERZE_SCRAPER = 2
 
     def __init__(self, data):
         super().__init__(data)
@@ -18,7 +18,7 @@ class PrihlaskaParser(IsirParser):
 
     def extractDocument(self):
         doc_start = "^[\s]{3,}PŘIHLÁŠKA POHLEDÁVKY[\s]*$"
-        doc_end = "^[\s]*Způsob doručení přihlášky pohledávky na soud:"
+        doc_end = "^[\s]*2D kódy pro automatické čtení dat z tištěného formuláře"
         self.extractDocumentByRange(doc_start, doc_end)
 
     def removeVersionLine(self):
