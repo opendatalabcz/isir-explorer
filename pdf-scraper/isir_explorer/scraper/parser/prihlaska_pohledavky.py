@@ -123,6 +123,10 @@ class PrihlaskaParser(IsirParser):
                 pohledavka.Vlastnosti.Podrizena = podrizena
                 if podrizena:
                     stav = STAV_ZPUSOB_PODRIZENI
+
+            if "Podmíněná:" in line and "Popis podmínky:" in line:
+                pohledavka.Vlastnosti.Podminena = True
+
             # Konec sekce Vlastnosti pohledavky
             if "Pohledávka:" in line:
                 # Pohledavka v cizi mene
