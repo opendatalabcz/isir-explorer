@@ -162,7 +162,7 @@ class PrihlaskaParser(IsirParser):
                 pohledavka.Typ = self.textAfter(line, "Typ pohledávky:")
             elif self.reMatch(line, '^[\s]*Výše jistiny \(Kč\):'):
                 pohledavka.Vyse_jistiny = self.priceValue(self.textAfter(line, "Výše jistiny (Kč):"))
-            elif self.reMatch(line, '^[\s]*Celková výše pohledávky:'):
+            elif self.reMatch(line, '^[\s]*Celková výše pohledávky:') and not pohledavka.Celkova_vyse:
                 pohledavka.Celkova_vyse = self.priceValue(self.textAfter(line, "Celková výše pohledávky:"))
 
         pohledavka.Duvod_vzniku = self.textBlock(self.fieldText(txt, "^[\s]*[0-9]+ Důvod vzniku:"))
