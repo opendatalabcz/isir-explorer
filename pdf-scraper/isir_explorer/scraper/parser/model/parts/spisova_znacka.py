@@ -21,6 +21,7 @@ class Vlastnosti:
     def __init__(self):
         self.Podrizena = False
         self.Splatna = False
+        self.Cizi_mena = False
 
 class SplatnaOd:
     pass

@@ -91,10 +91,6 @@ class PrihlaskaParser(IsirParser):
         self.model.Veritel = Veritel(udaje)
 
     def _vlastnostiPohledavky(self, txtVlastnosti, pohledavka):
-        # Obsah teto sekce je aktualne ukladan pro analyzu formatu
-        with open('data/vlastnosti/'+repr(self.model.Dluznik)+'_'+str(len(self.model.Pohledavky.Pohledavky)+1), 'w') as f:
-            f.write(txtVlastnosti)
-
         STAV_ZPUSOB_PODRIZENI = 1
         STAV_CASTKA_PODRIZENI = 2
         STAV_SPLATNOST = 3
@@ -129,6 +125,9 @@ class PrihlaskaParser(IsirParser):
                     stav = STAV_ZPUSOB_PODRIZENI
             # Konec sekce Vlastnosti pohledavky
             if "Pohledávka:" in line:
+                # Pohledavka v cizi mene
+                if "Měna/kurs:" in line:
+                    pohledavka.Vlastnosti.Cizi_mena = True
                 break
 
             if stav == STAV_SPLATNOST:
