@@ -23,7 +23,7 @@ class IsirStats:
 
         import_name = "." + name
         try:
-            taskCls = mymethod = getattr(importlib.import_module(import_name, package=self.TASKS_PACKAGE), clsName)
+            taskCls = getattr(importlib.import_module(import_name, package=self.TASKS_PACKAGE), clsName)
         except ModuleNotFoundError:
             print(f"Uloha s nazvem \"{name}\" neexistuje!")
             exit(1)
