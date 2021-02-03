@@ -199,6 +199,8 @@ class PrihlaskaImporter(IsirImporter):
                 'duvod_vzniku'    : pohledavka['Duvod_vzniku'],
                 'splatna'         : pohledavka['Vlastnosti']['Splatna'],
                 'podrizena'       : pohledavka['Vlastnosti']['Podrizena'],
+                'v_cizi_mene'     : pohledavka['Vlastnosti']['Cizi_mena'],
+                'penezita'        : pohledavka['Vlastnosti']['Penezita'],
                 'vykonatelnost'   : bool(pohledavka['Vykonatelnost']),
             })
 
