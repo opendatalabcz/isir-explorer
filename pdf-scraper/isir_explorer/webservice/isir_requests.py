@@ -1,7 +1,7 @@
 import aiohttp
 import xml.etree.ElementTree as ET
 from .exceptions import IsirServiceException, TooManyRetries, NoRecordsInResponse
-from .isir_models import IsirOsoba, IsirUdalost, IsirVec, IsirStavVeci
+from .isir_models import IsirOsoba, IsirUdalost, IsirVec, IsirStavVeci, IsirAdresa
 from .enums import Udalosti
 import asyncio
 import time
@@ -105,6 +105,7 @@ class IsirRequests:
 
         row = await self.db.fetch_one(query=f"SELECT MAX(id) FROM {IsirUdalost.TABLE_NAME}")
         last_id = row[0]
+        last_id = 0 ##################################
 
         if last_id is None:
             last_id = 0
@@ -240,13 +241,20 @@ class RequestTask:
             xml_elem = u.poznamka.find("osoba")
             if xml_elem is not None:
                 osoba = IsirOsoba(xml_elem, u)
-                osoba.soud = u.data["soud"]  # prevent method call
+                osoba.soud = u.data["soud"]
                 osoba.datumZalozeni = u.data["datumZalozeniUdalosti"]
                 osoba.idZalozeni = u.data["id"]
-                models.append(osoba)
+                #models.append(osoba) #############################
+
+                # Pokud je u osoby evidovana i adresa
+                xml_elem = xml_elem.find("adresa")
+                if xml_elem is not None:
+                    adresa = IsirAdresa(xml_elem, u)
+                    adresa.idOsoby = osoba.idOsoby
+                    models.append(adresa)
 
             xml_elem = u.poznamka.find("vec")
-            if xml_elem is not None:
+            if xml_elem is not None and False: #############################
                 models.append(IsirVec(xml_elem, u))
                 models.append(IsirStavVeci(xml_elem, u))
 
@@ -275,6 +283,7 @@ class RequestTask:
 
         async with self.db.transaction():
             for u in udalost_rows:
+                continue ################################################
                 await self.db.execute(query=u.get_insert_query(self.parent.dialect), values=u.get_db_data())
                 dd=u.get_db_data()
                 if "id" in dd and dd["spisovaZnacka"] == 'INS 6/2019' and dd["oddil"] == "A" and dd["cisloVOddilu"] == 2:
