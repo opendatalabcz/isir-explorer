@@ -118,11 +118,15 @@ class PrihlaskaParser(IsirParser):
                     stav = STAV_SPLATNOST
                     pohledavka.Vlastnosti.SplatnaOd = []
                     continue
+
             if "Podřízená:" in line:
                 podrizena = "Způsob podřízení:" in line
                 pohledavka.Vlastnosti.Podrizena = podrizena
                 if podrizena:
                     stav = STAV_ZPUSOB_PODRIZENI
+
+            if "Peněžitá:" in line and "Vyčíslení nepeněžité pohledávky:" in line:
+                pohledavka.Vlastnosti.Penezita = False
 
             if "Podmíněná:" in line and "Popis podmínky:" in line:
                 pohledavka.Vlastnosti.Podminena = True

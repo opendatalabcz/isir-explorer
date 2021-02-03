@@ -24,6 +24,7 @@ class Vlastnosti:
         self.Splatna = False
         self.Cizi_mena = False
         self.Podminena = False
+        self.Penezita = True
 
 class SplatnaOd:
     pass
