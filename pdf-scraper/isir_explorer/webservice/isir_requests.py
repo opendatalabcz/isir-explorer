@@ -105,7 +105,6 @@ class IsirRequests:
 
         row = await self.db.fetch_one(query=f"SELECT MAX(id) FROM {IsirUdalost.TABLE_NAME}")
         last_id = row[0]
-        last_id = 0 ##################################
 
         if last_id is None:
             last_id = 0
@@ -244,7 +243,7 @@ class RequestTask:
                 osoba.soud = u.data["soud"]
                 osoba.datumZalozeni = u.data["datumZalozeniUdalosti"]
                 osoba.idZalozeni = u.data["id"]
-                #models.append(osoba) #############################
+                models.append(osoba)
 
                 # Pokud je u osoby evidovana i adresa
                 xml_elem = xml_elem.find("adresa")
@@ -254,7 +253,7 @@ class RequestTask:
                     models.append(adresa)
 
             xml_elem = u.poznamka.find("vec")
-            if xml_elem is not None and False: #############################
+            if xml_elem is not None:
                 models.append(IsirVec(xml_elem, u))
                 models.append(IsirStavVeci(xml_elem, u))
 
@@ -283,11 +282,7 @@ class RequestTask:
 
         async with self.db.transaction():
             for u in udalost_rows:
-                continue ################################################
                 await self.db.execute(query=u.get_insert_query(self.parent.dialect), values=u.get_db_data())
-                dd=u.get_db_data()
-                if "id" in dd and dd["spisovaZnacka"] == 'INS 6/2019' and dd["oddil"] == "A" and dd["cisloVOddilu"] == 2:
-                    print(u.get_db_data())
 
         # Make all updates in 1 transaction (application can be stopped during iteration)
         async with self.db.transaction():
