@@ -46,6 +46,17 @@ DRUH_OSOBY = {
 
 DRUH_OSOBY_INV = {v: k for k, v in DRUH_OSOBY.items()}
 
+DRUH_ADRESY = {
+    "E-MAIL": 1,
+    "ODDĚLENÍ": 2,
+    "OSTATNÍ": 3,
+    "POBOČKA": 4,
+    "PŘECHODNÁ": 5,
+    "SÍDLO FY": 6,
+    "SÍDLO ORG.": 7,
+    "TRVALÁ": 8,
+}
+
 #druhPravniForma
 DRUH_PRAVNI_FORMA = {
     "k. s.": 1,

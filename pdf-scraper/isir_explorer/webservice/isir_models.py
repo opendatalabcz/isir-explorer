@@ -305,3 +305,32 @@ class IsirStavVeci(IsirModel):
 
     def rid(self):
         return self.record.id
+
+
+class IsirAdresa(IsirModel):
+
+    ATTRS = ['spisovaZnacka', 'idOsoby', 'idAdresy', 'druhAdresy', 'datumPobytOd', 'datumPobytDo',
+             'mesto', 'ulice', 'cisloPopisne', 'okres', 'zeme', 'psc', 'telefon', 'fax',
+             'textAdresy']
+    IGNORE_IN_UPDATE = ['spisovaZnacka', 'idOsoby', 'idAdresy']
+    TABLE_NAME = "isir_adresa"
+    UNIQUE_CONSTRAINT = "(spisovaznacka, idAdresy)"
+
+    @staticmethod
+    def format_column(columnName, data):
+        if data is None:
+            return data
+        if columnName[0:5] == "datum":
+            res = data[0:10]               # date returned by ISIR as "1979-05-16+02:00"
+            try:
+                datetimeobject = datetime.strptime(res, '%Y-%m-%d')
+            except:
+                return None
+            return datetimeobject
+        elif columnName == "idAdresy" and data is not None:
+            return int(data)
+        elif columnName == "idOsoby":
+            return re.sub(r'[ ]+', '-', data)
+        elif columnName == "druhAdresy":
+            return IsirModel.get_enum(DRUH_ADRESY, data)
+        return data
