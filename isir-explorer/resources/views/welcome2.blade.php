@@ -64,7 +64,7 @@
 
             <div class="max-w-6xl sm:px-6 lg:px-8">
                 <div class="flex justify-center pt-8 sm:justify-start sm:pt-0">
-                    <h1>Počet insolvencí dle krajů</h1>
+                    <h1>Podíl populace v insolvenci dle krajů</h1>
                 </div>
 
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
@@ -97,13 +97,13 @@
     }).addTo(map);
 
     function getColor(d) {
-        return d > 4000 ? '#800026' :
-                d > 3500  ? '#BD0026' :
-                d > 3000  ? '#E31A1C' :
-                d > 2500  ? '#FC4E2A' :
-                d > 2000   ? '#FD8D3C' :
-                d > 1500   ? '#FEB24C' :
-                d > 1000   ? '#FED976' :
+        return d > 0.5 ? '#800026' :
+                d > 0.45  ? '#BD0026' :
+                d > 0.40  ? '#E31A1C' :
+                d > 0.35  ? '#FC4E2A' :
+                d > 0.30   ? '#FD8D3C' :
+                d > 0.25   ? '#FEB24C' :
+                d > 0.2   ? '#FED976' :
                             '#FFEDA0';
     }
 
@@ -114,7 +114,7 @@
             color: 'white',
             dashArray: '3',
             fillOpacity: 0.7,
-            fillColor: getColor(feature.properties.ins),
+            fillColor: getColor((feature.properties.ins/feature.properties.population)*100),
         };
     }
 
@@ -131,7 +131,7 @@
 
             info.update = function (props) {
                 this._div.innerHTML = (props ?
-                    '<b>' + props.name + '</b><br>Počet insolvencí: ' + props.ins
+                    '<b>' + props.name + '</b><br>Populace v insolvenci: ' + ((props.ins/props.population)*100).toFixed(2) +'%'
                     : 'Umístěte kurzor na kraj');
             };
 
