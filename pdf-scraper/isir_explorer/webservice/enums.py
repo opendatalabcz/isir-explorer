@@ -55,6 +55,7 @@ DRUH_ADRESY = {
     "SÍDLO FY": 6,
     "SÍDLO ORG.": 7,
     "TRVALÁ": 8,
+    "MÍSTO PODN": 9,
 }
 
 #druhPravniForma
