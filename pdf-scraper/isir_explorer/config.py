@@ -38,7 +38,7 @@ class AppConfig:
         "verbose": False,
         "silent": False,
         "parse_in_executor": True,
-        "ins_filter": "INS [0-9]+/20(19|20|20|21|22)",      # Filtr na spisove znacky ins. rizeni
+        "ins_filter": None,                                 # Filtr na spisove znacky ins. rizeni, napr. "INS [0-9]+/20(19|20|20|21|22)"
 
         "dl.concurrency": 5,
         "dl.request_timeout": 300,
