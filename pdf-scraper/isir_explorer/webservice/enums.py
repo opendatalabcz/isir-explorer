@@ -96,6 +96,7 @@ SOUDY = {
     "KSJIMBM": 2,
     "KSJICCB": 3,
     "KSVYCHK": 4,
+    "KSVYCHKHK": 4,
     "KSVYCHKP1": 5,
     "KSSEMOS": 6,
     "KSSEMOSP1": 7,
