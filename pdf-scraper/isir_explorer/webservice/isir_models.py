@@ -111,6 +111,8 @@ class IsirModel:
     def parse_datetime(data):
         if isinstance(data, datetime):
             return data
+        if '+' in data:
+            data = data.split("+")[0]
         dt = dateutil.parser.parse(data)
         if dt.year > 2035:  # unix timestamp limits
             dt = dt.replace(year=2035)
