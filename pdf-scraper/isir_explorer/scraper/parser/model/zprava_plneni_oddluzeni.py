@@ -8,7 +8,12 @@ class ZpravaSpravce:
         self.Mira_uspokojeni = MiraUspokojeni()
 
 class ZaznamVykazuPlneni:
-    pass
+
+    def __init__(self):
+        self.Celkem_prerozdeleno = None
+        self.Mira_uspokojeni = None
+        self.Mira_uspkojeni_ocekavana = None
+        self.Mesic_oddluzeni = None
 
 class ZaznamUspokojeniVeritele:
     

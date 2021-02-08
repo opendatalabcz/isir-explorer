@@ -242,10 +242,14 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         
         # Sumarizaci uspokojeni veritelu kategorizovat k danemu mesici, do struktury VykazPlneni.Mesic
         for i in range(self.colsCount):
-            self.model.VykazPlneni.Mesic[i].Celkem_prerozdeleno = self.priceValue(rows[0][i])
-            self.model.VykazPlneni.Mesic[i].Mira_uspokojeni = self.priceValue(rows[1][i])
-            self.model.VykazPlneni.Mesic[i].Mira_uspkojeni_ocekavana = self.priceValue(rows[2][i])
-            self.model.VykazPlneni.Mesic[i].Mesic_oddluzeni = self.numbersOnly(rows[3][i])
+            # Ne vzdy se sumarizace podari precist (rows muze by prazdne)
+            try:
+                self.model.VykazPlneni.Mesic[i].Celkem_prerozdeleno = self.priceValue(rows[0][i])
+                self.model.VykazPlneni.Mesic[i].Mira_uspokojeni = self.priceValue(rows[1][i])
+                self.model.VykazPlneni.Mesic[i].Mira_uspkojeni_ocekavana = self.priceValue(rows[2][i])
+                self.model.VykazPlneni.Mesic[i].Mesic_oddluzeni = self.numbersOnly(rows[3][i])
+            except IndexError:
+                pass
 
     def _mesicniVykazPlneni(self):
         txt = self.reTextAfter(self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
