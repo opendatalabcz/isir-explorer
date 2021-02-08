@@ -31,7 +31,7 @@ class Downloader:
         self.transaction_lock = asyncio.Lock()
         self.stats = DownloadStats()
         self.stats_total = DownloadStats()
-        self.lastId = [0,0] #hlavni, vedlejsi
+        self.lastId = [self.config['dl.start'], self.config['dl.start']] #hlavni, vedlejsi
 
         self.tmp_base = self.config['tmp_dir'].rstrip("/")
         self.tmp_path = self.tmp_base + "/pdf"

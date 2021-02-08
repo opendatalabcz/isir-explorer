@@ -29,13 +29,20 @@ def validate_config_file(ctx, param, value):
               default=False,
               type=click.INT,
               help='Omezit počet dokumentů ke stažení.')
+@click.option('--start',
+              default=False,
+              type=click.INT,
+              help='ID události v rejstříku, od které zahájit stahování.')
 @click.option('--debug',
               is_flag=True,
               default=False,
               help='Debug výpis do stdout.')
-def isirDownloader(config, limit, debug):
+def isirDownloader(config, limit, start, debug):
     if debug:
         config.set_opt("debug", True)
+
+    if start and start > 0:
+        config.set_opt("dl.start", start)
 
     if limit and limit > 0:
         # Kontrola, ze pocet soubezne stahovanych nebude vetsi nez limit pro stahovani

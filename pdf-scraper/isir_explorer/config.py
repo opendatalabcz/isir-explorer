@@ -47,6 +47,7 @@ class AppConfig:
         "dl.limit": 0,                                      # Omezit počet dokumentů ke stažení
         "dl.delay": 3,                                      # Zpozdeni v sekundach
         "dl.delay_after": 100,                              # Po kolika dokumentech aplikovat zpozdeni
+        "dl.start": 0,                                      # ID události v rejstříku, od které zahájit stahování
     }
 
     def __init__(self, conf):
