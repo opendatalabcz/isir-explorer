@@ -113,14 +113,14 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
             for key in NUMBERS_ONLY_COLUMNS:
                 try:
                     val = self.numbersOnly(tabulkaPlneni[key][i])
-                except KeyError:
+                except KeyError, TypeError:
                     val = None
                 setattr(mesic, key, val)
 
             for key in PRICE_COLUMNS:
                 try:
                     val = self.priceValue(tabulkaPlneni[key][i])
-                except KeyError:
+                except KeyError, TypeError:
                     val = None
                 setattr(mesic, key, val)
 
