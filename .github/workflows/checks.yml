@@ -1,0 +1,23 @@
+name: Static checks
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    name: "Lint - flake8"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7]
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: flake8
+      uses: TrueBrain/actions-flake8@master
+      with:
+        path: pdf-scraper/isir_explorer
+        max_line_length: 130
