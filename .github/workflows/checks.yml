@@ -21,3 +21,26 @@ jobs:
       with:
         path: pdf-scraper/isir_explorer
         max_line_length: 130
+
+  bandit:
+    name: "Security check - Bandit"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Security check - Bandit
+      uses: libertyy/py3-bandit-check@v2
+      env:
+        TARGET_DIR: pdf-scraper/isir_explorer
+        BANDIT_EXCLUDE: '/tests/'
+
+    - name: Security check report artifacts
+      uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Security report
+        path: ${{ RUNNER.temp }}/_github_home/bandit_report.out
