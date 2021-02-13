@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-// Daotvy typ MONEY se casto definuje jako DECIMAL(16,2)
+// Datovy typ MONEY se casto definuje jako DECIMAL(16,2)
 define("DEC_SCAL", 2);
 define("DEC_PREC", 16);
 
