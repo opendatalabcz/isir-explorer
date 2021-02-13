@@ -1,4 +1,3 @@
-import os
 import json
 from databases import Database
 from .errors import UnknownDocument

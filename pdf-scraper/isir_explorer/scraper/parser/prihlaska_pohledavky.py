@@ -235,7 +235,7 @@ class PrihlaskaParser(IsirParser):
             if not pohledavka.Typ and not pohledavka.Celkova_vyse:
                 continue
 
-            pohledavka.Cislo = cislo+1
+            pohledavka.Cislo = cislo + 1
             self.model.Pohledavky.Pohledavky.append(pohledavka)
 
         sumLines = sumarizace.split('\n')

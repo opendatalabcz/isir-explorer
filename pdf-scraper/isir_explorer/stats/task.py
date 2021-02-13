@@ -1,3 +1,6 @@
+from databases import Database
+
+
 class Task:
 
     def __init__(self, config, db=None):

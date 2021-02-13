@@ -7,8 +7,10 @@ class IsirDecryptor:
     # Povolené znaky mimo základní ASCII rozsah
     KNOWN_CHARS = set(
         [
-            'á', 'ą', 'à', 'ä', 'č', 'ě', 'é', 'ë', 'ę', 'ď', 'í', 'ì', 'ł', 'ľ', 'ň', 'ń', 'ó', 'ř', 'š', 'ť', 'ú', 'ů', 'ü', 'ý', 'ž', 'ż',
-            'Á', 'Č', 'Ć', 'Ď', 'Ě', 'É', 'È', 'Í', 'Ĺ', 'Ľ', 'Ř', 'Š', 'Ś', 'Ť', 'Ů', 'Ú', 'Ň', 'Ý', 'Ž', 'Ź', '–', '²', '½', '€', 'ß',
+            'á', 'ą', 'à', 'ä', 'č', 'ě', 'é', 'ë', 'ę', 'ď', 'í', 'ì', 'ł', 'ľ', 'ň',
+            'ń', 'ó', 'ř', 'š', 'ť', 'ú', 'ů', 'ü', 'ý', 'ž', 'ż',
+            'Á', 'Č', 'Ć', 'Ď', 'Ě', 'É', 'È', 'Í', 'Ĺ', 'Ľ', 'Ř', 'Š', 'Ś', 'Ť', 'Ů',
+            'Ú', 'Ň', 'Ý', 'Ž', 'Ź', '–', '²', '½', '€', 'ß',
         ]
     )
 
@@ -85,7 +87,7 @@ class IsirDecryptor:
         for i, b in enumerate(txtBytes):
 
             # keep newlines
-            if b != 10 and b < 128-self.SHIFT:
+            if b != 10 and b < 128 - self.SHIFT:
                 b += self.SHIFT
 
             txtByteArray.append(b)
@@ -106,7 +108,7 @@ class IsirDecryptor:
             replacements[b] = replacement[1].encode('utf-8')
             regexParts.append(regexPart)
 
-        regexString = '('+'|'.join(regexParts)+')'
+        regexString = '(' + '|'.join(regexParts) + ')'
 
         def foo(matchObj):
             return replacements[matchObj[0]]
@@ -120,7 +122,7 @@ class IsirDecryptor:
         # log unknown characters
         for i, c in enumerate(res):
             if ord(c) >= 128 and c not in self.KNOWN_CHARS:
-                txtPart = res[max(0, i-10):i+10].replace('\n', ' ')
+                txtPart = res[max(0, i - 10):i + 10].replace('\n', ' ')
                 codes = c.encode('utf-8')
                 strCodes = ', '.join(map(str, codes))
 

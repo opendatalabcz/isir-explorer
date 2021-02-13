@@ -1,7 +1,3 @@
-import os
-import json
-import re
-from databases import Database
 from ..task import Task
 
 
@@ -34,7 +30,8 @@ class DoplnitCisloVeritele(Task):
         for row in rows:
             i += 1
             await self.db.execute(query="""
-                UPDATE pl_pohledavka SET veritel_id=:veritel_id, osoba_spojena=1 WHERE pl_id=:pl_id AND cislo_veritele=:cislo_veritele
+                UPDATE pl_pohledavka SET veritel_id=:veritel_id, osoba_spojena=1
+                WHERE pl_id=:pl_id AND cislo_veritele=:cislo_veritele
             """, values={
                 "veritel_id": row["isir_osoba_veritel"],
                 "pl_id": row["pl_id"],

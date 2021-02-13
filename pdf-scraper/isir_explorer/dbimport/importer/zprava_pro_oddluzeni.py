@@ -138,7 +138,7 @@ class ZpravaProOddluzeniImporter(IsirImporter):
         dsNezajistene = self._typVeriteleDistribSchematu(
             False, self.zpravaId, self.doc["Distribucni_schema"]["Nezajistene"])
         dsZajistene = self._typVeriteleDistribSchematu(
-            True,  self.zpravaId, self.doc["Distribucni_schema"]["Zajistene"])
+            True, self.zpravaId, self.doc["Distribucni_schema"]["Zajistene"])
         distribucniSchema = dsNezajistene + dsZajistene
         await self.insertMany("zpro_distribucni_schema", distribucniSchema)
 

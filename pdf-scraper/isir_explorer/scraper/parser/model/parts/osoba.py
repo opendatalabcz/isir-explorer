@@ -46,4 +46,4 @@ class Fyzicka_osoba(TypOsoby):
 class Pravnicka_osoba(TypOsoby):
 
     def __repr__(self):
-        return self.Udaje.Nazev+'-'+self.Udaje.IC
+        return self.Udaje.Nazev + '-' + self.Udaje.IC

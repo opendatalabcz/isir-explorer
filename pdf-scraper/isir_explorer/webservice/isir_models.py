@@ -184,7 +184,7 @@ class IsirUdalost(IsirModel):
 
     def include_in_update(self, col):
         if col == "dokumentUrl":
-            return False == self.priznakAnVedlejsiDokument and self.dokumentUrl is not None
+            return not self.priznakAnVedlejsiDokument and self.dokumentUrl is not None
         if col == "dokumentUrl2":
             return self.priznakAnVedlejsiDokument and self.dokumentUrl2 is not None
         return col not in self.IGNORE_IN_UPDATE

@@ -1,7 +1,5 @@
 from .model.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeni, ZaznamVykazuPlneni, ZaznamUspokojeniVeritele
 from .isir_parser import IsirParser
-from .model.parts.osoba import *
-from .model.parts.spisova_znacka import *
 import re
 
 
@@ -31,11 +29,14 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         self.model.ZpravaSpravce.Plni_povinnosti = self.reLineTextAfter(
             txt, "^[\s]*Dlužník plní povinnosti v rámci schváleného způsobu oddlužení")
         self.model.ZpravaSpravce.Duvod_neplneni = self.textBlock(self.reTextBetween(
-            txt, "^[\s]*-[\s]*důvod neplnění schváleného způsobu oddlužení:", "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:"))
+            txt, "^[\s]*-[\s]*důvod neplnění schváleného způsobu oddlužení:",
+            "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:"))
         self.model.ZpravaSpravce.Stanovisko_dluznika = self.textBlock(self.reTextBetween(
-            txt, "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:", "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:"))
+            txt, "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:",
+            "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:"))
         self.model.ZpravaSpravce.Vyjadreni_spravce = self.textBlock(self.reTextBetween(
-            txt, "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:", "^[\s]*Aktuální míra uspokojení nezajištěných věřitelů"))
+            txt, "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:",
+            "^[\s]*Aktuální míra uspokojení nezajištěných věřitelů"))
 
         self.model.ZpravaSpravce.Mira_uspokojeni.Nezajistene_aktualni = self.priceValue(
             self.reLineTextAfter(txt, "^[\s]*Aktuální míra uspokojení nezajištěných věřitelů"))
@@ -163,7 +164,7 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         cols = re.compile("[\s]{2,}").split(colsTxt.strip())
 
         # pocet mesicu ve vykazu + sloupec podilu + sloupec castky
-        if len(cols) != self.colsCount+2:
+        if len(cols) != self.colsCount + 2:
             return None
         return cols
 

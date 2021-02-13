@@ -88,7 +88,6 @@ class IsirScraper:
             # Pokud neni pdftk k dispozici, pokus o rozbaleni pdf portfolia je preskocen
             raise NotPdfPortfolio
 
-        retcode = await unpack_process.wait()
         files = os.listdir(tmp_unpack_dir)
         if files:
             self.unpacked_dir = tmp_unpack_dir
@@ -137,7 +136,7 @@ class IsirScraper:
             shutil.rmtree(self.unpacked_dir)
 
     async def readDocumentSingle(self, input_path, multidoc=True):
-        output_path = self.tmp_path+'/'+self.document_name
+        output_path = self.tmp_path + '/' + self.document_name
         process = await asyncio.create_subprocess_exec(
             self.config['pdftotext'],
             "-layout",
@@ -163,7 +162,7 @@ class IsirScraper:
 
         # Ulozit desifrovany textovy vystup
         if self.config['sc.save_text']:
-            with open(output_path+".dec", "w") as f:
+            with open(output_path + ".dec", "w") as f:
                 f.write(data)
 
         # Parse

@@ -6,8 +6,8 @@ import aiofiles
 import logging
 from databases import Database
 from databases.core import Connection
-from datetime import datetime, timedelta
-from .errors import DownloaderException, TooManyRetries
+from datetime import datetime
+from .errors import TooManyRetries
 from ..webservice.isir_models import IsirUdalost
 from ..scraper.isir_scraper import IsirScraper
 from ..dbimport.db_import import DbImport
@@ -182,7 +182,7 @@ class Downloader:
                         self.tasks.append(dl_task.task)
                         continue
                     except Exception as e:
-                        dl_task.logger.exception("Nelze opakovat")
+                        dl_task.logger.exception("Nelze opakovat: {e}")
                 except KeyboardInterrupt:
                     pass
                 except:

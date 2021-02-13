@@ -45,12 +45,14 @@ def validate_doctype(ctx, param, value):
               callback=validate_config_file)
 @click.option('-d', '--doctype',
               metavar='TYPE',
-              help='Výběr typu dokumentu. Podporovane hodnoty: Prihlaska, PrehledovyList, ZpravaProOddluzeni, ZpravaPlneniOddluzeni, ZpravaSplneniOddluzeni. Pokud není zadáno, je použita automatická detekce dle obsahu vstupního PDF souboru.',
+              help='Výběr typu dokumentu. Podporovane hodnoty: Prihlaska, PrehledovyList, ZpravaProOddluzeni,'
+              + 'ZpravaPlneniOddluzeni, ZpravaSplneniOddluzeni. Pokud není zadáno, je použita automatická detekce dle obsahu vstupního PDF souboru.',
               callback=validate_doctype)
 @click.option('-m', '--multidoc',
               is_flag=True,
               default=False,
-              help='Aktivuje čtení více dokumentů z jednoho vstupního PDF. Výstupem je pole objektů s nalezenými dokumenty.')
+              help='Aktivuje čtení více dokumentů z jednoho vstupního PDF. Výstupem je pole objektů'
+              + ' s nalezenými dokumenty.')
 @click.option('--save-text',
               is_flag=True,
               default=False,

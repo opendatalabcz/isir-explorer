@@ -1,7 +1,5 @@
 from .model.zprava_splneni_oddluzeni import ZpravaSplneniOddluzeni
 from .isir_parser import IsirParser
-from .model.parts.osoba import *
-from .model.parts.spisova_znacka import *
 import re
 
 
@@ -97,8 +95,10 @@ class ZpravaSplneniOddluzeniParser(IsirParser):
         # Zprava o prubehu rizeni
         self.model.Vysledek_rizeni.Zprava_o_prubehu = self.textBlock(self.reTextBetween(
             txt,
-            ".*míře plnění \(např. pracovní neschopnost, ztráta zaměstnání či neposkytování daru třetí osobou\):[\s]*$",
-            "^[\s]*Insolvenční správce uvádí, že dlužník řádně plnil všechny povinnosti podle insolvenčního zákona a uložené rozhodnutím"
+            ".*míře plnění \(např. pracovní neschopnost, ztráta zaměstnání či neposkytování "
+            + "daru třetí osobou\):[\s]*$",
+            "^[\s]*Insolvenční správce uvádí, že dlužník řádně plnil všechny povinnosti podle "
+            + "insolvenčního zákona a uložené rozhodnutím"
         ))
 
         # Doporuceni spravce

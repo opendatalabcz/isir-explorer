@@ -1,8 +1,6 @@
 from .model.zprava_pro_oddluzeni import ZpravaProOddluzeni, PrijemDluznika, ZaznamSoupisuMajetku, \
     PredpokladUspokojeniVeritelu, ZaznamDistribucnihoSchematu
 from .isir_parser import IsirParser
-from .model.parts.osoba import *
-from .model.parts.spisova_znacka import *
 import re
 
 
@@ -173,7 +171,7 @@ class ZpravaProOddluzeniParser(IsirParser):
             miraUspokojeni, "^[\s]*Insolvenční správce navrhuje provést oddlužení")
         self.model.Okolnosti_proti_oddluzeni = self.reLineTextAfter(
             miraUspokojeni, "^[\s]*Okolnosti bránící schválení oddlužení")
-        oduvodneni = self.reTextAfter(miraUspokojeni, "^[\s]*Odůvodnění")
+        self.model.Oduvodneni = self.reTextAfter(miraUspokojeni, "^[\s]*Odůvodnění")
 
     def _navrhovanyZpusobReseni(self):
         txt = self.reTextBetween(

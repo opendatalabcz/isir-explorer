@@ -57,7 +57,7 @@ class IsirRequests:
         try:
             await self.db.close()
         except:
-            self.log(f"Nepodarilo se uzavrit db spojeni!", 10)
+            self.log("Nepodarilo se uzavrit db spojeni!", 10)
         self.tasks = []
 
     async def start(self):

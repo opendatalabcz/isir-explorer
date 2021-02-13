@@ -19,7 +19,7 @@ class IsirImporter:
 
     async def insert(self, table, data):
         column_names = list(data.keys())
-        placeholders = map(lambda x: ":"+x, column_names)
+        placeholders = map(lambda x: ":" + x, column_names)
         query = f"INSERT INTO {table} (" + ",".join(column_names) + \
             ") VALUES (" + ",".join(placeholders) + ")"
 
@@ -34,7 +34,7 @@ class IsirImporter:
             return
         data = dataset[0]
         column_names = list(data.keys())
-        placeholders = map(lambda x: ":"+x, column_names)
+        placeholders = map(lambda x: ":" + x, column_names)
         query = f"INSERT INTO {table} (" + ",".join(column_names) + \
             ") VALUES (" + ",".join(placeholders) + ")"
         await self.db_conn.execute_many(query=query, values=dataset)

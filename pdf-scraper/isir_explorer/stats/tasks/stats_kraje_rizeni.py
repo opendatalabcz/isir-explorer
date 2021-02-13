@@ -2,7 +2,6 @@ import os
 import json
 import re
 import csv
-from databases import Database
 from ..task import Task
 
 
@@ -69,7 +68,7 @@ class StatsKrajeRizeni(Task):
                     ) a
                 WHERE adresa_mesto IS NOT NULL
             """)
-        i = 0
+
         for row in rows:
 
             mesto = row["adresa_mesto"]

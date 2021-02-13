@@ -82,8 +82,6 @@ class PrihlaskaImporter(IsirImporter):
         except:
             data_sidlo["stat"] = None
 
-        osobaId = await self.insert("pp_osoba_sidlo", data_sidlo)
-
     async def _importOsoby(self, druhOsobyRizeni, osoba):
 
         # Udaje o osobe nejsou k dispozici

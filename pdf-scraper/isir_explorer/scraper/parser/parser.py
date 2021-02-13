@@ -155,7 +155,6 @@ class Parser:
         if not match:
             return ""
 
-        matchStart = match.span(0)[0]
         matchEnd = match.span(0)[1]
 
         fieldName = match.group(0)
@@ -171,7 +170,8 @@ class Parser:
         lines = txt.split('\n')
         res = [lines.pop(0)]
         for line in lines:
-            if regex.match('^[/s]{0,'+str(offset)+'}([0-9]+ )?([\w\p{L}]+ )*([\w\p{L}]+):', line, flags=regex.UNICODE):
+            if regex.match('^[/s]{0,' + str(offset) + '}([0-9]+ )?([\w\p{L}]+ )*([\w\p{L}]+):', line,
+                           flags=regex.UNICODE):
                 break
             res.append(line)
         return '\n'.join(res)
@@ -220,16 +220,16 @@ class Parser:
         NoSplitterFound
             Pokud se regulární výraz nepodaří vyhledat a allow_no_match je False.
         """
-        l = self.reSplitText(txt, reg, keep_split=keep_split,
-                             multiline=multiline, split_pos=0)
-        if len(l) == 1:
+        parts = self.reSplitText(txt, reg, keep_split=keep_split,
+                                 multiline=multiline, split_pos=0)
+        if len(parts) == 1:
             # No matches
             if allow_no_match:
                 return txt
             else:
                 raise NoSplitterFound()
-        l.pop(0)  # remove text before 1st splitter
-        res = ''.join(l)
+        parts.pop(0)  # remove text before 1st splitter
+        res = ''.join(parts)
         return res.strip()
 
     def reTextBefore(self, txt, reg, multiline=False, allow_no_match=True, keep_split=False):
@@ -317,7 +317,7 @@ class Parser:
         """
 
         # Pridat globalni capturing group
-        reg = reg if not keep_split else "("+reg+")"
+        reg = reg if not keep_split else "(" + reg + ")"
 
         if multiline:
             parts = re.compile(reg, re.MULTILINE).split(txt)

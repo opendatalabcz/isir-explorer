@@ -35,8 +35,8 @@ class DownloadStats:
         if self.stats_record is None:
             self.__repr__()
         column_names = list(self.stats_record.keys())
-        placeholders = map(lambda x: ":"+x, column_names)
-        query = f"INSERT INTO dl_stats (" + ",".join(column_names) + \
+        placeholders = map(lambda x: ":" + x, column_names)
+        query = "INSERT INTO dl_stats (" + ",".join(column_names) + \
             ") VALUES (" + ",".join(placeholders) + ")"
         await db.execute(query=query, values=self.stats_record)
 
@@ -44,7 +44,6 @@ class DownloadStats:
         now = datetime.now()
         delta = now - self.start
         delta_time = delta - timedelta(microseconds=delta.microseconds)
-        unreadable = self.rows - self.readable
         not_empty = self.rows - self.empty_documents
         size_mib = self.file_size / (1024 * 1024)
         if size_mib > 1024:
@@ -52,7 +51,7 @@ class DownloadStats:
         else:
             size_str = "{:.2f} MiB".format(size_mib)
         percent_readable = self.readable / \
-            (not_empty/100) if not_empty > 0 else 0
+            (not_empty / 100) if not_empty > 0 else 0
         res = "\n========= Výsledek importu =========\n"
         res += "Čas:                     {:>10}\n".format(str(delta_time))
         res += "PDF dokumentů:           {:>10} ({})\n".format(

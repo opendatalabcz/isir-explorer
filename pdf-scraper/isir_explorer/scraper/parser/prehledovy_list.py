@@ -1,7 +1,5 @@
 from .model.prehledovy_list import PrehledovyList, ZaznamPohledavky
 from .isir_parser import IsirParser
-from .model.parts.osoba import *
-from .model.parts.spisova_znacka import *
 from .errors import IncompleteDocument
 import re
 
@@ -48,8 +46,8 @@ class PrehledovyListParser(IsirParser):
         rowgroups = []
         total = []
         while i < len(rows):
-            if len(rows[i]) == 7 and i+1 < len(rows) and len(rows[i+1]) == 7:
-                rowgroups.append([rows[i-1], rows[i], rows[i+1]])
+            if len(rows[i]) == 7 and i + 1 < len(rows) and len(rows[i + 1]) == 7:
+                rowgroups.append([rows[i - 1], rows[i], rows[i + 1]])
                 i += 2
                 continue
             if len(rows[i]) == 1 and rows[i][0] == 'Celkem':

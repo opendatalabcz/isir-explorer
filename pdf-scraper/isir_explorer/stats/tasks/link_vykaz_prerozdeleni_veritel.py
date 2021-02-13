@@ -1,8 +1,4 @@
-import os
-import json
 import re
-from databases import Database
-from ..task import Task
 from .link_osoby import LinkOsoby
 
 
@@ -17,7 +13,9 @@ class LinkVykazPrerozdeleniVeritel(LinkOsoby):
 
     async def spojitOsobu(self, typ_spojeni, isir_osoba_id, zplo_vykaz_id):
         await self.db.execute(query="""
-            UPDATE zplo_vykaz_prerozdeleni_veritel SET 	veritel_id=:isir_osoba_id, osoba_spojena=:osoba_spojena WHERE id=:zplo_vykaz_id
+            UPDATE zplo_vykaz_prerozdeleni_veritel
+            SET veritel_id=:isir_osoba_id, osoba_spojena=:osoba_spojena
+            WHERE id=:zplo_vykaz_id
         """, values={
             "osoba_spojena": typ_spojeni,
             "isir_osoba_id": isir_osoba_id,
@@ -59,7 +57,6 @@ class LinkVykazPrerozdeleniVeritel(LinkOsoby):
         pocetSlov = len(isir_osoba["nazevosoby_slova"])
         j = min(5, pocetSlov)
         for i in range(j):
-            slova = isir_osoba["nazevosoby_slova"][:j-i]
             kandidat = []
             for isir_osoba in osoby_rizeni:
                 if self.jePodmnozinou(isir_osoba["nazevosoby_slova"], hledana_osoba["nazevosoby_slova"]):

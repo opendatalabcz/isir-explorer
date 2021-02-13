@@ -26,7 +26,7 @@ class PrehledovyListImporter(IsirImporter):
             'zjisteno': celkem["Zjisteno"],
         }
 
-        return {col_prefix+k: v for k, v in res.items()}
+        return {col_prefix + k: v for k, v in res.items()}
 
     def pohledavky(self, prehledovyListId, jeZajisteny, pohledavky):
 
