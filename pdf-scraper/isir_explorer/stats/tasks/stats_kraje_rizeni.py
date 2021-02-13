@@ -28,7 +28,6 @@ class StatsKrajeRizeni(Task):
         'Středočeský kraj': 'ST',
         'Ústecký kraj': 'US',
         'Zlínský kraj': 'ZL',
-
     }
 
     def __init__(self, config, **kwargs):
@@ -39,7 +38,9 @@ class StatsKrajeRizeni(Task):
         self.pocty_kraje = {}
 
     def slovnikObci(self):
-        with open("../datasets/cz-obce.csv", "r") as infile:
+        dirname = os.path.dirname(__file__)
+        filename = os.path.join(dirname, '../datasets/cz-obce.csv')
+        with open(filename, "r") as infile:
             reader = csv.reader(infile)
             next(reader, None)  # skip 1st
             for row in reader:
@@ -59,7 +60,11 @@ class StatsKrajeRizeni(Task):
                             ia.spisovaznacka = io.spisovaznacka AND
                             (ia.zeme IS NULL OR ia.zeme = 'Česká republika')
                         ORDER BY druhadresy DESC, id ASC LIMIT 1) as adresa_mesto
-                    FROM isir_osoba io WHERE druhrolevrizeni = 1) a
+                    FROM isir_osoba io
+                    JOIN isir_vec iv ON (io.spisovaznacka = iv.spisovaznacka)
+                    WHERE
+                        io.druhrolevrizeni = 1 AND to_char(iv.datumzahajeni, 'YYYY-MM') = '2019-12'
+                    ) a
                 WHERE adresa_mesto IS NOT NULL
             """)
         i = 0
