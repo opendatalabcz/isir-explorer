@@ -1,9 +1,5 @@
-import os
-import json
-import re
-from databases import Database
-from ..task import Task
 from .link_osoby import LinkOsoby
+
 
 class LinkPrihlaskaOsoba(LinkOsoby):
 
@@ -26,7 +22,8 @@ class LinkPrihlaskaOsoba(LinkOsoby):
     async def najitSpojeniOsoby(self, hledana_osoba, osoby_rizeni):
         hledana_osoba["nazevosoby"] = self.upravaProSrovnani(hledana_osoba["nazevosoby"])
         hledana_osoba["jmeno"] = self.upravaProSrovnani(hledana_osoba["jmeno"])
-        hledana_osoba["nazevosoby_slova"] = hledana_osoba["nazevosoby"].split(" ") if hledana_osoba["nazevosoby"] is not None else None
+        hledana_osoba["nazevosoby_slova"] = \
+            hledana_osoba["nazevosoby"].split(" ") if hledana_osoba["nazevosoby"] is not None else None
         if hledana_osoba["jmeno"] is not None:
                 hledana_osoba["nazevosoby_slova"] += hledana_osoba["jmeno"].split(" ")
 
@@ -47,7 +44,7 @@ class LinkPrihlaskaOsoba(LinkOsoby):
 
             if 3 == hledana_osoba["druhosoby"] and hledana_osoba["nazevosoby"]:
                 if isir_osoba["druhosoby"] != 1 and \
-                    hledana_osoba["nazevosoby"] == isir_osoba["nazevosoby"]:
+                        hledana_osoba["nazevosoby"] == isir_osoba["nazevosoby"]:
                     return isir_osoba, self.TYP_SPOJENI_OBCHODNI_NAZEV
 
             if hledana_osoba["jmeno"] and isir_osoba["jmeno"] and hledana_osoba["nazevosoby"]:
