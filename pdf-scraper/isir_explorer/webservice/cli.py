@@ -5,6 +5,7 @@ import configparser
 from .isir_requests import IsirRequests
 from ..config import AppConfig
 
+
 class IsirClient:
 
     def __init__(self, config):
@@ -16,7 +17,7 @@ class IsirClient:
 
     async def sync_isir_database(self):
         await self.db.connect()
-        
+
         requests = IsirRequests(self.conf, self.db)
         await requests.start()
 
@@ -51,7 +52,8 @@ def validate_config_file(ctx, param, value):
               type=click.File('r'),
               callback=validate_config_file)
 @click.option('-l', '--last-id',
-              help='ID posledního archivovaného záznamu - od tohoto ID začne stahování nových záznamů. Pokud není uvedeno, použije se MAX(isir_udalost.id) hodnota z databáze.',
+              help='ID posledního archivovaného záznamu - od tohoto ID začne stahování nových záznamů. '
+              + 'Pokud není uvedeno, použije se MAX(isir_udalost.id) hodnota z databáze.',
               type=click.IntRange(min=-1, max=None))
 def isirClient(config, last_id):
 

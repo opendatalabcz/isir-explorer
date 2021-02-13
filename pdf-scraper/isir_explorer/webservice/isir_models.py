@@ -5,7 +5,6 @@ import xml.etree.ElementTree as ET
 import dateutil.parser
 from datetime import datetime
 import json
-import time
 
 
 class IsirModel:
@@ -74,10 +73,10 @@ class IsirModel:
 
     def get_insert_query(self, dialect):
         column_order = ",".join(self.db_columns)
-        
+
         column_placeholders_list = []
         for c in self.db_columns:
-            column_placeholders_list.append(":"+c)
+            column_placeholders_list.append(":" + c)
         column_placeholders = ",".join(column_placeholders_list)
 
         update_part = ""
@@ -104,7 +103,8 @@ class IsirModel:
         try:
             return enum[val]
         except KeyError:
-            print(f"Enum error: \"{val}\" not in enum ({list(enum.keys())[0]},...)")
+            print(
+                f"Enum error: \"{val}\" not in enum ({list(enum.keys())[0]},...)")
             return 0            # Unknown
 
     @staticmethod
@@ -135,6 +135,7 @@ class IsirModel:
                 data[item] = None
         return data
 
+
 class IsirUdalost(IsirModel):
 
     ATTRS = ['id', 'spisovaZnacka', 'oddil', 'cisloVOddilu', 'typUdalosti', 'dokumentUrl', 'dokumentUrl2',
@@ -142,7 +143,8 @@ class IsirUdalost(IsirModel):
              'priznakAnVedlejsiUdalost', 'priznakAnVedlejsiDokument',
              'priznakPlatnyVeritel', 'priznakMylnyZapisVeritelPohled', 'stav', 'soud']
     IGNORED = ['poznamka']
-    IGNORE_IN_UPDATE = ['id', 'spisovaZnacka', 'oddil', 'cisloVOddilu', 'typUdalosti','datumZalozeni']
+    IGNORE_IN_UPDATE = ['id', 'spisovaZnacka', 'oddil',
+                        'cisloVOddilu', 'typUdalosti', 'datumZalozeni']
     TABLE_NAME = "isir_udalost"
     UNIQUE_CONSTRAINT = "ON CONSTRAINT isir_udalost_pkey"
     COMPUTED_FIELDS = ['poznamka_json', 'stav', 'soud', 'dokumentUrl2']
@@ -217,7 +219,8 @@ class IsirUdalost(IsirModel):
             return int(data)
         elif columnName == "dokumentUrl" and data is not None:
             if data.startswith(IsirUdalost.DOC_PREFIX):
-                return data[len(IsirUdalost.DOC_PREFIX):]  # store only the unique part of the url to save space
+                # store only the unique part of the url to save space
+                return data[len(IsirUdalost.DOC_PREFIX):]
             else:
                 return data
         elif columnName == "poznamka":
@@ -230,7 +233,8 @@ class IsirOsoba(IsirModel):
     ATTRS = ['spisovaZnacka', 'idOsoby', 'druhRoleVRizeni', 'druhSpravce', 'nazevOsoby', 'nazevOsobyObchodni',
              'druhOsoby', 'druhPravniForma', 'jmeno', 'titulPred', 'titulZa', 'ic', 'dic', 'rc',
              'datumOsobaVeVeciZrusena', 'datumNarozeni', 'soud', 'datumZalozeni', 'idZalozeni']
-    IGNORE_IN_UPDATE = ['spisovaZnacka', 'idOsoby', 'datumZalozeni', 'idZalozeni']
+    IGNORE_IN_UPDATE = ['spisovaZnacka',
+                        'idOsoby', 'datumZalozeni', 'idZalozeni']
     TABLE_NAME = "isir_osoba"
     UNIQUE_CONSTRAINT = "(spisovaznacka, idosoby)"
 
@@ -239,7 +243,8 @@ class IsirOsoba(IsirModel):
         if data is None:
             return data
         if columnName == "datumNarozeni":
-            res = data[0:10]               # date returned by ISIR as "1979-05-16+02:00"
+            # date returned by ISIR as "1979-05-16+02:00"
+            res = data[0:10]
             try:
                 datetimeobject = datetime.strptime(res, '%Y-%m-%d')
             except:
@@ -264,9 +269,11 @@ class IsirOsoba(IsirModel):
             return IsirModel.get_enum(DRUH_ROLE_V_RIZENI, data)
         return data
 
+
 class IsirVec(IsirModel):
 
-    ATTRS = ['spisovaZnacka', 'druhStavRizeni', 'datumVecZrusena', 'datumKonecLhutyPrihlasek', 'datumSkonceniVeci', 'datumAktualizace']
+    ATTRS = ['spisovaZnacka', 'druhStavRizeni', 'datumVecZrusena', 'datumKonecLhutyPrihlasek',
+             'datumSkonceniVeci', 'datumAktualizace']
     IGNORE_IN_UPDATE = ['spisovaZnacka']
     COMPUTED_FIELDS = ['datumAktualizace']
     TABLE_NAME = "isir_vec"
@@ -323,7 +330,8 @@ class IsirAdresa(IsirModel):
         if data is None:
             return data
         if columnName[0:5] == "datum":
-            res = data[0:10]               # date returned by ISIR as "1979-05-16+02:00"
+            # date returned by ISIR as "1979-05-16+02:00"
+            res = data[0:10]
             try:
                 datetimeobject = datetime.strptime(res, '%Y-%m-%d')
             except:

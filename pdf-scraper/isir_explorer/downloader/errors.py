@@ -9,4 +9,3 @@ class TooManyRetries(DownloaderException):
     """Prilis mnoho pokusu.
     """
     pass
-

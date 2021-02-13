@@ -4,6 +4,7 @@ import re
 from databases import Database
 from ..task import Task
 
+
 class DoplnitCisloPrihlasky(Task):
 
     async def run(self):
@@ -20,9 +21,9 @@ class DoplnitCisloPrihlasky(Task):
             if row["oddil"] and row["oddil"][0] == "P":
                 try:
                     cislo_prihlasky = int(row["oddil"][1:])
-                except:
+                except TypeError:
                     continue
-                
+
                 i += 1
                 await self.db.execute(query="""
                     UPDATE prihlaska_pohledavky SET cislo_prihlasky=:cislo_prihlasky WHERE id=:pp_id
@@ -33,5 +34,3 @@ class DoplnitCisloPrihlasky(Task):
 
                 if i % 1000 == 0:
                     print("Zpracovano {0} ...".format(i))
-
-

@@ -4,6 +4,7 @@ import re
 from databases import Database
 from ..task import Task
 
+
 class DoplnitCisloVeritele(Task):
 
     async def run(self):
@@ -49,5 +50,3 @@ class DoplnitCisloVeritele(Task):
 
             if i % 1000 == 0:
                 print("Zpracovano {0} ...".format(i))
-
-

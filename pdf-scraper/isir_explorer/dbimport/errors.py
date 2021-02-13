@@ -4,6 +4,7 @@ class ImportException(Exception):
     """
     pass
 
+
 class UnknownDocument(ImportException):
     """Nepodařilo se rozpoznat typ importovaného dokumentu.
     """

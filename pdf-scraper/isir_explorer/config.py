@@ -38,7 +38,8 @@ class AppConfig:
         "verbose": False,
         "silent": False,
         "parse_in_executor": True,
-        "ins_filter": None,                                 # Filtr na spisove znacky ins. rizeni, napr. "INS [0-9]+/20(19|20|20|21|22)"
+        "ins_filter": None,                                 # Filtr na spisove znacky ins. rizeni,
+                                                            # napr. "INS [0-9]+/20(19|20|20|21|22)"
 
         "dl.concurrency": 5,
         "dl.request_timeout": 300,
@@ -74,7 +75,7 @@ class AppConfig:
     def validate_required(self):
         for key in self.REQUIRED:
             if key not in self.data:
-                raise click.BadParameter(key+" je povinna hodnota nastaveni.")
+                raise click.BadParameter(key + " je povinna hodnota nastaveni.")
 
     def set_defaults(self):
         for key in self.DEFAULTS:

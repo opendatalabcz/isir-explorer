@@ -5,6 +5,7 @@ from databases import Database
 from ..task import Task
 from .link_osoby import LinkOsoby
 
+
 class LinkVykazPrerozdeleniVeritel(LinkOsoby):
 
     def __init__(self, config, **kwargs):
@@ -41,8 +42,10 @@ class LinkVykazPrerozdeleniVeritel(LinkOsoby):
 
     async def najitSpojeniOsoby(self, hledana_osoba, osoby_rizeni):
         hledana_osoba = self.plneniOddluzeniPrefix(hledana_osoba)
-        hledana_osoba["nazevosoby"] = self.upravaProSrovnani(hledana_osoba["nazevosoby"])
-        hledana_osoba["nazevosoby_slova"] = hledana_osoba["nazevosoby"].split(" ")
+        hledana_osoba["nazevosoby"] = self.upravaProSrovnani(
+            hledana_osoba["nazevosoby"])
+        hledana_osoba["nazevosoby_slova"] = hledana_osoba["nazevosoby"].split(
+            " ")
 
         for isir_osoba in osoby_rizeni:
 

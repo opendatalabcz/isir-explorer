@@ -14,6 +14,7 @@ class Osoba:
         else:
             return self.Pravnicka_osoba.__repr__()
 
+
 class Dluznik(Osoba):
     pass
 
@@ -21,8 +22,10 @@ class Dluznik(Osoba):
 class Veritel(Osoba):
     pass
 
+
 class Adresa:
     pass
+
 
 class UdajeOsoby:
     def __init__(self):
@@ -32,6 +35,7 @@ class UdajeOsoby:
 class TypOsoby:
     def __init__(self, udaje):
         self.Udaje = udaje
+
 
 class Fyzicka_osoba(TypOsoby):
 

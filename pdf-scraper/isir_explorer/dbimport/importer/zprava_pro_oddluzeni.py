@@ -7,7 +7,7 @@ class ZpravaProOddluzeniImporter(IsirImporter):
 
     TYP_DOKUMENTU = 3
 
-    #: :obj:`dict` : 
+    #: :obj:`dict` :
     #: Číselník stavů typu majetku v soupisu majetku
     SOUPIS_MAJETKU = {
         "Financni_prostredky": 1,
@@ -17,7 +17,7 @@ class ZpravaProOddluzeniImporter(IsirImporter):
         "Pohledavky": 5,
     }
 
-    #: :obj:`dict` : 
+    #: :obj:`dict` :
     #: Číselník kategorií předpokládané míry uspokojení věřitelů
     TYP_MIRY_USPOKOJENI = {
         "Splat_kal_zpen_maj": 1,
@@ -48,7 +48,7 @@ class ZpravaProOddluzeniImporter(IsirImporter):
     def _typVeriteleMiraUspokojeni(self, jeZajisteny, zpravaId, predpokladUspokojeni):
         if not predpokladUspokojeni:
             return []
-        
+
         res = []
         for key in self.TYP_MIRY_USPOKOJENI:
             if key not in predpokladUspokojeni:
@@ -68,9 +68,9 @@ class ZpravaProOddluzeniImporter(IsirImporter):
         return res
 
     async def zpravaProOddluzeni(self, dokumentId):
-        self.zpravaId = await self.insert("zprava_pro_oddluzeni",{
+        self.zpravaId = await self.insert("zprava_pro_oddluzeni", {
             "id": dokumentId,
-            "odmena_za_sepsani_navrhu": 
+            "odmena_za_sepsani_navrhu":
                 self.doc["Hospodarska_situace"]["Odmena_za_sepsani_navrhu"],
             "povinnen_vydat_obydli":
                 self.doc["Hospodarska_situace"]["Povinnen_vydat_obydli"],
@@ -118,7 +118,7 @@ class ZpravaProOddluzeniImporter(IsirImporter):
             # Vkladat jen nenulove radky
             if typMajetku["oceneni"] or typMajetku["nezajisteno"] or typMajetku["zajisteno"]:
                 soupis.append(typMajetku)
-        
+
         await self.insertMany("zpro_soupis_majetku", soupis)
 
     async def prijemDluznika(self):
@@ -135,14 +135,18 @@ class ZpravaProOddluzeniImporter(IsirImporter):
         await self.insertMany("zpro_prijem_dluznika", prijmy)
 
     async def distribucniSchema(self):
-        dsNezajistene = self._typVeriteleDistribSchematu(False, self.zpravaId, self.doc["Distribucni_schema"]["Nezajistene"])
-        dsZajistene   = self._typVeriteleDistribSchematu(True,  self.zpravaId, self.doc["Distribucni_schema"]["Zajistene"])
+        dsNezajistene = self._typVeriteleDistribSchematu(
+            False, self.zpravaId, self.doc["Distribucni_schema"]["Nezajistene"])
+        dsZajistene = self._typVeriteleDistribSchematu(
+            True,  self.zpravaId, self.doc["Distribucni_schema"]["Zajistene"])
         distribucniSchema = dsNezajistene + dsZajistene
         await self.insertMany("zpro_distribucni_schema", distribucniSchema)
 
     async def predpokladUspokojeni(self):
-        puNezajistene = self._typVeriteleMiraUspokojeni(False, self.zpravaId, self.doc["Predpoklad_uspokojeni"]["Nezajistene"])
-        puZajistene = self._typVeriteleMiraUspokojeni(True, self.zpravaId, self.doc["Predpoklad_uspokojeni"]["Zajistene"])
+        puNezajistene = self._typVeriteleMiraUspokojeni(
+            False, self.zpravaId, self.doc["Predpoklad_uspokojeni"]["Nezajistene"])
+        puZajistene = self._typVeriteleMiraUspokojeni(
+            True, self.zpravaId, self.doc["Predpoklad_uspokojeni"]["Zajistene"])
         predpokladUspokojeni = puNezajistene + puZajistene
         await self.insertMany("zpro_predpoklad_uspokojeni", predpokladUspokojeni)
 
@@ -155,7 +159,7 @@ class ZpravaProOddluzeniImporter(IsirImporter):
 
         # Prijem dluznika
         await self.prijemDluznika()
-        
+
         # Distribucni schema
         await self.distribucniSchema()
 

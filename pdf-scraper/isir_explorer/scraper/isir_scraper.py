@@ -14,6 +14,7 @@ from .parser.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeniParser
 from .parser.zprava_splneni_oddluzeni import ZpravaSplneniOddluzeniParser
 from .parser.errors import UnreadableDocument, EmptyPdfPortfolio, NotPdfPortfolio
 
+
 class IsirScraper:
 
     PARSER_TYPES = {
@@ -23,7 +24,7 @@ class IsirScraper:
         "ZpravaPlneniOddluzeni": ZpravaPlneniOddluzeniParser,
         "ZpravaSplneniOddluzeni": ZpravaSplneniOddluzeniParser,
     }
-    
+
     def __init__(self, filename, config):
         self.config = config
         self.filename = filename
@@ -43,7 +44,8 @@ class IsirScraper:
 
     def setupLogging(self):
         self.logger = logging.getLogger()
-        logFormatter = logging.Formatter("%(asctime)s [%(levelname)-5.5s]  %(message)s")
+        logFormatter = logging.Formatter(
+            "%(asctime)s [%(levelname)-5.5s]  %(message)s")
 
         if self.config['debug']:
             consoleHandler = logging.StreamHandler()
@@ -67,7 +69,7 @@ class IsirScraper:
             if name == key.lower():
                 return IsirScraper.PARSER_TYPES[key]
         return None
-    
+
     async def unpackPdf(self, input_path):
         tmp_unpack_dir = self.unpack_path + "/" + self.document_name
         if not os.path.exists(tmp_unpack_dir):
@@ -98,7 +100,7 @@ class IsirScraper:
 
             if not files:
                 raise EmptyPdfPortfolio
-            
+
             return files
         else:
             shutil.rmtree(tmp_unpack_dir)
@@ -124,12 +126,13 @@ class IsirScraper:
             documents += await self.readDocumentSingle(file, **kwargs)
 
         if not documents and self.config['sc.save_unreadable'] and not self.config['sc._cli']:
-            os.rename(input_path, self.unreadable_path + "/" + self.document_name + ".pdf")
+            os.rename(input_path, self.unreadable_path +
+                      "/" + self.document_name + ".pdf")
 
         self.cleanup()
         return documents
 
-    def cleanup(self): 
+    def cleanup(self):
         if self.unpacked_dir and not self.config['sc.save_unpacked']:
             shutil.rmtree(self.unpacked_dir)
 
@@ -147,7 +150,8 @@ class IsirScraper:
         retcode = await process.wait()
 
         if retcode != 0:
-            print(f"Nepodarila se konverze pdftotext, kod: {retcode}", file=sys.stderr)
+            print(
+                f"Nepodarila se konverze pdftotext, kod: {retcode}", file=sys.stderr)
             return []
 
         with open(output_path, 'rb') as f:
@@ -166,7 +170,7 @@ class IsirScraper:
         documents = []
         if self.config['doctype']:
             # Use only the parser selected by the user
-            parsers = [ self.getParserByName(self.config['doctype']) ]
+            parsers = [self.getParserByName(self.config['doctype'])]
         else:
             # Use all parser types (detect document type)
             parsers = self.PARSER_TYPES.values()
@@ -197,7 +201,7 @@ class IsirScraper:
             self.filename,
             multidoc=self.config['multidoc'],
         )
-        
+
         if not documents:
             msg = "Nečitelný dokument" if not self.is_empty else "Prázdný dokument"
             print(msg, file=sys.stderr)
@@ -208,5 +212,6 @@ class IsirScraper:
             documents = documents[0]
 
         # Save output
-        output = json.dumps(documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
+        output = json.dumps(documents, default=lambda o: o.__dict__,
+                            sort_keys=True, indent=4, ensure_ascii=False)
         self.config['_out'].write(output)

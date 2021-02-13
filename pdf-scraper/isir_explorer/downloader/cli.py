@@ -58,4 +58,3 @@ def isirDownloader(config, limit, start, debug):
         dl.forceStop = True
         loop.run_forever()
         loop.close()
-

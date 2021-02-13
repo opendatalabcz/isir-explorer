@@ -4,11 +4,12 @@ from .model.parts.osoba import *
 from .model.parts.spisova_znacka import *
 import re
 
+
 class PrihlaskaParser(IsirParser):
     """Parser pro čtení formulářů typu Přihláška pohledávky.
     """
 
-    #: :obj:`int` : 
+    #: :obj:`int` :
     #: Verze scraperu tohoto typ dokumentu. Měla by být inkrementována při každé podstatné změně.
     VERZE_SCRAPER = 2
 
@@ -40,7 +41,8 @@ class PrihlaskaParser(IsirParser):
         for line in self.lines:
             if "Soud" in line and "Spis. značka" in line:
                 soud = self.textBetween(line, "Soud", "Spis. značka")
-                znackaTxt = self.removeSpaces(self.textAfter(line, "Spis. značka"))
+                znackaTxt = self.removeSpaces(
+                    self.textAfter(line, "Spis. značka"))
                 self.model.setSoud(soud, self.spisovaZnacka(znackaTxt))
 
     def _udajeOsoby(self, lines):
@@ -50,15 +52,20 @@ class PrihlaskaParser(IsirParser):
                 udaje.Prijmeni = self.textBetween(line, "Příjmení:", "Jméno:")
                 udaje.Jmeno = self.textAfter(line, "Jméno:")
             elif "Titul za jm.:" in line and "Titul před jm.:" in line:
-                udaje.Titul_za = self.textBetween(line, "Titul za jm.:", "Titul před jm.:")
+                udaje.Titul_za = self.textBetween(
+                    line, "Titul za jm.:", "Titul před jm.:")
                 udaje.Titul_pred = self.textAfter(line, "Titul před jm.:")
             elif "Datum narození:" in line and "Rodné číslo:" in line:
-                udaje.Datum_narozeni = re.sub(r"[^0-9.]", "", self.textBetween(line, "Datum narození:", "Rodné číslo:"))
+                udaje.Datum_narozeni = re.sub(
+                    r"[^0-9.]", "", self.textBetween(line, "Datum narození:", "Rodné číslo:"))
                 # RC bez lomitka
-                udaje.Rodne_cislo = self.numbersOnly(self.textAfter(line, "Rodné číslo:"), toInt=False)
+                udaje.Rodne_cislo = self.numbersOnly(
+                    self.textAfter(line, "Rodné číslo:"), toInt=False)
             elif "IČ:" in line and "Jiné registr. č.:" in line:
-                udaje.IC = self.numbersOnly(self.textBetween(line, "IČ:", "Jiné registr. č.:"), toInt=False)
-                udaje.Jine_reg_cislo = self.numbersOnly(self.textAfter(line, "Jiné registr. č.:"), toInt=False)
+                udaje.IC = self.numbersOnly(self.textBetween(
+                    line, "IČ:", "Jiné registr. č.:"), toInt=False)
+                udaje.Jine_reg_cislo = self.numbersOnly(
+                    self.textAfter(line, "Jiné registr. č.:"), toInt=False)
             elif "Název/obch.firma:" in line:
                 udaje.Nazev = self.textAfter(line, "Název/obch.firma:")
             elif "Ulice:" in line:
@@ -85,7 +92,8 @@ class PrihlaskaParser(IsirParser):
         self.model.Dluznik = Dluznik(udaje)
 
     def _veritel(self):
-        txt = self.reTextBetween(self.txt, "^[\s]+Věřitel", "^[\s]+I vyplní se pouze u zahraničních osob")
+        txt = self.reTextBetween(
+            self.txt, "^[\s]+Věřitel", "^[\s]+I vyplní se pouze u zahraničních osob")
         lines = txt.split('\n')
         udaje = self._udajeOsoby(lines)
         self.model.Veritel = Veritel(udaje)
@@ -99,7 +107,8 @@ class PrihlaskaParser(IsirParser):
             if stav == STAV_ZPUSOB_PODRIZENI:
                 if "Ve výši (Kč)" in line:
                     stav = STAV_CASTKA_PODRIZENI
-                    pohledavka.Vlastnosti.PodrizenaZpusob = self.textBlock(pohledavka.Vlastnosti.PodrizenaZpusob)
+                    pohledavka.Vlastnosti.PodrizenaZpusob = self.textBlock(
+                        pohledavka.Vlastnosti.PodrizenaZpusob)
                     continue
                 if hasattr(pohledavka.Vlastnosti, "PodrizenaZpusob"):
                     pohledavka.Vlastnosti.PodrizenaZpusob += line
@@ -147,7 +156,7 @@ class PrihlaskaParser(IsirParser):
                     # pripad, kdy je vyplnen pouze jeden z udaju Splatna od: / V castce:
                     if self.reMatch(columns[0], "^([0-9]+ )*[0-9]+(,[0-9]+)?$"):
                         vCastce = self.priceValue(columns[0])
-                    elif columns[0]!="":
+                    elif columns[0] != "":
                         od = columns[0]
                 elif len(columns) == 2:
                     od = columns[0].strip()
@@ -165,19 +174,24 @@ class PrihlaskaParser(IsirParser):
             if self.reMatch(line, '^[\s]*Typ pohledávky:'):
                 pohledavka.Typ = self.textAfter(line, "Typ pohledávky:")
             elif self.reMatch(line, '^[\s]*Výše jistiny \(Kč\):'):
-                pohledavka.Vyse_jistiny = self.priceValue(self.textAfter(line, "Výše jistiny (Kč):"))
+                pohledavka.Vyse_jistiny = self.priceValue(
+                    self.textAfter(line, "Výše jistiny (Kč):"))
             elif self.reMatch(line, '^[\s]*Celková výše pohledávky:') and not pohledavka.Celkova_vyse:
-                pohledavka.Celkova_vyse = self.priceValue(self.textAfter(line, "Celková výše pohledávky:"))
+                pohledavka.Celkova_vyse = self.priceValue(
+                    self.textAfter(line, "Celková výše pohledávky:"))
 
-        pohledavka.Duvod_vzniku = self.textBlock(self.fieldText(txt, "^[\s]*[0-9]+ Důvod vzniku:"))
-        pohledavka.Dalsi_okolnosti = self.textBlock(self.fieldText(txt, "^[\s]*[0-9]+ Další okolnosti:"))
+        pohledavka.Duvod_vzniku = self.textBlock(
+            self.fieldText(txt, "^[\s]*[0-9]+ Důvod vzniku:"))
+        pohledavka.Dalsi_okolnosti = self.textBlock(
+            self.fieldText(txt, "^[\s]*[0-9]+ Další okolnosti:"))
 
         # Vykonatelnost
         txtVykonatelnost = self.fieldText(txt, "^[\s]*[0-9]+ Vykonatelnost:")
         for line in txtVykonatelnost.split('\n'):
             if "pro částku:" in line and "dle:" in line:
                 pohledavka.Vykonatelnost = Vykonatelnost()
-                pohledavka.Vykonatelnost.Pro_castku = self.priceValue(self.textBetween(line, "pro částku:", "dle:"))
+                pohledavka.Vykonatelnost.Pro_castku = self.priceValue(
+                    self.textBetween(line, "pro částku:", "dle:"))
                 pohledavka.Vykonatelnost.Dle = self.textAfter(line, "dle:")
 
         # Prislusenstvi
@@ -185,27 +199,33 @@ class PrihlaskaParser(IsirParser):
         for line in txtPrislusenstvi.split('\n'):
             if self.reMatch(line, '^[\s]*Výše \(Kč\):'):
                 pohledavka.Prislusenstvi = Prislusenstvi()
-                pohledavka.Prislusenstvi.Vyse = self.priceValue(self.textAfter(line, "Výše (Kč):"))
-                pohledavka.Prislusenstvi.Druh = self.textBlock(self.textBetween(txtPrislusenstvi, "Druh:", "Výše (Kč):"))
-                pohledavka.Prislusenstvi.Zpusob_vypoctu = self.textBlock(self.fieldText(txtPrislusenstvi, "^[\s]*Způsob výpočtu:"))
+                pohledavka.Prislusenstvi.Vyse = self.priceValue(
+                    self.textAfter(line, "Výše (Kč):"))
+                pohledavka.Prislusenstvi.Druh = self.textBlock(
+                    self.textBetween(txtPrislusenstvi, "Druh:", "Výše (Kč):"))
+                pohledavka.Prislusenstvi.Zpusob_vypoctu = self.textBlock(
+                    self.fieldText(txtPrislusenstvi, "^[\s]*Způsob výpočtu:"))
                 break
 
         # Vlastnosti (zatim faze sbirani dat)
-        txtVlastnosti = self.fieldText(txt, "[\s]*[0-9]+ Vlastnosti pohledávky:")
+        txtVlastnosti = self.fieldText(
+            txt, "[\s]*[0-9]+ Vlastnosti pohledávky:")
         self._vlastnostiPohledavky(txtVlastnosti, pohledavka)
 
         return pohledavka
 
     def _pohledavky(self):
-        pohledavkyText = re.compile('^[\s]*Pohledávka č\.[\s]+[0-9]+[\s]*$', re.MULTILINE).split(self.txt)
+        pohledavkyText = re.compile(
+            '^[\s]*Pohledávka č\.[\s]+[0-9]+[\s]*$', re.MULTILINE).split(self.txt)
 
         if len(pohledavkyText) >= 2:
-            pohledavkyText.pop(0) # Odstranit zacatek
-        
+            pohledavkyText.pop(0)  # Odstranit zacatek
+
         # posledni pohledavka
         posledni = pohledavkyText.pop()
-        konec = self.reSplitText(posledni, '^[\s]*[0-9]+ Celková výše přihlášených pohledávek \(Kč\):.*', keep_split=True)
-        pohledavkyText.append(konec[0]) # posledni pohledavka
+        konec = self.reSplitText(
+            posledni, '^[\s]*[0-9]+ Celková výše přihlášených pohledávek \(Kč\):.*', keep_split=True)
+        pohledavkyText.append(konec[0])  # posledni pohledavka
         sumarizace = konec[1]
 
         for cislo, pohledavkaText in enumerate(pohledavkyText):
@@ -221,16 +241,21 @@ class PrihlaskaParser(IsirParser):
         sumLines = sumarizace.split('\n')
         for line in sumLines:
             if self.reMatch(line, '^[\s]*[0-9]+ Celková výše přihlášených pohledávek \(Kč\):'):
-                self.model.Pohledavky.Celkova_vyse = self.priceValue(self.reTextAfter(line, '^[\s]*[0-9]+ Celková výše přihlášených pohledávek \(Kč\):'))
+                self.model.Pohledavky.Celkova_vyse = self.priceValue(self.reTextAfter(
+                    line, '^[\s]*[0-9]+ Celková výše přihlášených pohledávek \(Kč\):'))
             elif self.reMatch(line, '^[\s]*[0-9]+ Celková výše nezajištěných pohledávek \(Kč\):'):
-                self.model.Pohledavky.Celkova_vyse_nezajistenych = self.priceValue(self.reTextAfter(line, '^[\s]*[0-9]+ Celková výše nezajištěných pohledávek \(Kč\):'))
+                self.model.Pohledavky.Celkova_vyse_nezajistenych = self.priceValue(
+                    self.reTextAfter(line, '^[\s]*[0-9]+ Celková výše nezajištěných pohledávek \(Kč\):'))
             elif self.reMatch(line, '^[\s]*[0-9]+ Celková výše zajištěných pohledávek \(Kč\):'):
-                self.model.Pohledavky.Celkova_vyse_zajistenych = self.priceValue(self.reTextAfter(line, '^[\s]*[0-9]+ Celková výše zajištěných pohledávek \(Kč\):'))
+                self.model.Pohledavky.Celkova_vyse_zajistenych = self.priceValue(
+                    self.reTextAfter(line, '^[\s]*[0-9]+ Celková výše zajištěných pohledávek \(Kč\):'))
             elif self.reMatch(line, '^[\s]*[0-9]+ Počet pohledávek:'):
-                self.model.Pohledavky.Pocet_pohledavek = self.numbersOnly(self.reTextAfter(line, '^[\s]*[0-9]+ Počet pohledávek:'))
+                self.model.Pohledavky.Pocet_pohledavek = self.numbersOnly(
+                    self.reTextAfter(line, '^[\s]*[0-9]+ Počet pohledávek:'))
             elif self.reMatch(line, '^[\s]*[0-9]+ Počet vložených stran:'):
-                self.model.Pohledavky.Pocet_vlozenych_stran = self.numbersOnly(self.reTextAfter(line, '^[\s]*[0-9]+ Počet vložených stran:'))
-                break #konec sumarizace
+                self.model.Pohledavky.Pocet_vlozenych_stran = self.numbersOnly(
+                    self.reTextAfter(line, '^[\s]*[0-9]+ Počet vložených stran:'))
+                break  # konec sumarizace
 
     def run(self):
         super().run()

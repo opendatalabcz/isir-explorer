@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class IsirImporter:
 
     def __init__(self, db, document):
@@ -9,7 +10,7 @@ class IsirImporter:
         self.isir_id = None
         self.isir_ins = None
         self.pdf_file_size = None
-        
+
         # can be postgresql / postgres
         if "postgres" in self.db.url.scheme:
             self.dbtype = "postgres"
@@ -18,22 +19,24 @@ class IsirImporter:
 
     async def insert(self, table, data):
         column_names = list(data.keys())
-        placeholders = map(lambda x:":"+x, column_names)
-        query = f"INSERT INTO {table} (" + ",".join(column_names) + ") VALUES ("+ ",".join(placeholders) +")"
+        placeholders = map(lambda x: ":"+x, column_names)
+        query = f"INSERT INTO {table} (" + ",".join(column_names) + \
+            ") VALUES (" + ",".join(placeholders) + ")"
 
         if "postgres" == self.dbtype:
             query += " RETURNING id"
 
         rowid = await self.db_conn.execute(query=query, values=data)
         return rowid
-    
+
     async def insertMany(self, table, dataset):
         if not dataset:
             return
         data = dataset[0]
         column_names = list(data.keys())
-        placeholders = map(lambda x:":"+x, column_names)
-        query = f"INSERT INTO {table} (" + ",".join(column_names) + ") VALUES ("+ ",".join(placeholders) +")"
+        placeholders = map(lambda x: ":"+x, column_names)
+        query = f"INSERT INTO {table} (" + ",".join(column_names) + \
+            ") VALUES (" + ",".join(placeholders) + ")"
         await self.db_conn.execute_many(query=query, values=dataset)
 
     def addIsirRecord(self, record):
@@ -67,8 +70,8 @@ class IsirImporter:
         except KeyError:
             verze_scraper = 1
 
-        dokumentId = await self.insert("dokument",{
-            "isir_id": 
+        dokumentId = await self.insert("dokument", {
+            "isir_id":
                 self.isir_id,
             "spisova_znacka":
                 self.isir_ins,

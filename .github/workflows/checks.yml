@@ -21,7 +21,7 @@ jobs:
       with:
         path: pdf-scraper/isir_explorer
         max_line_length: 130
-        ignore: E722,W
+        ignore: E722,F403,F405,W
 
   bandit:
     name: "Security check - Bandit"

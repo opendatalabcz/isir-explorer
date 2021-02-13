@@ -4,6 +4,7 @@ import re
 from databases import Database
 from ..task import Task
 
+
 class LinkDistribucniSchemaVeritel(Task):
 
     async def run(self):
@@ -27,5 +28,3 @@ class LinkDistribucniSchemaVeritel(Task):
 
             if i % 1000 == 0:
                 print("Zpracovano {0} ...".format(i))
-
-

@@ -1,5 +1,6 @@
 from .isir_dokument import IsirDokument
 
+
 class SekcePohledavky():
 
     def __init__(self):

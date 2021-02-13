@@ -28,9 +28,9 @@ class ZpravaPlneniOddluzeniImporter(IsirImporter):
             z_uspokojeni_ocekavana = None
             z_uspokojeni_aktualni = None
 
-        self.zpravaId = await self.insert("zprava_plneni_oddluzeni",{
+        self.zpravaId = await self.insert("zprava_plneni_oddluzeni", {
             "id": dokumentId,
-            "doporuceni_spravce": 
+            "doporuceni_spravce":
                 self.doc["ZpravaSpravce"]["Doporuceni_spravce"],
             "doporuceni_spravce_oduvodneni":
                 self.doc["ZpravaSpravce"]["Doporuceni_spravce_oduvodneni"],
@@ -86,7 +86,7 @@ class ZpravaPlneniOddluzeniImporter(IsirImporter):
         vykazPrerozdeleni = []
 
         for veritel in self.doc["VykazPlneni"]["Rozdeleni"]:
-            veritelId = await self.insert("zplo_vykaz_prerozdeleni_veritel",{
+            veritelId = await self.insert("zplo_vykaz_prerozdeleni_veritel", {
                 "zplo_id": self.zpravaId,
                 "veritel": veritel["Veritel"],
                 "castka": veritel["Castka"],
@@ -95,12 +95,12 @@ class ZpravaPlneniOddluzeniImporter(IsirImporter):
             veritel["Id"] = veritelId
 
         for veritel in self.doc["VykazPlneni"]["Rozdeleni"]:
-            
+
             # Kontrola asociace k jednotlivym mesicum vykazu Plneni
             if len(self.doc["VykazPlneni"]["Mesic"]) != len(veritel["Vyplaceno"]):
                 continue
 
-            for i,castka in enumerate(veritel["Vyplaceno"]):
+            for i, castka in enumerate(veritel["Vyplaceno"]):
                 mesic = self.doc["VykazPlneni"]["Mesic"][i]["Mesic"]
                 mesic_oddluzeni = self.doc["VykazPlneni"]["Mesic"][i]["Mesic_oddluzeni"]
 
@@ -117,7 +117,6 @@ class ZpravaPlneniOddluzeniImporter(IsirImporter):
                 })
 
         await self.insertMany("zplo_vykaz_prerozdeleni", vykazPrerozdeleni)
-
 
     async def importDocument(self, dokumentId):
 

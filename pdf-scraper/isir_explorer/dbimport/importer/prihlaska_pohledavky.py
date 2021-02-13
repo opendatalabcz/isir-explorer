@@ -40,7 +40,6 @@ class PrihlaskaImporter(IsirImporter):
             self.cisloPrihlasky = int(oddil[1:])
         except:
             return
-        
 
     def typPohledavky(self, typ):
         try:
@@ -94,7 +93,7 @@ class PrihlaskaImporter(IsirImporter):
         data_osoby = {
             "pp_id":
                 self.prihlaskaId,
-            "druhrolevrizeni": 
+            "druhrolevrizeni":
                 druhOsobyRizeni,
         }
 
@@ -127,7 +126,8 @@ class PrihlaskaImporter(IsirImporter):
                 data_osoby["rc"] = None
 
             try:
-                data_osoby["datumnarozeni"] = self.dateFormat(osoba["Fyzicka_osoba"]["Udaje"]["Datum_narozeni"]) or None
+                data_osoby["datumnarozeni"] = self.dateFormat(
+                    osoba["Fyzicka_osoba"]["Udaje"]["Datum_narozeni"]) or None
             except:
                 data_osoby["datumnarozeni"] = None
         else:
@@ -168,14 +168,15 @@ class PrihlaskaImporter(IsirImporter):
 
         # Pocet pohledavek nekdy neni vyplnen
         if self.doc["Pohledavky"]["Pocet_pohledavek"] is None:
-            self.doc["Pohledavky"]["Pocet_pohledavek"] = len(self.doc["Pohledavky"]["Pohledavky"])
+            self.doc["Pohledavky"]["Pocet_pohledavek"] = len(
+                self.doc["Pohledavky"]["Pohledavky"])
 
-        self.prihlaskaId = await self.insert("prihlaska_pohledavky",{
+        self.prihlaskaId = await self.insert("prihlaska_pohledavky", {
             "id":
                 dokumentId,
             "cislo_prihlasky":
                 self.cisloPrihlasky,
-            "pocet_pohledavek": 
+            "pocet_pohledavek":
                 self.doc["Pohledavky"]["Pocet_pohledavek"],
             "celkova_vyse":
                 self.doc["Pohledavky"]["Celkova_vyse"],
@@ -187,26 +188,25 @@ class PrihlaskaImporter(IsirImporter):
 
         pohledavky = []
         for pohledavka in self.doc["Pohledavky"]["Pohledavky"]:
-            
+
             pohledavky.append({
-                'pp_id'           : self.prihlaskaId,
-                'cislo'           : pohledavka['Cislo'],
-                'celkova_vyse'    : pohledavka['Celkova_vyse'],
-                'vyse_jistiny'    : pohledavka['Vyse_jistiny'],
-                'typ'             : self.typPohledavky(pohledavka['Typ']),
-                'typ_text'        : pohledavka['Typ'][:50],
-                'dalsi_okolnosti' : pohledavka['Dalsi_okolnosti'],
-                'duvod_vzniku'    : pohledavka['Duvod_vzniku'],
-                'splatna'         : pohledavka['Vlastnosti']['Splatna'],
-                'podrizena'       : pohledavka['Vlastnosti']['Podrizena'],
-                'v_cizi_mene'     : pohledavka['Vlastnosti']['Cizi_mena'],
-                'penezita'        : pohledavka['Vlastnosti']['Penezita'],
-                'vykonatelnost'   : bool(pohledavka['Vykonatelnost']),
+                'pp_id': self.prihlaskaId,
+                'cislo': pohledavka['Cislo'],
+                'celkova_vyse': pohledavka['Celkova_vyse'],
+                'vyse_jistiny': pohledavka['Vyse_jistiny'],
+                'typ': self.typPohledavky(pohledavka['Typ']),
+                'typ_text': pohledavka['Typ'][:50],
+                'dalsi_okolnosti': pohledavka['Dalsi_okolnosti'],
+                'duvod_vzniku': pohledavka['Duvod_vzniku'],
+                'splatna': pohledavka['Vlastnosti']['Splatna'],
+                'podrizena': pohledavka['Vlastnosti']['Podrizena'],
+                'v_cizi_mene': pohledavka['Vlastnosti']['Cizi_mena'],
+                'penezita': pohledavka['Vlastnosti']['Penezita'],
+                'vykonatelnost': bool(pohledavka['Vykonatelnost']),
             })
 
         await self.insertMany("pp_pohledavka", pohledavky)
 
         # Udaje o veriteli
-        #await self._importOsoby(self.DRUH_OSOBY_DLUZNIK, self.doc["Dluznik"]) # neni treba evidovat
+        # await self._importOsoby(self.DRUH_OSOBY_DLUZNIK, self.doc["Dluznik"]) # neni treba evidovat
         await self._importOsoby(self. DRUH_OSOBY_VERITEL, self.doc["Veritel"])
-       

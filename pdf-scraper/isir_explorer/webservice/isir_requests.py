@@ -2,7 +2,6 @@ import aiohttp
 import xml.etree.ElementTree as ET
 from .exceptions import IsirServiceException, TooManyRetries, NoRecordsInResponse
 from .isir_models import IsirOsoba, IsirUdalost, IsirVec, IsirStavVeci, IsirAdresa
-from .enums import Udalosti
 import asyncio
 import time
 import concurrent.futures
@@ -25,7 +24,8 @@ class IsirRequests:
             max_workers=self.conf["concurrency"],
         )
         self.speedCounter = {"samples": 0}
-        self.ins_filter = re.compile(self.conf["ins_filter"]) if self.conf["ins_filter"] is not None else None
+        self.ins_filter = re.compile(
+            self.conf["ins_filter"]) if self.conf["ins_filter"] is not None else None
 
         # can be postgresql / postgres
         if "postgres" in self.db.url.scheme:
@@ -48,20 +48,22 @@ class IsirRequests:
                 download_task.task.cancel()
                 await download_task.task
             except asyncio.CancelledError:
-                self.log(f"{download_task} cancelled", 10)
+                self.log(f"{download_task} zrusen", 10)
             except NoRecordsInResponse:
-                self.log(f"{download_task} returned empty result before being cancelled", 10)
+                self.log(
+                    f"{download_task} vratil prazdny vysledek jeste pred zrusenim", 10)
             except Exception as e:
-                self.log(f"{download_task} cancellation problem: {e}", 10)
+                self.log(f"{download_task} se nepodaril zrusit: {e}", 10)
         try:
             await self.db.close()
         except:
-            pass
+            self.log(f"Nepodarilo se uzavrit db spojeni!", 10)
         self.tasks = []
 
     async def start(self):
         timeout = aiohttp.ClientTimeout(total=self.conf["request_timeout"])
-        headers = {'Accept': 'text/xml', 'Content-Type': 'text/xml;charset=UTF-8'}
+        headers = {'Accept': 'text/xml',
+                   'Content-Type': 'text/xml;charset=UTF-8'}
 
         self.last_completed_id = self.pos = await self.get_last_id()
         self.front_task_done.clear()
@@ -78,11 +80,13 @@ class IsirRequests:
                 await front.task
             except NoRecordsInResponse:
                 self.log(f"{front} returned empty result", 5)
-                self.log("Finished - ISIR database synchronized and up to date!")
+                self.log(
+                    "Dokonceno - ISIR databaze synchronizovana a je aktualni!")
                 await self.cancel_tasks()
                 return
             except (asyncio.TimeoutError, IsirServiceException, aiohttp.ServerConnectionError) as e:
-                self.log(f"Retrying {front} due to error: {e.__class__.__name__}: {e}")
+                self.log(
+                    f"Opakovani {front} kvuli chybe: {e.__class__.__name__}: {e}")
                 try:
                     self.tasks.insert(0, front.retry())
                 except Exception as e:
@@ -136,7 +140,8 @@ class IsirRequests:
             diff = end - self.speedCounter["ts"]
             per_request = diff / self.SPEED_SAMPLES
             per_record = (diff / self.speedCounter["cnt"]) * 1000
-            print(f"TIME per request = {per_request} sec, record = {per_record} ms")
+            print(
+                f"TIME per request = {per_request} sec, record = {per_record} ms")
 
 
 class RequestTask:
@@ -173,7 +178,7 @@ class RequestTask:
                 '<soapenv:Header/>'
                 '<soapenv:Body>'
                 '<typ:getIsirWsPublicIdDataRequest>'
-                '<idPodnetu>'+str(aid)+'</idPodnetu>'
+                '<idPodnetu>' + str(aid) + '</idPodnetu>'
                 '</typ:getIsirWsPublicIdDataRequest>'
                 '</soapenv:Body>'
                 '</soapenv:Envelope>')
@@ -183,7 +188,8 @@ class RequestTask:
         self.finished = False
         self.retry_count += 1
         if self.retry_count > max_retry:
-            raise TooManyRetries(f"Task pos={self.pos} failed even after max. amount of retries.")
+            raise TooManyRetries(
+                f"Task pos={self.pos} failed even after max. amount of retries.")
         self.log(f"Retry {self.retry_count} of {max_retry} for {self}")
         self.task = asyncio.create_task(self.run())
         return self
@@ -195,19 +201,21 @@ class RequestTask:
         body = self.get_isir_request_body(self.pos)
         async with self.session.post(self.ISIR_SERVICE, data=body) as resp:
             if resp.status != 200:
-                raise IsirServiceException(f"Isir service returned HTTP {resp.status}")
+                raise IsirServiceException(
+                    f"Isir service returned HTTP {resp.status}")
             data = await resp.text('utf-8')
-            #self.xdata=data
             await self.process_response(data)
 
     async def process_response(self, data):
         root = ET.fromstring(data)
         body = root.find('soap:Body', self.NAMESPACES)
-        isir_res = body.find('isir:getIsirWsPublicDataResponse', self.NAMESPACES)
+        isir_res = body.find(
+            'isir:getIsirWsPublicDataResponse', self.NAMESPACES)
         status = isir_res.find('status')
         stav = status.find('stav').text
         if stav != "OK":
-            msg = status.find('kodChyby').text + ' - ' + status.find('popisChyby').text
+            msg = status.find('kodChyby').text + ' - ' + \
+                status.find('popisChyby').text
             raise IsirServiceException(msg)
 
         records = isir_res.findall('data')
@@ -223,13 +231,12 @@ class RequestTask:
     def parseRows(self, records):
         udalost_rows = []
         models = []
-        start = time.time()
         for r in records:
             u = IsirUdalost(r)
 
             if self.parent.ins_filter is not None:
                 if not self.parent.ins_filter.match(u.spisovaZnacka):
-                    continue            
+                    continue
 
             if u.typUdalosti not in self.NOT_STORED_UDALOST_TYPES:
                 if u.oddil is None or u.cisloVOddilu is None:
@@ -257,15 +264,13 @@ class RequestTask:
                 models.append(IsirVec(xml_elem, u))
                 models.append(IsirStavVeci(xml_elem, u))
 
-        end = time.time()
-
         return udalost_rows, models
-
 
     async def save_records(self, records):
         if self.parent.conf["parse_in_executor"]:
             loop = asyncio.get_event_loop()
-            blocking_task = loop.run_in_executor(self.parent.executor, self.parseRows, records)
+            blocking_task = loop.run_in_executor(
+                self.parent.executor, self.parseRows, records)
             completed, pending = await asyncio.wait([blocking_task])
             for e in completed:
                 break

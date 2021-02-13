@@ -13,6 +13,7 @@ def validate_config_file(ctx, param, value):
 
     return AppConfig(config)
 
+
 def validate_doctype(ctx, param, value):
     if value is None:
         return None
@@ -20,9 +21,11 @@ def validate_doctype(ctx, param, value):
     parser = IsirScraper.getParserByName(value)
 
     if not parser:
-        raise click.BadParameter(f"Zadaný typ dokumentu ({value}) není podporován.")
+        raise click.BadParameter(
+            f"Zadaný typ dokumentu ({value}) není podporován.")
 
     return value
+
 
 @click.command()
 @click.argument('PDF_FILE',

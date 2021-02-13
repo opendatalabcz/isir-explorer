@@ -12,7 +12,7 @@ class PrehledovyListImporter(IsirImporter):
             return {}
 
         col_prefix = 'z_' if jeZajisteny else 'n_'
-        
+
         res = {
             'celkova_vyse': celkem["Celkova_vyse"],
             'vykonatelne': celkem["Vykonatelne"],
@@ -26,7 +26,7 @@ class PrehledovyListImporter(IsirImporter):
             'zjisteno': celkem["Zjisteno"],
         }
 
-        return {col_prefix+k : v for k,v in res.items()}
+        return {col_prefix+k: v for k, v in res.items()}
 
     def pohledavky(self, prehledovyListId, jeZajisteny, pohledavky):
 
@@ -53,12 +53,13 @@ class PrehledovyListImporter(IsirImporter):
             })
         return res
 
-
     async def importDocument(self, dokumentId):
 
         # Vlozit prehledovy list
-        nezajistene = self.sumarizaceTypuVeritele(False, self.doc["Nezajistene"]["Celkem"])
-        zajistene = self.sumarizaceTypuVeritele(True, self.doc["Zajistene"]["Celkem"])
+        nezajistene = self.sumarizaceTypuVeritele(
+            False, self.doc["Nezajistene"]["Celkem"])
+        zajistene = self.sumarizaceTypuVeritele(
+            True, self.doc["Zajistene"]["Celkem"])
         # data radku tabulky
         prehledovyList = {
             "id": dokumentId,
@@ -68,7 +69,9 @@ class PrehledovyListImporter(IsirImporter):
         prehledovyListId = await self.insert("prehledovy_list", prehledovyList)
 
         # Vlozit pohledavky k prehledovemu listu
-        pohledavky_nezajistene = self.pohledavky(prehledovyListId, False, self.doc["Nezajistene"]["Pohledavky"])
-        pohledavky_zajistene = self.pohledavky(prehledovyListId, True, self.doc["Zajistene"]["Pohledavky"])
+        pohledavky_nezajistene = self.pohledavky(
+            prehledovyListId, False, self.doc["Nezajistene"]["Pohledavky"])
+        pohledavky_zajistene = self.pohledavky(
+            prehledovyListId, True, self.doc["Zajistene"]["Pohledavky"])
         pohledavky = pohledavky_nezajistene + pohledavky_zajistene
         await self.insertMany("pl_pohledavka", pohledavky)

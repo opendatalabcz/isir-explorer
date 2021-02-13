@@ -1,5 +1,6 @@
 from .isir_dokument import IsirDokument
 
+
 class PrijemDluznika:
     def __init__(self):
         self.Nazev_platce = None
@@ -8,8 +9,10 @@ class PrijemDluznika:
         self.Typ = None
         self.Vyse = 0
 
+
 class ZaznamPohledavky():
     pass
+
 
 class ZaznamSoupisuMajetku:
     def __init__(self):
@@ -17,8 +20,10 @@ class ZaznamSoupisuMajetku:
         self.Zajisteno = ""
         self.Nezajisteno = ""
 
+
 class SoupisMajetku():
     pass
+
 
 class PredpokladUspokojeniVeritelu:
 
@@ -32,11 +37,14 @@ class PredpokladUspokojeniVeritelu:
         self.Zpenezeni_majetku = self.ZaznamPredpokladuUspokojeni()
         self.Splat_kal_zpen_maj = self.ZaznamPredpokladuUspokojeni()
 
+
 class PredpokladUspokojeni:
     pass
 
+
 class HospodarskaSituace:
     pass
+
 
 class ZaznamDistribucnihoSchematu:
     def __init__(self):
@@ -50,6 +58,7 @@ class DistribucniSchema():
     def __init__(self):
         self.Nezajistene = []
         self.Zajistene = []
+
 
 class PrijmyDluznika:
 

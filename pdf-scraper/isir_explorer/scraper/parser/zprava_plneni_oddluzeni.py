@@ -4,11 +4,12 @@ from .model.parts.osoba import *
 from .model.parts.spisova_znacka import *
 import re
 
+
 class ZpravaPlneniOddluzeniParser(IsirParser):
     """Parser pro čtení formulářů typu Zpráva o plnění oddlužení.
     """
 
-    #: :obj:`int` : 
+    #: :obj:`int` :
     #: Verze scraperu tohoto typ dokumentu. Měla by být inkrementována při každé podstatné změně.
     VERZE_SCRAPER = 1
 
@@ -25,20 +26,30 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         self.extractDocumentByRange(doc_start, doc_end)
 
     def _zpravaSpravcePlneni(self):
-        txt = self.reTextBefore(self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
-        self.model.ZpravaSpravce.Plni_povinnosti = self.reLineTextAfter(txt, "^[\s]*Dlužník plní povinnosti v rámci schváleného způsobu oddlužení")
-        self.model.ZpravaSpravce.Duvod_neplneni = self.textBlock(self.reTextBetween(txt, "^[\s]*-[\s]*důvod neplnění schváleného způsobu oddlužení:", "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:"))
-        self.model.ZpravaSpravce.Stanovisko_dluznika = self.textBlock(self.reTextBetween(txt, "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:", "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:"))
-        self.model.ZpravaSpravce.Vyjadreni_spravce = self.textBlock(self.reTextBetween(txt, "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:", "^[\s]*Aktuální míra uspokojení nezajištěných věřitelů"))
+        txt = self.reTextBefore(
+            self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
+        self.model.ZpravaSpravce.Plni_povinnosti = self.reLineTextAfter(
+            txt, "^[\s]*Dlužník plní povinnosti v rámci schváleného způsobu oddlužení")
+        self.model.ZpravaSpravce.Duvod_neplneni = self.textBlock(self.reTextBetween(
+            txt, "^[\s]*-[\s]*důvod neplnění schváleného způsobu oddlužení:", "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:"))
+        self.model.ZpravaSpravce.Stanovisko_dluznika = self.textBlock(self.reTextBetween(
+            txt, "^[\s]*-[\s]*stanovisko dlužníka, jak se hodlá vypořádat se vzniklou situací:", "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:"))
+        self.model.ZpravaSpravce.Vyjadreni_spravce = self.textBlock(self.reTextBetween(
+            txt, "^[\s]*Vyjádření insolvenčního správce k plnění povinností dlužníka v oddlužení:", "^[\s]*Aktuální míra uspokojení nezajištěných věřitelů"))
 
-        self.model.ZpravaSpravce.Mira_uspokojeni.Nezajistene_aktualni = self.priceValue(self.reLineTextAfter(txt, "^[\s]*Aktuální míra uspokojení nezajištěných věřitelů"))
-        self.model.ZpravaSpravce.Mira_uspokojeni.Nezajistene_ocekavana = self.priceValue(self.reLineTextAfter(txt, "^[\s]*Očekávaná míra uspokojení nezajištěných věřitelů"))
-        #TODO zajisteni veritele (?)
-        
-        txt = self.reTextAfter(txt, "^[\s]*Doporučení insolvenčního správce:", True)
-        self.model.ZpravaSpravce.Doporuceni_spravce = self.textBlock(self.reTextBefore(txt, "^[\s]*Odůvodnění:"))
-        self.model.ZpravaSpravce.Doporuceni_spravce_oduvodneni = self.textBlock(self.reTextAfter(txt, "^[\s]*Odůvodnění:", True))
-    
+        self.model.ZpravaSpravce.Mira_uspokojeni.Nezajistene_aktualni = self.priceValue(
+            self.reLineTextAfter(txt, "^[\s]*Aktuální míra uspokojení nezajištěných věřitelů"))
+        self.model.ZpravaSpravce.Mira_uspokojeni.Nezajistene_ocekavana = self.priceValue(
+            self.reLineTextAfter(txt, "^[\s]*Očekávaná míra uspokojení nezajištěných věřitelů"))
+        # TODO zajisteni veritele (?)
+
+        txt = self.reTextAfter(
+            txt, "^[\s]*Doporučení insolvenčního správce:", True)
+        self.model.ZpravaSpravce.Doporuceni_spravce = self.textBlock(
+            self.reTextBefore(txt, "^[\s]*Odůvodnění:"))
+        self.model.ZpravaSpravce.Doporuceni_spravce_oduvodneni = self.textBlock(
+            self.reTextAfter(txt, "^[\s]*Odůvodnění:", True))
+
     def _sloupceVykazuPlneni(self, line, reg, checkColsCount=True):
         colsTxt = self.reLineTextAfter(line, reg)
         cols = re.compile("[\s]{2,}").split(colsTxt.strip())
@@ -52,41 +63,57 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         for line in lines:
             matched = True
             if self.reMatch(line, "^[\s]*Rok "):
-                tabulkaPlneni["Rok"] = self._sloupceVykazuPlneni(line, "^[\s]*Rok ", False)
+                tabulkaPlneni["Rok"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*Rok ", False)
                 self.colsCount = len(tabulkaPlneni["Rok"])
             elif self.reMatch(line, "^[\s]*Měsíc "):
-                tabulkaPlneni["Mesic"] = self._sloupceVykazuPlneni(line, "^[\s]*Měsíc ")
+                tabulkaPlneni["Mesic"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*Měsíc ")
             elif self.reMatch(line, "^[\s]*Příjem "):
-                tabulkaPlneni["Prijem"] = self._sloupceVykazuPlneni(line, "^[\s]*Příjem ")
+                tabulkaPlneni["Prijem"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*Příjem ")
             elif self.reMatch(line, "^[\s]*Provedené srážky "):
-                tabulkaPlneni["Srazky"] = self._sloupceVykazuPlneni(line, "^[\s]*Provedené srážky ")
+                tabulkaPlneni["Srazky"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*Provedené srážky ")
             elif self.reMatch(line, "^[\s]*ZM\+NNB "):
-                tabulkaPlneni["ZMNNB"] = self._sloupceVykazuPlneni(line, "^[\s]*ZM\+NNB ")
+                tabulkaPlneni["ZMNNB"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*ZM\+NNB ")
             elif self.reMatch(line, "^[\s]*Vyživované osoby "):
-                tabulkaPlneni["Vyzivovane_osoby"] = self._sloupceVykazuPlneni(line, "^[\s]*Vyživované osoby ")
+                tabulkaPlneni["Vyzivovane_osoby"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*Vyživované osoby ")
             elif self.reMatch(line, "^[\s]*Nepostižitelné "):
-                tabulkaPlneni["Nepostizitelne"] = self._sloupceVykazuPlneni(line, "^[\s]*Nepostižitelné ")
+                tabulkaPlneni["Nepostizitelne"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*Nepostižitelné ")
             elif self.reMatch(line, "^[\s]*Postižitelné "):
-                tabulkaPlneni["Postizitelne"] = self._sloupceVykazuPlneni(line, "^[\s]*Postižitelné ")
+                tabulkaPlneni["Postizitelne"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*Postižitelné ")
             elif self.reMatch(line, "^[\s]*Vráceno dlužníkům "):
-                tabulkaPlneni["Vraceno_dluznikum"] = self._sloupceVykazuPlneni(line, "^[\s]*Vráceno dlužníkům ")
+                tabulkaPlneni["Vraceno_dluznikum"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*Vráceno dlužníkům ")
             elif self.reMatch(line, "^[\s]*Mimořádný příjem "):
-                tabulkaPlneni["Mimoradny_prijem"] = self._sloupceVykazuPlneni(line, "^[\s]*Mimořádný příjem ")
+                tabulkaPlneni["Mimoradny_prijem"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*Mimořádný příjem ")
             elif self.reMatch(line, "^[\s]*Darovací smlouva "):
-                tabulkaPlneni["Darovaci_smlouva"] = self._sloupceVykazuPlneni(line, "^[\s]*Darovací smlouva ")
+                tabulkaPlneni["Darovaci_smlouva"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*Darovací smlouva ")
             elif self.reMatch(line, "^[\s]*K přerozdělení "):
-                tabulkaPlneni["K_prerozdeleni"] = self._sloupceVykazuPlneni(line, "^[\s]*K přerozdělení ")
+                tabulkaPlneni["K_prerozdeleni"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*K přerozdělení ")
             elif self.reMatch(line, "^[\s]*- na odměnu IS "):
-                tabulkaPlneni["Odmena_IS"] = self._sloupceVykazuPlneni(line, "^[\s]*- na odměnu IS ")
+                tabulkaPlneni["Odmena_IS"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*- na odměnu IS ")
             elif self.reMatch(line, "^[\s]*- na výživné "):
-                tabulkaPlneni["Vyzivne"] = self._sloupceVykazuPlneni(line, "^[\s]*- na výživné ")
+                tabulkaPlneni["Vyzivne"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*- na výživné ")
             elif self.reMatch(line, "^[\s]*- ostatním věřitelům "):
-                tabulkaPlneni["Ostatnim_veritelum"] = self._sloupceVykazuPlneni(line, "^[\s]*- ostatním věřitelům ")
+                tabulkaPlneni["Ostatnim_veritelum"] = self._sloupceVykazuPlneni(
+                    line, "^[\s]*- ostatním věřitelům ")
                 # Konec tabulky
                 break
             elif self.reMatch(line, "^[\s]*- na jiné zapodstatové(?: pohledávky)? "):
                 # Nadpis v tabulce je na dva radky, hodnoty precist z dalsi iterace
-                cols = self._sloupceVykazuPlneni(line, "^[\s]*- na jiné zapodstatové(?: pohledávky)? ")
+                cols = self._sloupceVykazuPlneni(
+                    line, "^[\s]*- na jiné zapodstatové(?: pohledávky)? ")
                 if cols is not None:
                     tabulkaPlneni["Jine"] = cols
                 else:
@@ -105,7 +132,7 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
 
         NUMBERS_ONLY_COLUMNS = ["Rok", "Mesic", "Vyzivovane_osoby"]
         PRICE_COLUMNS = ["Prijem", "Srazky", "ZMNNB", "Nepostizitelne", "Postizitelne", "Vraceno_dluznikum",
-            "Mimoradny_prijem", "Darovaci_smlouva", "K_prerozdeleni", "Odmena_IS", "Vyzivne", "Ostatnim_veritelum"]
+                         "Mimoradny_prijem", "Darovaci_smlouva", "K_prerozdeleni", "Odmena_IS", "Vyzivne", "Ostatnim_veritelum"]
 
         for i in range(self.colsCount):
             mesic = ZaznamVykazuPlneni()
@@ -141,23 +168,23 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
         return cols
 
     def _mesicniVykazPlneniPrerozdeleniVeritelum(self, txt, lines):
-        
+
         obsahVykazu = False
         zaznamy = []
         zaznam = self.Zaznam()
-        
+
         STAV_VYCHOZI = 0
         STAV_NAZEV_VERITELE = 1    # zustatek nazvu veritele z predchoziho radku
         STAV_HODNOTY_PRECTENY = 2  # precten datovy radek s cisly ve stavu 1
         nextLineState = STAV_VYCHOZI
 
-        for i,line in enumerate(lines):
+        for i, line in enumerate(lines):
             if self.reMatch(line, "^.*Zjištěná pohledávka[\s]+Vyplaceno věřitelům"):
                 obsahVykazu = True
                 continue
             elif not obsahVykazu:
                 continue
-            
+
             # Rozdelit radek dle procentni hodnoty podilu (prvni z ciselnych sloupcu)
             parts = self.reSplitText(line, "[0-9]+(?:,[0-9]+)?[\s]?%")
             if len(parts) == 2:
@@ -169,7 +196,8 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
 
                 # Radek obsahuje ciselne hodnoty ve sloupcich (a mozna i nazev veritele)
                 zaznam.Veritel.append(parts[0].strip())
-                zaznam.Sloupce = self._sloupcePrerozdeleniVeritelum(parts[1].strip())
+                zaznam.Sloupce = self._sloupcePrerozdeleniVeritelum(
+                    parts[1].strip())
 
                 if nextLineState == STAV_VYCHOZI:
                     zaznamy.append(zaznam)
@@ -203,7 +231,7 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
             zaznam.Sloupce = zaznam.Sloupce[2:]
             for sloupec in zaznam.Sloupce:
                 vyplacenoVeriteli.Vyplaceno.append(self.priceValue(sloupec))
-            
+
             # Preskocit duplicitni radky na nulovou castku (zaskrtnuta Deponovana castka)
             if vyplacenoVeriteli.Veritel == posledniVeritel and '0' == vyplacenoVeriteli.Castka:
                 continue
@@ -239,20 +267,25 @@ class ZpravaPlneniOddluzeniParser(IsirParser):
                     rows.append(cols)
                     if len(rows) == len(typeOrder):
                         break
-        
+
         # Sumarizaci uspokojeni veritelu kategorizovat k danemu mesici, do struktury VykazPlneni.Mesic
         for i in range(self.colsCount):
             # Ne vzdy se sumarizace podari precist (rows muze by prazdne)
             try:
-                self.model.VykazPlneni.Mesic[i].Celkem_prerozdeleno = self.priceValue(rows[0][i])
-                self.model.VykazPlneni.Mesic[i].Mira_uspokojeni = self.priceValue(rows[1][i])
-                self.model.VykazPlneni.Mesic[i].Mira_uspkojeni_ocekavana = self.priceValue(rows[2][i])
-                self.model.VykazPlneni.Mesic[i].Mesic_oddluzeni = self.numbersOnly(rows[3][i])
+                self.model.VykazPlneni.Mesic[i].Celkem_prerozdeleno = self.priceValue(
+                    rows[0][i])
+                self.model.VykazPlneni.Mesic[i].Mira_uspokojeni = self.priceValue(
+                    rows[1][i])
+                self.model.VykazPlneni.Mesic[i].Mira_uspkojeni_ocekavana = self.priceValue(
+                    rows[2][i])
+                self.model.VykazPlneni.Mesic[i].Mesic_oddluzeni = self.numbersOnly(
+                    rows[3][i])
             except IndexError:
                 pass
 
     def _mesicniVykazPlneni(self):
-        txt = self.reTextAfter(self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
+        txt = self.reTextAfter(
+            self.txt, "^[\s]*B\. MĚSÍČNÍ VÝKAZ PLNĚNÍ SPLÁTKOVÉHO KALENDÁŘE", True)
         lines = txt.split('\n')
 
         self._mesicniVykazPlneniPrijmyDluznika(txt, lines)

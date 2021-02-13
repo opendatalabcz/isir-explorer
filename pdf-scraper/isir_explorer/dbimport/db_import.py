@@ -8,6 +8,7 @@ from .importer.zprava_plneni_oddluzeni import ZpravaPlneniOddluzeniImporter
 from .importer.zprava_pro_oddluzeni import ZpravaProOddluzeniImporter
 from .importer.zprava_splneni_oddluzeni import ZpravaSplneniOddluzeniImporter
 
+
 class DbImport:
 
     IMPORT_CLASS = {
@@ -48,21 +49,21 @@ class DbImport:
 
     async def run(self, filename):
 
-        with open(filename,'r') as f:
+        with open(filename, 'r') as f:
             fileContent = f.read()
         obj = json.loads(fileContent)
 
         # json muze obsahovat jeden nebo vice dokumentu
         documents = []
-        if isinstance(obj, list): 
+        if isinstance(obj, list):
             documents = obj
-        else: 
+        else:
             documents.append(obj)
 
         await self.db.connect()
-        
+
         async with self.db.transaction():
             for document in documents:
                 await self.importDocument(document)
-        
+
         await self.db.disconnect()

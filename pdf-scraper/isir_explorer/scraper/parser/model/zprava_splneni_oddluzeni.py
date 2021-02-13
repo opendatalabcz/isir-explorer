@@ -1,11 +1,13 @@
 from .isir_dokument import IsirDokument
 
+
 class PrubehRizeni:
     def __init__(self):
         self.Oddluzeni_povoleno = None
         self.Oddluzeni_schvaleno = None
         self.Zahajeno = None
         self.Zjisteni_upadku = None
+
 
 class VysledekRizeni:
     def __init__(self):
@@ -22,6 +24,7 @@ class VysledekRizeni:
         self.Uspokojeni_zaj_vyse = None
         self.Preplatek = None
 
+
 class OdmenaSpravce:
     def __init__(self):
         self.Celkova_odmena = None
@@ -33,6 +36,7 @@ class OdmenaSpravce:
         self.Vytezek_zpenezeni_zaji = None
         self.Vytezek_zpenezeni_zaji_uhrazeno = None
         self.Zprava_spravce = None
+
 
 class ZpravaSplneniOddluzeni(IsirDokument):
 

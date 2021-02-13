@@ -37,4 +37,3 @@ def isirDbImport(json_file, config, debug):
     importer = DbImport(config)
     loop = events.get_event_loop()
     loop.run_until_complete(importer.run(json_file))
-

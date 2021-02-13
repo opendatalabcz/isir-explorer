@@ -13,12 +13,12 @@ from ..scraper.isir_scraper import IsirScraper
 from ..dbimport.db_import import DbImport
 from .stats import DownloadStats
 
+
 class Downloader:
 
     NOT_FINISHED = 0
     ALL_COMPLETED = 1
     CHUNK_COMPLETED = 2
-
 
     def __init__(self, config):
         self.config = config
@@ -31,7 +31,8 @@ class Downloader:
         self.transaction_lock = asyncio.Lock()
         self.stats = DownloadStats()
         self.stats_total = DownloadStats()
-        self.lastId = [self.config['dl.start'], self.config['dl.start']] #hlavni, vedlejsi
+        self.lastId = [self.config['dl.start'],
+                       self.config['dl.start']]  # hlavni, vedlejsi
 
         self.tmp_base = self.config['tmp_dir'].rstrip("/")
         self.tmp_path = self.tmp_base + "/pdf"
@@ -103,7 +104,7 @@ class Downloader:
 
         # Odstranit duplicitni udalosti, ktere odkazuji na stejny dokument
         rows = await self.db.fetch_all(query=query)
-        rows = sorted(rows, key = lambda i: i['dokumenturl'])
+        rows = sorted(rows, key=lambda i: i['dokumenturl'])
         self.rows = []
         lastDocument = None
         for row in rows:
@@ -135,7 +136,7 @@ class Downloader:
         # Zpracovany vsechny dokumenty z databaze?
         if not self.rows:
             await self.fetchRows()
-            if not self.rows:   
+            if not self.rows:
                 return self.ALL_COMPLETED
 
         # Dosazen limit na pocet stazenych dokumentu?
@@ -171,9 +172,10 @@ class Downloader:
                     raise task.exception()
                 except DownloadTaskFinished:
                     pass
-                except (asyncio.TimeoutError, aiohttp.ClientResponseError, aiohttp.ClientConnectionError, \
+                except (asyncio.TimeoutError, aiohttp.ClientResponseError, aiohttp.ClientConnectionError,
                         aiohttp.ClientPayloadError, aiohttp.http_exceptions.HttpProcessingError) as e:
-                    dl_task.logger.info(f"Opakování {dl_task} kvůli chybě: {e.__class__.__name__}: {e}")
+                    dl_task.logger.info(
+                        f"Opakování {dl_task} kvůli chybě: {e.__class__.__name__}: {e}")
                     try:
                         dl_task.retry()
                         self.dl_tasks[dl_task.task] = dl_task
@@ -185,7 +187,7 @@ class Downloader:
                     pass
                 except:
                     dl_task.logger.exception("Chyba během zpracování importu")
-    
+
                 finishedTasks += 1
                 self.stats.add(dl_task)
                 self.stats_total.add(dl_task)
@@ -206,7 +208,8 @@ class Downloader:
         for row in rows:
             self.typ_udalosti.append(str(row["id"]))
 
-        timeout = aiohttp.ClientTimeout(total=self.config["dl.request_timeout"])
+        timeout = aiohttp.ClientTimeout(
+            total=self.config["dl.request_timeout"])
         async with aiohttp.ClientSession(timeout=timeout, raise_for_status=False) as session:
             await self.startDownloads(session)
 
@@ -214,6 +217,7 @@ class Downloader:
 
         if self.forceStop:
             asyncio.get_event_loop().stop()
+
 
 class DocumentTask:
 
@@ -233,19 +237,22 @@ class DocumentTask:
         self.empty_document = False
         self.pdf_path = self.parent.tmp_path + f"/{self.doc_id}.pdf"
         self.log_file = "{0}/{1}.log".format(self.parent.log_path, self.doc_id)
-        
-        logFormatter = logging.Formatter("%(asctime)s [%(levelname)-5.5s]  %(message)s")
+
+        logFormatter = logging.Formatter(
+            "%(asctime)s [%(levelname)-5.5s]  %(message)s")
         self.logger = logging.getLogger('dl.doc.' + str(self.doc_id))
         self.logger.propagate = False
         self.logger.setLevel(logging.DEBUG)
 
         fileHandler = logging.FileHandler(self.log_file)
         fileHandler.setFormatter(logFormatter)
-        fileHandler.setLevel(logging.WARNING if not self.config['debug'] else logging.DEBUG)
+        fileHandler.setLevel(
+            logging.WARNING if not self.config['debug'] else logging.DEBUG)
         self.logger.addHandler(fileHandler)
 
         consoleHandler = logging.StreamHandler()
-        consoleHandler.setLevel(logging.INFO if not self.config['debug'] else logging.DEBUG)
+        consoleHandler.setLevel(
+            logging.INFO if not self.config['debug'] else logging.DEBUG)
         consoleHandler.setFormatter(logFormatter)
         self.logger.addHandler(consoleHandler)
         self.logger.debug("Počátek logu")
@@ -261,7 +268,8 @@ class DocumentTask:
         self.finished = False
         self.retry_count += 1
         if self.retry_count > max_retry:
-            raise TooManyRetries(f"Dokument id={self.doc_id} se nepodařilo stáhnou po max. počtu opakování.")
+            raise TooManyRetries(
+                f"Dokument id={self.doc_id} se nepodařilo stáhnou po max. počtu opakování.")
         self.logger.info(f"Pokus {self.retry_count} z {max_retry} pro {self}")
         self.task = asyncio.create_task(self.run())
         return self
@@ -272,7 +280,7 @@ class DocumentTask:
         for handler in handlers:
             handler.close()
             self.logger.removeHandler(handler)
-            
+
         has_logfile = (os.path.getsize(self.log_file) > 0)
         if not has_logfile:
             os.remove(self.log_file)
@@ -305,7 +313,7 @@ class DocumentTask:
         }
         async with conn:
             await conn.execute(query=query, values=values)
-        
+
     async def run(self):
         # Manualni vytvoreni Connection objektu kvuli nedostatku v issue #230 (encode/databases)
         conn = Connection(self.parent.db._backend)
@@ -322,8 +330,9 @@ class DocumentTask:
             elif resp.status == 404:
                 raise DocumentRemoved(f"Dokument {self.doc_id} neexistuje")
             else:
-                raise aiohttp.http_exceptions.HttpProcessingError(code=resp.status, message=f"HTTP {resp.status}")
-        
+                raise aiohttp.http_exceptions.HttpProcessingError(
+                    code=resp.status, message=f"HTTP {resp.status}")
+
         self.logger.info(f"Stažen dokument {self.doc_id}")
 
         scraper = IsirScraper(self.pdf_path, self.parent.config)
@@ -331,7 +340,8 @@ class DocumentTask:
         self.documents = await scraper.readDocument(self.pdf_path)
 
         if self.documents:
-            self.logger.info("Přečten dokument {0}, dokumentů: {1}".format(self.doc_id, len(self.documents)))
+            self.logger.info("Přečten dokument {0}, dokumentů: {1}".format(
+                self.doc_id, len(self.documents)))
         else:
             if scraper.is_empty:
                 self.empty_document = True
@@ -339,7 +349,8 @@ class DocumentTask:
             else:
                 self.logger.info(f"Nečitelný dokument {self.doc_id}")
 
-        self.logger.debug(json.dumps(self.documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False))
+        self.logger.debug(json.dumps(self.documents, default=lambda o: o.__dict__,
+                                     sort_keys=True, indent=4, ensure_ascii=False))
         async with conn:
 
             importer = DbImport(self.config, db=self.parent.db)
@@ -357,11 +368,14 @@ class DocumentTask:
                 except KeyboardInterrupt:
                     raise
                 except:
-                    self.logger.exception(f"Chyba importu dokumentu {self.doc_id}")
+                    self.logger.exception(
+                        f"Chyba importu dokumentu {self.doc_id}")
 
                     # Ulozeni celeho json dokumentu, u ktereho nastal import error
-                    json_doc = json.dumps(self.documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
-                    filename = "{0}/{1}.error.json".format(self.parent.log_path, self.doc_id)
+                    json_doc = json.dumps(
+                        self.documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
+                    filename = "{0}/{1}.error.json".format(
+                        self.parent.log_path, self.doc_id)
                     async with aiofiles.open(filename, mode='w') as f:
                         await f.write(json_doc)
 
@@ -372,7 +386,10 @@ class DocumentTask:
         self.finished = True
         raise DownloadTaskFinished()
 
+
 class DownloadTaskFinished(Exception):
     pass
+
+
 class DocumentRemoved(Exception):
     pass

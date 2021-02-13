@@ -26,4 +26,3 @@ class IsirDokument:
             "Nazev_soudu": nazev,
             "Spisova_znacka": znacka
         }
-

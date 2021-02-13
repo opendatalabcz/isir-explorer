@@ -8,6 +8,7 @@ import csv
 import datetime
 import dateutil.parser
 
+
 class ImportDlPrecteno(Task):
 
     async def run(self):
@@ -28,5 +29,3 @@ class ImportDlPrecteno(Task):
 
             if i % 1000 == 0:
                 print("Zpracovano {0} ...".format(i))
-
-

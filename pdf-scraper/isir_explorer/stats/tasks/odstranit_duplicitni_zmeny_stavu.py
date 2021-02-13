@@ -4,6 +4,7 @@ import re
 from databases import Database
 from ..task import Task
 
+
 class OdstranitDuplicitniZmenyStavu(Task):
     """2019: 1710718 radku -> 64463 -> 96.2% zaznamu bylo redundantnich
     """
@@ -19,9 +20,9 @@ class OdstranitDuplicitniZmenyStavu(Task):
             """)
         i = 0
         for row in rows:
-            
+
             spis = row["spisovaznacka"]
-            
+
             stavy = await self.db.fetch_all(query="""
                 SELECT * FROM isir_vec_stav WHERE spisovaznacka = :spis ORDER BY id ASC
             """, values={
@@ -37,10 +38,9 @@ class OdstranitDuplicitniZmenyStavu(Task):
                 posledni = stav["druhstavrizeni"]
 
             if duplicitni:
-                await self.db.execute(query="DELETE FROM isir_vec_stav WHERE id IN ("+ ",".join(duplicitni) +")")
+                await self.db.execute(query="DELETE FROM isir_vec_stav WHERE id IN (" + ",".join(duplicitni) + ")")
             i += 1
 
             if i % 100 == 0:
                 print("Zpracovano {0} ...".format(i))
         print(f"Odstraneno duplicit: {self.duplicit}")
-

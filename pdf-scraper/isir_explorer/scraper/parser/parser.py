@@ -2,20 +2,21 @@ import re
 import regex
 from .errors import NoSplitterFound
 
+
 class Parser:
     """Parser třída se základními funkcemi pro zpracování textového výstupu
     pdftotext a pro extrakci polí z formulářů.
     """
 
-    #: :obj:`str` : 
+    #: :obj:`str` :
     #: Regulární výraz pro částku v korunách
     RE_KC_AMOUNT = "^((:?[0-9]+ )*(:?[0-9]+)(:?,[0-9]+)? Kč)$"
 
-    #: :obj:`str` : 
+    #: :obj:`str` :
     #: Regulární výraz pro hodnotu v procentech
     RE_PERCENT = "^([0-9]+(?:,[0-9]+)?[\s]?%)$"
 
-    #: :obj:`str` : 
+    #: :obj:`str` :
     #: Regulární výraz pro celočíselnou hodnotu
     RE_INT = "^[0-9]+$"
 
@@ -153,7 +154,7 @@ class Parser:
         match = re.compile(reg, re.MULTILINE).search(txt)
         if not match:
             return ""
-        
+
         matchStart = match.span(0)[0]
         matchEnd = match.span(0)[1]
 
@@ -162,7 +163,7 @@ class Parser:
         offset = 0
         for c in fieldName:
             if c == ' ':
-                offset+=1
+                offset += 1
             else:
                 break
 
@@ -187,7 +188,7 @@ class Parser:
             Regulární výraz.
         """
 
-        reg+="(.*)$"
+        reg += "(.*)$"
         match = re.compile(reg, re.MULTILINE).search(txt)
         if not match:
             return ""
@@ -219,14 +220,15 @@ class Parser:
         NoSplitterFound
             Pokud se regulární výraz nepodaří vyhledat a allow_no_match je False.
         """
-        l = self.reSplitText(txt, reg, keep_split=keep_split, multiline=multiline, split_pos=0)
+        l = self.reSplitText(txt, reg, keep_split=keep_split,
+                             multiline=multiline, split_pos=0)
         if len(l) == 1:
             # No matches
             if allow_no_match:
                 return txt
             else:
                 raise NoSplitterFound()
-        l.pop(0) #remove text before 1st splitter
+        l.pop(0)  # remove text before 1st splitter
         res = ''.join(l)
         return res.strip()
 
@@ -255,7 +257,8 @@ class Parser:
         NoSplitterFound
             Pokud se regulární výraz nepodaří vyhledat a allow_no_match je False.
         """
-        l = self.reSplitText(txt, reg, keep_split=keep_split, multiline=multiline, split_pos=1)
+        l = self.reSplitText(txt, reg, keep_split=keep_split,
+                             multiline=multiline, split_pos=1)
         if len(l) == 1:
             # No matches
             if allow_no_match:
@@ -323,7 +326,7 @@ class Parser:
 
         if keep_split:
             res = [parts.pop(0)]
-            for i,p in enumerate(parts):
+            for i, p in enumerate(parts):
                 if i % 2 == split_pos:
                     res.append(p)
                 else:
@@ -356,7 +359,7 @@ class Parser:
 
         if pos is None:
             return ""
-        
+
         outLines = []
         for line in lines:
             outLines.append(line[pos[0]:pos[1]])

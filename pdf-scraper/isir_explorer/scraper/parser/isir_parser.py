@@ -6,7 +6,7 @@ import re
 
 class IsirParser(Parser):
 
-    #: :obj:`int` : 
+    #: :obj:`int` :
     #: Verze scraperu tohoto typ dokumentu. Měla by být inkrementována při každé podstatné změně.
     VERZE_SCRAPER = 0
 
@@ -50,7 +50,8 @@ class IsirParser(Parser):
     def removeVersionLine(self):
         temp = []
         for line in self.lines:
-            res = re.match('^[\s]{10,}(?:Stránka [0-9]+ z [0-9]+)?[\s]+Verze ([A-Za-z0-9\-]+)$', line)
+            res = re.match(
+                '^[\s]{10,}(?:Stránka [0-9]+ z [0-9]+)?[\s]+Verze ([A-Za-z0-9\-]+)$', line)
             if res:
                 # Ulozit verzi pokud jeste neni nastavena
                 if self.model.Metadata.Verze is None:
@@ -63,11 +64,11 @@ class IsirParser(Parser):
     def extractDocumentByRange(self, start, end):
         # Obsah dokumentu
         document = self.reTextBetween(self.txt, start, end, keep_split=True)
-        
+
         # Ulozit nepouzity rozsah
         self.residue += self.reTextBefore(self.txt, start, multiline=True)
         self.residue += self.reTextAfter(self.txt, end, multiline=True)
-        
+
         # Pouzit novy dokument
         self.txt = document
         self.lines = self.txt.split('\n')

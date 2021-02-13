@@ -1,8 +1,8 @@
-#Enums from WS ISIR docs v2.5
+# Enums from WS ISIR docs v2.5
 
 # These enums are mainly for ISIR->DB conversion, if you need to print a different string based on ID, use custom enum.
 
-#druhRoleVRizeni
+# druhRoleVRizeni
 DRUH_ROLE_V_RIZENI = {
     "DLUŽNÍK": 1,
     "SPRÁVCE": 2,
@@ -11,7 +11,7 @@ DRUH_ROLE_V_RIZENI = {
 }
 DRUH_ROLE_V_RIZENI_INV = {v: k for k, v in DRUH_ROLE_V_RIZENI.items()}
 
-#druhSpravce
+# druhSpravce
 DRUH_SPRAVCE = {
     "INS SPRÁV": 1,
     "ZVL SPRÁV": 2,
@@ -23,7 +23,7 @@ DRUH_SPRAVCE = {
     "ZÁST SPR": 99,
 }
 
-#druhOsoby
+# druhOsoby
 DRUH_OSOBY = {
     "F": 1,
     "O": 2,
@@ -58,7 +58,7 @@ DRUH_ADRESY = {
     "MÍSTO PODN": 9,
 }
 
-#druhPravniForma
+# druhPravniForma
 DRUH_PRAVNI_FORMA = {
     "k. s.": 1,
     "o.p.s.": 2,
@@ -73,7 +73,7 @@ DRUH_PRAVNI_FORMA = {
     "S.V.J.": 99,
 }
 
-#druhStavRizeni
+# druhStavRizeni
 DRUH_STAV_RIZENI = {
     "NEVYRIZENA": 1,
     "MORATORIUM": 2,

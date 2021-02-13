@@ -1,7 +1,9 @@
 from .isir_dokument import IsirDokument
 
+
 class ZaznamPohledavky():
     pass
+
 
 class PrehledPohledavek():
 

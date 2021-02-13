@@ -4,6 +4,7 @@ import re
 from databases import Database
 from ..task import Task
 
+
 class LinkOsoby(Task):
 
     TYP_SPOJENI_OSOBA_NENALEZNA = 0
@@ -13,7 +14,8 @@ class LinkOsoby(Task):
     TYP_SPOJENI_OBCHODNI_NAZEV = 4
     TYP_SPOJENI_JMENO_PRIJMENI_PREHOZENO = 5
     TYP_SPOJENI_CASTECNA_PODMNOZINA_NAZVU = 6
-    TYP_SPOJENI_CISLO_VERITELE = 7                  # pouzito v zprave o plneni oddluzeni
+    # pouzito v zprave o plneni oddluzeni
+    TYP_SPOJENI_CISLO_VERITELE = 7
 
     def upravaProSrovnani(self, text):
         if text is None:
@@ -32,7 +34,7 @@ class LinkOsoby(Task):
             return False
         if len(a) > len(b):
             a, b = b, a
-        b_copy  = []
+        b_copy = []
         celkovaDelka = 0
         for elB in b:
             b_copy.append(elB)
@@ -57,13 +59,16 @@ class LinkOsoby(Task):
         """, values={"spis": spis})
 
         self.osobyRizeniCache = {}
-        self.osobyRizeniCache[spis] = list(map(dict,rows))
+        self.osobyRizeniCache[spis] = list(map(dict, rows))
 
         for isir_osoba in self.osobyRizeniCache[spis]:
-            isir_osoba["nazevosoby"] = self.upravaProSrovnani(isir_osoba["nazevosoby"])
+            isir_osoba["nazevosoby"] = self.upravaProSrovnani(
+                isir_osoba["nazevosoby"])
             isir_osoba["jmeno"] = self.upravaProSrovnani(isir_osoba["jmeno"])
-            isir_osoba["nazevosoby_slova"] = isir_osoba["nazevosoby"].split(" ") if isir_osoba["nazevosoby"] is not None else []
+            isir_osoba["nazevosoby_slova"] = isir_osoba["nazevosoby"].split(
+                " ") if isir_osoba["nazevosoby"] is not None else []
             if isir_osoba["jmeno"] is not None:
-                isir_osoba["nazevosoby_slova"] += isir_osoba["jmeno"].split(" ")
+                isir_osoba["nazevosoby_slova"] += isir_osoba["jmeno"].split(
+                    " ")
 
         return self.osobyRizeniCache[spis]

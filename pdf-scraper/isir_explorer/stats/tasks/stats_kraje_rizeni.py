@@ -5,13 +5,14 @@ import csv
 from databases import Database
 from ..task import Task
 
+
 class StatsKrajeRizeni(Task):
     """2019: 1710718 radku -> 64463 -> 96.2% zaznamu bylo redundantnich
     """
 
     RIMSKE_CISLICE = {'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii', 'xiii',
-         'xiv', 'xv', 'xvi', 'xvii', 'xviii', 'xix', 'xx', 'xxi', 'xxii', 'xxiii', 'xxiv', 'xxv', 'xxvi',
-         'xxvii', 'xxviii', 'xxix', 'xxx', 'xxxi', 'xxxii', 'xxxiii', 'xxxiv', 'xxxv', 'xxxvi', 'xxxvii'}
+                      'xiv', 'xv', 'xvi', 'xvii', 'xviii', 'xix', 'xx', 'xxi', 'xxii', 'xxiii', 'xxiv', 'xxv', 'xxvi',
+                      'xxvii', 'xxviii', 'xxix', 'xxx', 'xxxi', 'xxxii', 'xxxiii', 'xxxiv', 'xxxv', 'xxxvi', 'xxxvii'}
 
     KRAJE_REF = {
         'Praha': 'PR',
@@ -46,7 +47,8 @@ class StatsKrajeRizeni(Task):
             for row in reader:
                 nazev = row[1].lower()
                 kraj = row[8]
-                self.obce[nazev] = {"kraj": kraj, "kraj_ref": self.KRAJE_REF[kraj]}
+                self.obce[nazev] = {"kraj": kraj,
+                                    "kraj_ref": self.KRAJE_REF[kraj]}
 
     async def run(self):
         self.slovnikObci()
@@ -69,7 +71,7 @@ class StatsKrajeRizeni(Task):
             """)
         i = 0
         for row in rows:
-            
+
             mesto = row["adresa_mesto"]
 
             # odstranit dup. mezery
@@ -77,7 +79,8 @@ class StatsKrajeRizeni(Task):
             # odstanit cislice
             mesto = ''.join([i for i in mesto if not i.isdigit()])
             # standardizace nazvu
-            mesto = mesto.split(" - ")[0].split("–")[0].split(",")[0].lower().strip()
+            mesto = mesto.split(
+                " - ")[0].split("–")[0].split(",")[0].lower().strip()
             # odstranit koncovky bez mezer
             mesto = mesto.replace("-město", "")
             mesto = mesto.replace("-staré město", "")
@@ -106,7 +109,6 @@ class StatsKrajeRizeni(Task):
             else:
                 self.neprirazeno += 1
                 print(f"Nenalezeno: {mesto}")
-            
+
         print(f"Nenalezeno celkem: {self.neprirazeno}")
         print(json.dumps(self.pocty_kraje))
-

@@ -20,12 +20,15 @@ class LinkPrihlaskaOsoba(LinkOsoby):
         })
 
     async def najitSpojeniOsoby(self, hledana_osoba, osoby_rizeni):
-        hledana_osoba["nazevosoby"] = self.upravaProSrovnani(hledana_osoba["nazevosoby"])
+        hledana_osoba["nazevosoby"] = self.upravaProSrovnani(
+            hledana_osoba["nazevosoby"])
         hledana_osoba["jmeno"] = self.upravaProSrovnani(hledana_osoba["jmeno"])
         hledana_osoba["nazevosoby_slova"] = \
-            hledana_osoba["nazevosoby"].split(" ") if hledana_osoba["nazevosoby"] is not None else None
+            hledana_osoba["nazevosoby"].split(
+                " ") if hledana_osoba["nazevosoby"] is not None else None
         if hledana_osoba["jmeno"] is not None:
-                hledana_osoba["nazevosoby_slova"] += hledana_osoba["jmeno"].split(" ")
+            hledana_osoba["nazevosoby_slova"] += hledana_osoba["jmeno"].split(
+                " ")
 
         for isir_osoba in osoby_rizeni:
 
