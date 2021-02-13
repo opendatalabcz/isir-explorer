@@ -253,6 +253,9 @@ class DocumentTask:
     def __repr__(self):
         return f"doc_id={self.doc_id}"
 
+    def __del__(self):
+        self.cleanup()
+
     def retry(self):
         max_retry = self.parent.config["dl.retry_times"]
         self.finished = False
@@ -367,7 +370,6 @@ class DocumentTask:
 
         self.success = True
         self.finished = True
-        self.cleanup()
         raise DownloadTaskFinished()
 
 class DownloadTaskFinished(Exception):
