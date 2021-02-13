@@ -101,11 +101,18 @@ class ZpravaPlneniOddluzeniImporter(IsirImporter):
                 continue
 
             for i,castka in enumerate(veritel["Vyplaceno"]):
+                mesic = self.doc["VykazPlneni"]["Mesic"][i]["Mesic"]
+                mesic_oddluzeni = self.doc["VykazPlneni"]["Mesic"][i]["Mesic_oddluzeni"]
+
+                # Neukladat zaznam vykazu, pokud ve formulari neni uveden mesic, ke kteremu zaznam nalezi
+                if not mesic or not mesic_oddluzeni:
+                    continue
+
                 vykazPrerozdeleni.append({
                     "zplo_veritel_id": veritel["Id"],
                     "rok": self.doc["VykazPlneni"]["Mesic"][i]["Rok"],
-                    "mesic": self.doc["VykazPlneni"]["Mesic"][i]["Mesic"],
-                    "mesic_oddluzeni": self.doc["VykazPlneni"]["Mesic"][i]["Mesic_oddluzeni"],
+                    "mesic": mesic,
+                    "mesic_oddluzeni": mesic_oddluzeni,
                     "vyplaceno": castka,
                 })
 
