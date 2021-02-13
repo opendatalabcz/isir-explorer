@@ -55,7 +55,7 @@ class IsirScraper:
             os.makedirs(self.tmp_path)
         if not os.path.exists(self.unpack_path):
             os.makedirs(self.unpack_path)
-        if self.config['save_unreadable'] and not os.path.exists(self.unreadable_path):
+        if self.config['sc.save_unreadable'] and not os.path.exists(self.unreadable_path):
             os.makedirs(self.unreadable_path)
 
     @staticmethod
@@ -123,7 +123,7 @@ class IsirScraper:
         for file in files:
             documents += await self.readDocumentSingle(file, **kwargs)
 
-        if not documents and self.config['save_unreadable'] and not self.config['sc._cli']:
+        if not documents and self.config['sc.save_unreadable'] and not self.config['sc._cli']:
             os.rename(input_path, self.unreadable_path + "/" + self.document_name + ".pdf")
 
         self.cleanup()

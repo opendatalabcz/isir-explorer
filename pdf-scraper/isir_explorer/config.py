@@ -23,7 +23,7 @@ class AppConfig:
         "pdftk": "pdftk",                                   # Cesta ke spusteni programu pdftk
         "doctype": False,                                   # Typ dokumentu, nespecifikovan => autodetekce
         "unpack_filter": "^D-DS-|^K-DS-",
-        "save_unreadable": True,
+        "sc.save_unreadable": False,
         "sc.save_text": False,
         "sc.save_unpacked": False,
         "sc._cli": False,
