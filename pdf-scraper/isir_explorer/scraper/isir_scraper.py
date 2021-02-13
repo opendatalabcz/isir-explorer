@@ -75,7 +75,7 @@ class IsirScraper:
         if not os.path.exists(tmp_unpack_dir):
             os.makedirs(tmp_unpack_dir)
         try:
-            unpack_process = await asyncio.create_subprocess_exec(
+            await asyncio.create_subprocess_exec(
                 self.config['pdftk'],
                 input_path,
                 "unpack_files",

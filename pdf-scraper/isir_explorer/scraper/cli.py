@@ -46,7 +46,8 @@ def validate_doctype(ctx, param, value):
 @click.option('-d', '--doctype',
               metavar='TYPE',
               help='Výběr typu dokumentu. Podporovane hodnoty: Prihlaska, PrehledovyList, ZpravaProOddluzeni,'
-              + 'ZpravaPlneniOddluzeni, ZpravaSplneniOddluzeni. Pokud není zadáno, je použita automatická detekce dle obsahu vstupního PDF souboru.',
+              + 'ZpravaPlneniOddluzeni, ZpravaSplneniOddluzeni. Pokud není zadáno, '
+              + 'je použita automatická detekce dle obsahu vstupního PDF souboru.',
               callback=validate_doctype)
 @click.option('-m', '--multidoc',
               is_flag=True,

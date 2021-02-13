@@ -257,15 +257,15 @@ class Parser:
         NoSplitterFound
             Pokud se regulární výraz nepodaří vyhledat a allow_no_match je False.
         """
-        l = self.reSplitText(txt, reg, keep_split=keep_split,
-                             multiline=multiline, split_pos=1)
-        if len(l) == 1:
+        parts = self.reSplitText(txt, reg, keep_split=keep_split,
+                                 multiline=multiline, split_pos=1)
+        if len(parts) == 1:
             # No matches
             if allow_no_match:
                 return txt
             else:
                 raise NoSplitterFound()
-        return l.pop(0).strip()
+        return parts.pop(0).strip()
 
     def reTextBetween(self, txt, regA, regB, multiline=True, keep_split=False):
         """Vrátí text mezi dvěma hledanými texty, zadanými regulárními výrazy.

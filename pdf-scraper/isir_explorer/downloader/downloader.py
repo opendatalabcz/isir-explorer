@@ -182,7 +182,7 @@ class Downloader:
                         self.tasks.append(dl_task.task)
                         continue
                     except Exception as e:
-                        dl_task.logger.exception("Nelze opakovat: {e}")
+                        dl_task.logger.exception(f"Nelze opakovat: {e}")
                 except KeyboardInterrupt:
                     pass
                 except:
