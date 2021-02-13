@@ -357,7 +357,7 @@ class DocumentTask:
                 except KeyboardInterrupt:
                     raise
                 except:
-                    self.logger.exception("Chyba importu")
+                    self.logger.exception(f"Chyba importu dokumentu {self.doc_id}")
 
                     # Ulozeni celeho json dokumentu, u ktereho nastal import error
                     json_doc = json.dumps(self.documents, default=lambda o: o.__dict__, sort_keys=True, indent=4, ensure_ascii=False)
