@@ -16,9 +16,64 @@ body{
 
 .navbar{
     font-size: 1.1rem;
+    margin-bottom: 20px;
 }
 
 .navbar-brand{
     font-weight: bold;
     font-size: 1.3rem;
 }
+
+.card-header h1,h2,h3,h4{
+    margin:0;
+}
+
+.card-header{
+    background-color: white;
+}
+
+.roundedCorners {
+    padding: 0 10px;
+   border-radius: 1em;
+   -moz-border-radius: 1em;
+   -webkit-border-radius: 1em;
+ }
+
+ .tablesorter-header {
+     position: relative;
+ }
+
+ .tablesorter-header::before,
+ .tablesorter-header::after {
+     position: absolute;
+     right: 0.75em;
+     font-family: 'FontAwesome';
+     opacity: 0.3;
+ }
+
+ .tablesorter-header::before {
+     content: '\f0de';
+     top: calc(50% - 0.75em);
+ }
+
+ .tablesorter-header::after {
+     content: '\f0dd';
+     bottom: calc(50% - 0.75em);
+ }
+
+ .tablesorter-header.tablesorter-headerAsc::before,
+ .tablesorter-header.tablesorter-headerDesc::after {
+     opacity: 1;
+ }
+
+
+ .card-header{
+    .form-group{
+        margin: 0;
+
+        select{
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    }
+ }
