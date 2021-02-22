@@ -35,6 +35,7 @@ final class StatSpravce extends AbstractMigration
             ->addColumn('datum_zahajeni', 'date', ['null' => true, 'comment' => 'Datum zacatku rizeni'])
             ->addColumn('datum_upadku', 'date', ['null' => true, 'comment' => 'Datum vydani rozhodnuti o upadku'])
             ->addColumn('datum_ukonceni', 'date', ['null' => true, 'comment' => 'Datum konce rizeni'])
+            ->addColumn('delka_rizeni', 'smallinteger', ['null' => true, 'comment' => 'Doba trvani rizeni (Pocet dnu)'])
             ->addColumn('pohledavky_pocet', 'smallinteger', ['null' => true, 'comment' => 'Pocet prihlasenych pohledavek'])
             ->addColumn('pohledavky_celkem', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC, 'comment' => 'Celkova prihlasena castka'])
 
