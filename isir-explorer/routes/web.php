@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\MapController;
+use App\Http\Controllers\SpravciController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,8 +19,11 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/mapy/kraje/insolvence', 'App\Http\Controllers\MapController@insolvence');
-Route::get('/mapy/kraje/insolvence_na_obyvatele', 'App\Http\Controllers\MapController@insolvence_na_obyvatele');
+Route::get('/mapy/kraje/insolvence', [MapController::class, 'insolvence']);
+Route::get('/mapy/kraje/insolvence_na_obyvatele', [MapController::class, 'insolvence_na_obyvatele']);
+
+Route::get('/spravci', [SpravciController::class, 'list'])->name("spravci");;
+Route::get('/spravci/{id}', [SpravciController::class, 'detail'])->name("spravci.detail");;
 
 Route::get('/mapy', function () {
     return view('maps');

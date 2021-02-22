@@ -26,10 +26,8 @@
 
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Insolvence
-                            <span class="sr-only">(aktivní)</span>
-                        </a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Insolvence</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Dlužníci</a>
@@ -37,8 +35,8 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Věřitelé</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Správci</a>
+                    <li class="nav-item {{ \str_starts_with(\Request::route()->getName(), "spravci") ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route("spravci") }}">Správci</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
