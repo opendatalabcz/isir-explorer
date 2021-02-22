@@ -15,6 +15,8 @@ final class StatSpravce extends AbstractMigration
             ->addColumn('jmeno', 'string', ['null' => true, 'comment' => 'Jmeno, pokud nejde o pravnickou osobu'])
             ->addColumn('prijmeni', 'string', ['null' => true, 'comment' => 'Prijmeni, pokud nejde o pravnickou osobu'])
             ->addColumn('posledni_ins', 'date', ['null' => true, 'comment' => 'Datum prirazeni posledni insolvence'])
+            ->addColumn('ins_celkem', 'smallinteger', ['null' => true, 'comment' => 'Pocet vsech insolvenci spravce'])
+            ->addColumn('ins_aktivnich', 'smallinteger', ['null' => true, 'comment' => 'Pocet aktualne probihajicich insolvenci'])
 
             ->addIndex(['ic'], ['unique' => false])
 
