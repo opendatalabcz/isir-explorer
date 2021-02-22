@@ -29,6 +29,12 @@ $('select.date-changer').on('change', function() {
 
 mapData = JSON.parse(mapData);
 var map = L.map('map').setView([49.8, 15.5], 7);
+map.touchZoom.disable();
+map.doubleClickZoom.disable();
+map.scrollWheelZoom.disable();
+map.boxZoom.disable();
+map.keyboard.disable();
+map.dragging.disable();
 var values = Object.values(mapData);
 var minMax = [Math.min(...values), Math.max(...values)];
 
@@ -66,7 +72,9 @@ $(document).ready(function(){
         let hodnotyKraje = mapData;
         for(let ft of data["features"]){
             let kodKraje = ft["properties"]["ref"];
-            ft["properties"]["val"] = hodnotyKraje[kodKraje];
+            let hodnotaProKraj = hodnotyKraje[kodKraje] ? hodnotyKraje[kodKraje] : 0;
+            if(!hodnotaProKraj) minMax[0] = 0;
+            ft["properties"]["val"] = hodnotaProKraj;
         }
 
         var info = L.control();

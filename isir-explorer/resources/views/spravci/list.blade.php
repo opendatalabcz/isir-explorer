@@ -33,6 +33,8 @@
                                 <tr>
                                     <th>Název subjektu</th>
                                     <th>IČ</th>
+                                    <th>Insolvence</th>
+                                    <th>Aktivní</th>
                                     <th>Detail</th>
                                 </tr>
                             </thead>
@@ -41,7 +43,9 @@
                                     <tr>
                                         <td>{{ $spravce->nazev }}</td>
                                         <td>{{ $spravce->ic }}</td>
-                                        <td><a href="{{ route("spravci.detail", ['id' => 1]) }}">Detail</a></td>
+                                        <td>{{ $spravce->ins_celkem }}</td>
+                                        <td>{{ $spravce->ins_aktivnich }}</td>
+                                        <td><a href="{{ route("spravci.detail", ['id' => $spravce->id]) }}">Detail</a></td>
                                     </tr>
                                 @endforeach
                             </tbody>

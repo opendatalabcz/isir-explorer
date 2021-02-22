@@ -2,6 +2,7 @@ from ..task import Task
 from isir_explorer.webservice.enums import DRUH_OSOBY, DRUH_STAV_RIZENI, DRUH_STAV_RIZENI_INV
 from .utils.adresa_kraj import AdresaKraj
 
+
 class StatsInsVec(Task):
 
     ZPUSOBY_RESENI_UPADKU = [
@@ -141,7 +142,7 @@ class StatsInsVec(Task):
 
         data_stavy = await self.analyzaStavu(ins_vec)
         if not data_stavy:
-            # Preskocit myhlny zapis
+            # Preskocit mylny zapis
             await self.ignorovatRizeni(ins_vec)
             return
         delka_rizeni = None

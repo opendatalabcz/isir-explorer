@@ -15,6 +15,10 @@ class Spravce extends Model
 
     protected $guarded = [];
 
+    protected $dates = [
+        'posledni_ins',
+    ];
+
     public function rizeni(){
         return $this->belongsToMany(InsRizeni::class, 'stat_spravce_ins', 'id_spravce', 'id_ins');
     }

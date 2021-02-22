@@ -71,15 +71,19 @@
                             <tbody>
                                 <tr>
                                     <th scope="row">Aktivních insolvencí</th>
-                                    <td>49</td>
+                                    <td>{{ $spravce->ins_aktivnich }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Celkem insolvencí</th>
-                                    <td>500</td>
+                                    <td>{{ $spravce->ins_celkem }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Zahájení činnosti</th>
                                     <td>{{ $info['zahajeniCinnosti']->translatedFormat('F Y') }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Nejnovější řízení</th>
+                                    <td>{{ $spravce?->posledni_ins->translatedFormat('F Y') ?? '-' }}</td>
                                 </tr>
                             </tbody>
                         </table>
