@@ -91,6 +91,8 @@ DRUH_STAV_RIZENI = {
     "NEVYR-POST": 14,
 }
 
+DRUH_STAV_RIZENI_INV = {v: k for k, v in DRUH_STAV_RIZENI.items()}
+
 SOUDY = {
     "MSPHAAB": 1,
     "KSJIMBM": 2,

@@ -30,10 +30,12 @@ final class StatSpravce extends AbstractMigration
             ->addColumn('podnikatel', 'boolean', ['null' => true, 'comment' => 'Je osoba dluznika podnikatel'])
             ->addColumn('vek_dluznika', 'smallinteger', ['null' => true, 'comment' => 'Vek dluznika v dobe zahajeni rizeni'])
             ->addColumn('pohlavi_dluznika', 'string', ['limit' => 1, 'null' => true, 'comment' => 'M=muz, Z=zena'])
-            ->addColumn('typ_rizeni', 'smallinteger', ['null' => true, 'comment' => 'Konstanta oznacujici zpusob reseni upadku'])
+            ->addColumn('typ_rizeni', 'string', ['limit' => 1, 'null' => true, 'comment' => 'Konstanta oznacujici zpusob reseni upadku'])
             ->addColumn('kraj', 'string', ['limit' => 2, 'null' => true, 'comment' => 'Kod kraje, ze ktereho pochazi dluznik'])
+            ->addColumn('moratorium', 'date', ['null' => true, 'comment' => 'Datum, kdy bylo v rizeni vyhlaseno moratorium'])
             ->addColumn('datum_zahajeni', 'date', ['null' => true, 'comment' => 'Datum zacatku rizeni'])
             ->addColumn('datum_upadku', 'date', ['null' => true, 'comment' => 'Datum vydani rozhodnuti o upadku'])
+            ->addColumn('datum_zpusob_reseni', 'date', ['null' => true, 'comment' => 'Datum, kdy byl stanoven zpusob reseni upadku'])
             ->addColumn('datum_ukonceni', 'date', ['null' => true, 'comment' => 'Datum konce rizeni'])
             ->addColumn('delka_rizeni', 'smallinteger', ['null' => true, 'comment' => 'Doba trvani rizeni (Pocet dnu)'])
             ->addColumn('pohledavky_pocet', 'smallinteger', ['null' => true, 'comment' => 'Pocet prihlasenych pohledavek'])
@@ -54,11 +56,16 @@ final class StatSpravce extends AbstractMigration
 
         $table->addColumn('id_spravce', 'integer', ['null' => false])
             ->addColumn('id_ins', 'integer', ['null' => false])
+            ->addColumn('druh_spravce', 'smallinteger', ['null' => false, 'comment' => '1=INS, 2=ZVL, 3=ZÁST'])
             ->addColumn('celkova_odmena', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC, 'comment' => 'Celkova odmena spravce (je-li udaj dostupny)'])
 
             ->addForeignKey('id_spravce', 'stat_spravce', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
             ->addForeignKey('id_ins', 'stat_vec', 'id', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
 
             ->create();
+
+        $table = $this->table('isir_vec');
+        $table->addColumn('vyrazeno', 'boolean', ['null'=>false, 'default' => false, 'comment' => 'Vyradit rizeni z tvorby statistik'])
+                ->update();
     }
 }

@@ -1,5 +1,5 @@
 from ..task import Task
-
+from isir_explorer.webservice.enums import DRUH_SPRAVCE
 
 class StatsInsSpravci(Task):
 
@@ -93,8 +93,67 @@ class StatsInsSpravci(Task):
                     "prijmeni": prijmeni,
                 })
 
+    async def naleztSpravce(self, isir_osoba):
+        if isir_osoba["ic"]:
+            return await self.db.fetch_one(query="""
+                SELECT id FROM stat_spravce WHERE ic = :ic LIMIT 1
+                """, values={"ic": isir_osoba["ic"]}
+            )
+        else:
+            return await self.db.fetch_one(query="""
+                SELECT id FROM stat_spravce WHERE jmeno = :jmeno AND prijmeni = :prijmeni LIMIT 1
+                """, values={"jmeno": isir_osoba["jmeno"], "prijmeni": isir_osoba["nazevosoby"]}
+            )
+
+    async def priraditSpravceIns(self):
+
+        # Vybrat rizeni, ktere dosud nemaji prirazeneho spravce
+        rows = await self.db.fetch_all(query="""
+                SELECT sv.id, sv.spisovaznacka FROM stat_vec sv
+                LEFT JOIN stat_spravce_ins ssi ON (ssi.id_ins = sv.id)
+                WHERE ssi.id_spravce IS NULL
+            """)
+
+        for row in rows:
+            # Najit spravce k danemu INS v isir_osoba
+            spravci = await self.db.fetch_all(query="""
+                SELECT * FROM isir_osoba
+                WHERE
+                    druhrolevrizeni = '2' AND
+                    datumosobavevecizrusena IS NULL AND
+                    spisovaznacka = :spisovaznacka
+            """, values={
+                    "spisovaznacka": row["spisovaznacka"],
+            })
+
+            for isir_osoba_spravce in spravci:
+                druh = isir_osoba_spravce["druhspravce"]
+                
+                # Oprava konstant
+                if druh == DRUH_SPRAVCE["SPRÁVCE"]:
+                    druh = DRUH_SPRAVCE["INS SPRÁV"]
+                elif druh == DRUH_SPRAVCE["ZÁST SPR"]:
+                    druh = DRUH_SPRAVCE["ZÁST INS S"]
+
+                # Nalezt zaznam konkretniho spravce dle IC nebo jmena
+                nalezenySpravce = await self.naleztSpravce(isir_osoba_spravce)
+
+                if not nalezenySpravce:
+                    print("{0}: Nelze najit spravce".format(row["spisovaznacka"]))
+                    continue
+
+                await self.db.execute(query="""INSERT INTO stat_spravce_ins
+                    (id_ins, id_spravce, druh_spravce)
+                VALUES
+                    (:id_ins, :id_spravce, :druh_spravce)""", values={
+                        "id_ins": row["id"],
+                        "id_spravce": nalezenySpravce["id"],
+                        "druh_spravce": druh,
+                    })
+
     async def run(self):
 
         await self.spravciPodnikatele()
         await self.spravciNepodnikatele()
 
+        await self.priraditSpravceIns()
