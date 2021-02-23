@@ -158,7 +158,8 @@ class StatsInsVec(Task):
         VALUES
             (:spisovaznacka, :typ_osoby, :podnikatel, :datum_zahajeni,
             :vek_dluznika, :pohlavi_dluznika, :kraj, :okres, :moratorium, :datum_upadku,
-            :datum_zpusob_reseni, :datum_ukonceni, :typ_rizeni, :delka_rizeni)""", values={
+            :datum_zpusob_reseni, :datum_ukonceni, :typ_rizeni, :delka_rizeni)""",
+            values={
                 "spisovaznacka": ins_vec["spisovaznacka"],
                 "typ_osoby": typ_osoby,
                 "podnikatel": podnikatel,

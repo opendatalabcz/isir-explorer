@@ -67,7 +67,6 @@ class AdresaKraj:
 
         return None
 
-
     def najitKrajPresMesto(self, mesto):
         if not mesto:
             return None

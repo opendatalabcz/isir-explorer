@@ -52,12 +52,13 @@ class StatsInsSpravci(Task):
                 (ic, nazev, jmeno, prijmeni)
             VALUES
                 (:ic, :nazev, :jmeno, :prijmeni)""",
-                values={
-                    "ic": osoba["ic"],
-                    "nazev": nazev,
-                    "jmeno": jmeno,
-                    "prijmeni": prijmeni,
-                })
+                    values={
+                        "ic": osoba["ic"],
+                        "nazev": nazev,
+                        "jmeno": jmeno,
+                        "prijmeni": prijmeni,
+                    }
+                )
 
     async def spravciNepodnikatele(self):
 
@@ -89,12 +90,12 @@ class StatsInsSpravci(Task):
                 (ic, nazev, jmeno, prijmeni)
             VALUES
                 (:ic, :nazev, :jmeno, :prijmeni)""",
-                values={
-                    "ic": None,
-                    "nazev": nazev,
-                    "jmeno": jmeno,
-                    "prijmeni": prijmeni,
-                })
+                    values={
+                        "ic": None,
+                        "nazev": nazev,
+                        "jmeno": jmeno,
+                        "prijmeni": prijmeni,
+                    })
 
     async def naleztSpravce(self, isir_osoba):
         if isir_osoba["ic"]:
@@ -125,7 +126,7 @@ class StatsInsSpravci(Task):
                     druhrolevrizeni = '2' AND
                     datumosobavevecizrusena IS NULL AND
                     spisovaznacka = :spisovaznacka
-            """, values={ "spisovaznacka": row["spisovaznacka"] })
+            """, values={"spisovaznacka": row["spisovaznacka"]})
 
             for isir_osoba_spravce in spravci:
                 druh = isir_osoba_spravce["druhspravce"]
@@ -147,11 +148,11 @@ class StatsInsSpravci(Task):
                     (id_ins, id_spravce, druh_spravce)
                 VALUES
                     (:id_ins, :id_spravce, :druh_spravce)""",
-                    values={
-                        "id_ins": row["id"],
-                        "id_spravce": nalezenySpravce["id"],
-                        "druh_spravce": druh,
-                    })
+                        values={
+                            "id_ins": row["id"],
+                            "id_spravce": nalezenySpravce["id"],
+                            "druh_spravce": druh,
+                        })
 
     async def run(self):
 
