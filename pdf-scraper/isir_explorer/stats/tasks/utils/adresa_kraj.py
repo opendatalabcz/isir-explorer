@@ -2,6 +2,7 @@ import re
 import csv
 import os
 
+
 class AdresaKraj:
 
     RIMSKE_CISLICE = {'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii', 'xiii',
@@ -27,6 +28,7 @@ class AdresaKraj:
 
     def __init__(self, **kwargs):
         self.obce = {}
+        self.psc = {}
         self.slovnikObci()
 
     def slovnikObci(self):
@@ -41,7 +43,34 @@ class AdresaKraj:
                 self.obce[nazev] = {"kraj": kraj,
                                     "kraj_ref": self.KRAJE_REF[kraj]}
 
-    def najitKraj(self, mesto):
+        filename = os.path.join(dirname, '../../datasets/cz-psc-kraje.csv')
+        with open(filename, "r") as infile:
+            reader = csv.reader(infile)
+            next(reader, None)  # skip 1st
+            for row in reader:
+                psc = row[0]
+                okres = row[1]
+                kraj = row[2]
+                self.psc[psc] = {"okres": int(okres), "kraj": kraj}
+
+    def najitKrajPresPsc(self, psc):
+        if not psc:
+            return None
+
+        psc = re.sub(' +', '', psc)
+        
+        if not re.match("^[0-9]{5}$", psc):
+            return None
+
+        if psc in self.psc:
+            return self.psc[psc]
+
+        return None
+
+
+    def najitKrajPresMesto(self, mesto):
+        if not mesto:
+            return None
 
         # odstranit dup. mezery
         mesto = re.sub(' +', ' ', mesto)
@@ -71,6 +100,14 @@ class AdresaKraj:
 
         kraj = None
         if mesto in self.obce:
-            kraj = self.obce[mesto]["kraj_ref"]
+            kraj = {"kraj": self.obce[mesto]["kraj_ref"], "okres": None}
 
+        return kraj
+
+    def najitKraj(self, psc, mesto):
+        kraj = self.najitKrajPresPsc(psc)
+        if kraj:
+            return kraj
+
+        kraj = self.najitKrajPresMesto(mesto)
         return kraj

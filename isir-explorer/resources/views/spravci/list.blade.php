@@ -57,4 +57,14 @@
         </div>
     </div>
 
+<script>
+window.onload = function(){
+$("table").tablesorter({
+    theme : "bootstrap",
+    widthFixed: true,
+    widgets : ["columns"],
+    sortList: [[0,0]]
+});
+};
+</script>
 @endsection

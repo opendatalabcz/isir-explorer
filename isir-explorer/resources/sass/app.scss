@@ -69,11 +69,9 @@ body{
 
  .card-header{
     .form-group{
-        margin: 0;
-
-        select{
-            font-size: 1.2em;
-            font-weight: bold;
-        }
+        margin: 0.3rem;
+    }
+    button .fa{
+        margin-right: 0.5em;
     }
  }

@@ -19,11 +19,12 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/mapy/kraje/insolvence', [MapController::class, 'insolvence']);
+Route::get('/mapy/kraje/insolvence', [MapController::class, 'insolvence'])->name("stat.mapy");
+Route::get('/mapy/kraje/insolvence_old', [MapController::class, 'insolvence2']);
 Route::get('/mapy/kraje/insolvence_na_obyvatele', [MapController::class, 'insolvence_na_obyvatele']);
 
-Route::get('/spravci', [SpravciController::class, 'list'])->name("spravci");;
-Route::get('/spravci/{id}', [SpravciController::class, 'detail'])->name("spravci.detail");;
+Route::get('/spravci', [SpravciController::class, 'list'])->name("spravci");
+Route::get('/spravci/{id}', [SpravciController::class, 'detail'])->name("spravci.detail");
 
 Route::get('/mapy', function () {
     return view('maps');

@@ -34,6 +34,7 @@ final class StatSpravce extends AbstractMigration
             ->addColumn('pohlavi_dluznika', 'string', ['limit' => 1, 'null' => true, 'comment' => 'M=muz, Z=zena'])
             ->addColumn('typ_rizeni', 'string', ['limit' => 1, 'null' => true, 'comment' => 'Konstanta oznacujici zpusob reseni upadku'])
             ->addColumn('kraj', 'string', ['limit' => 2, 'null' => true, 'comment' => 'Kod kraje, ze ktereho pochazi dluznik'])
+            ->addColumn('okres', 'smallinteger', ['null' => true, 'comment' => 'Kod okresu, ze ktereho pochazi dluznik'])
             ->addColumn('moratorium', 'date', ['null' => true, 'comment' => 'Datum, kdy bylo v rizeni vyhlaseno moratorium'])
             ->addColumn('datum_zahajeni', 'date', ['null' => true, 'comment' => 'Datum zacatku rizeni'])
             ->addColumn('datum_upadku', 'date', ['null' => true, 'comment' => 'Datum vydani rozhodnuti o upadku'])

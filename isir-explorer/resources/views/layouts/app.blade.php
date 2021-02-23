@@ -38,11 +38,11 @@
                     <li class="nav-item {{ \str_starts_with(\Request::route()->getName(), "spravci") ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route("spravci") }}">Správci</a>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown {{ \str_starts_with(\Request::route()->getName(), "stat") ? 'active' : '' }}">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
                             aria-haspopup="true" aria-expanded="false">Statistiky</a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Mapy</a>
+                            <a class="dropdown-item" href="{{ route("stat.mapy") }}">Mapy</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Oddlužení</a>
                             <a class="dropdown-item" href="#">Konkurz</a>

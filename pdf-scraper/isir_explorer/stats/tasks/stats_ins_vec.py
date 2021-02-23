@@ -38,7 +38,7 @@ class StatsInsVec(Task):
                 spisovaznacka = :spisovaznacka
             ORDER BY id ASC
         """, values={
-                "spisovaznacka": ins_vec["spisovaznacka"],
+            "spisovaznacka": ins_vec["spisovaznacka"],
         })
         
         moratorium = None
@@ -127,18 +127,19 @@ class StatsInsVec(Task):
 
         # Adresa a Kraj dluznika
         adresa_dluznika = await self.db.fetch_one(query="""
-            SELECT mesto FROM isir_adresa ia
+            SELECT psc, mesto FROM isir_adresa ia
             WHERE
                 ia.idosoby = :idosoby AND
                 ia.spisovaznacka = :spisovaznacka AND
-                (ia.zeme IS NULL OR ia.zeme = 'Česká republika')
+                (ia.zeme IS NULL OR ia.zeme IN ('Česká republika','Česko','CZ','CZE','ČR'))
             ORDER BY druhadresy DESC, id ASC LIMIT 1
         """, values={"idosoby": dluznik["idosoby"], "spisovaznacka": ins_vec["spisovaznacka"]})
-        if not adresa_dluznika or not adresa_dluznika["mesto"]:
+        if not adresa_dluznika or (not adresa_dluznika["mesto"] and not adresa_dluznika["psc"]):
             kraj = None
         else:
             mesto = adresa_dluznika["mesto"]
-            kraj = self.AdresaKraj.najitKraj(mesto)
+            psc = adresa_dluznika["psc"]
+            kraj = self.AdresaKraj.najitKraj(psc, mesto)
 
         data_stavy = await self.analyzaStavu(ins_vec)
         if not data_stavy:
@@ -152,11 +153,11 @@ class StatsInsVec(Task):
 
         await self.db.execute(query="""INSERT INTO stat_vec
             (spisovaznacka, typ_osoby, podnikatel, datum_zahajeni,
-            vek_dluznika, pohlavi_dluznika, kraj, moratorium, datum_upadku,
+            vek_dluznika, pohlavi_dluznika, kraj, okres, moratorium, datum_upadku,
             datum_zpusob_reseni, datum_ukonceni, typ_rizeni, delka_rizeni)
         VALUES
             (:spisovaznacka, :typ_osoby, :podnikatel, :datum_zahajeni,
-            :vek_dluznika, :pohlavi_dluznika, :kraj, :moratorium, :datum_upadku,
+            :vek_dluznika, :pohlavi_dluznika, :kraj, :okres, :moratorium, :datum_upadku,
             :datum_zpusob_reseni, :datum_ukonceni, :typ_rizeni, :delka_rizeni)""", values={
                 "spisovaznacka": ins_vec["spisovaznacka"],
                 "typ_osoby": typ_osoby,
@@ -164,7 +165,8 @@ class StatsInsVec(Task):
                 "datum_zahajeni": datum_zahajeni,
                 "vek_dluznika": vek_dluznika,
                 "pohlavi_dluznika": pohlavi_dluznika,
-                "kraj": kraj,
+                "kraj": kraj["kraj"] if kraj is not None else None,
+                "okres": kraj["okres"] if kraj is not None else None,
                 "moratorium": data_stavy["moratorium"],
                 "datum_upadku": data_stavy["datum_upadek"],
                 "datum_zpusob_reseni": data_stavy["datum_zpusob_reseni"],

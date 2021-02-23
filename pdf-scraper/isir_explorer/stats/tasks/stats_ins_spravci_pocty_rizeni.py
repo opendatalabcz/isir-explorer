@@ -1,5 +1,5 @@
 from ..task import Task
-from isir_explorer.webservice.enums import DRUH_SPRAVCE
+
 
 class StatsInsSpravciPoctyRizeni(Task):
 
@@ -34,9 +34,11 @@ class StatsInsSpravciPoctyRizeni(Task):
             await self.db.execute(query="""UPDATE stat_spravce
                 SET posledni_ins=:posledni_ins,	ins_celkem=:ins_celkem, ins_aktivnich=:ins_aktivnich
                 WHERE id=:id
-                """, values={
+                """,
+                values={
                     "posledni_ins": posledni,
                     "ins_celkem": celkem,
                     "ins_aktivnich": aktivnich,
                     "id": spravce["id"],
-            })
+                }
+            )

@@ -32,7 +32,7 @@ class StatsKrajeRizeni(Task):
             """)
 
         for row in rows:
-            kraj = self.AdresaKraj.najitKraj(row["adresa_mesto"])
+            kraj = self.AdresaKraj.najitKrajPresMesto(row["adresa_mesto"])
             if kraj:
                 if kraj in self.pocty_kraje:
                     self.pocty_kraje[kraj] += 1

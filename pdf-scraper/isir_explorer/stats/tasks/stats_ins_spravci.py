@@ -1,6 +1,7 @@
 from ..task import Task
 from isir_explorer.webservice.enums import DRUH_SPRAVCE
 
+
 class StatsInsSpravci(Task):
 
     def sestavitJmeno(self, osoba):
@@ -50,7 +51,8 @@ class StatsInsSpravci(Task):
             await self.db.execute(query="""INSERT INTO stat_spravce
                 (ic, nazev, jmeno, prijmeni)
             VALUES
-                (:ic, :nazev, :jmeno, :prijmeni)""", values={
+                (:ic, :nazev, :jmeno, :prijmeni)""",
+                values={
                     "ic": osoba["ic"],
                     "nazev": nazev,
                     "jmeno": jmeno,
@@ -86,7 +88,8 @@ class StatsInsSpravci(Task):
             await self.db.execute(query="""INSERT INTO stat_spravce
                 (ic, nazev, jmeno, prijmeni)
             VALUES
-                (:ic, :nazev, :jmeno, :prijmeni)""", values={
+                (:ic, :nazev, :jmeno, :prijmeni)""",
+                values={
                     "ic": None,
                     "nazev": nazev,
                     "jmeno": jmeno,
@@ -122,9 +125,7 @@ class StatsInsSpravci(Task):
                     druhrolevrizeni = '2' AND
                     datumosobavevecizrusena IS NULL AND
                     spisovaznacka = :spisovaznacka
-            """, values={
-                    "spisovaznacka": row["spisovaznacka"],
-            })
+            """, values={ "spisovaznacka": row["spisovaznacka"] })
 
             for isir_osoba_spravce in spravci:
                 druh = isir_osoba_spravce["druhspravce"]
@@ -145,7 +146,8 @@ class StatsInsSpravci(Task):
                 await self.db.execute(query="""INSERT INTO stat_spravce_ins
                     (id_ins, id_spravce, druh_spravce)
                 VALUES
-                    (:id_ins, :id_spravce, :druh_spravce)""", values={
+                    (:id_ins, :id_spravce, :druh_spravce)""",
+                    values={
                         "id_ins": row["id"],
                         "id_spravce": nalezenySpravce["id"],
                         "druh_spravce": druh,
