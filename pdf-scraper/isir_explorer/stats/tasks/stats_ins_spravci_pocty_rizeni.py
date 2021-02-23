@@ -31,7 +31,8 @@ class StatsInsSpravciPoctyRizeni(Task):
 
             aktivnich = data["aktivnich"]
 
-            await self.db.execute(query="""UPDATE stat_spravce
+            await self.db.execute(
+                query="""UPDATE stat_spravce
                 SET posledni_ins=:posledni_ins,	ins_celkem=:ins_celkem, ins_aktivnich=:ins_aktivnich
                 WHERE id=:id
                 """,
