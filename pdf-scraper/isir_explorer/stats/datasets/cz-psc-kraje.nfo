@@ -1,0 +1,5 @@
+Dataset cz-psc-kraje.csv vznikl spojením:
+- Seznam PSČ částí obcí a obcí bez částí České pošty (https://www.wikidata.org/wiki/Q25048627)
+  URL: https://www.ceskaposta.cz/documents/10180/3738087/xls_pcobc.zip/50617e56-6e9a-4335-9608-96fec214e6ef
+- Číselník okresů ČR z eagri.cz, publikováno 2019, MZe ČR
+  URL: https://eagri.cz/ssl/nosso-app/DataKeStazeni/Okresy
