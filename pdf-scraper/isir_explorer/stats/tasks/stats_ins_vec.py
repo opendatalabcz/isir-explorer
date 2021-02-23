@@ -151,7 +151,8 @@ class StatsInsVec(Task):
             delta = data_stavy["datum_skonceni"].date() - datum_zahajeni
             delka_rizeni = delta.days
 
-        await self.db.execute(query="""INSERT INTO stat_vec
+        await self.db.execute(
+            query="""INSERT INTO stat_vec
             (spisovaznacka, typ_osoby, podnikatel, datum_zahajeni,
             vek_dluznika, pohlavi_dluznika, kraj, okres, moratorium, datum_upadku,
             datum_zpusob_reseni, datum_ukonceni, typ_rizeni, delka_rizeni)
@@ -174,7 +175,8 @@ class StatsInsVec(Task):
                 "datum_ukonceni": data_stavy["datum_skonceni"],
                 "typ_rizeni": data_stavy["zpusob_reseni"],
                 "delka_rizeni": delka_rizeni,
-            })
+            }
+        )
 
     async def run(self):
         i = 0

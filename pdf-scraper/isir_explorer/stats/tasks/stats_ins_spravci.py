@@ -48,17 +48,18 @@ class StatsInsSpravci(Task):
 
             nazev, jmeno, prijmeni = self.sestavitJmeno(osoba)
 
-            await self.db.execute(query="""INSERT INTO stat_spravce
+            await self.db.execute(
+                query="""INSERT INTO stat_spravce
                 (ic, nazev, jmeno, prijmeni)
             VALUES
                 (:ic, :nazev, :jmeno, :prijmeni)""",
-                    values={
-                        "ic": osoba["ic"],
-                        "nazev": nazev,
-                        "jmeno": jmeno,
-                        "prijmeni": prijmeni,
-                    }
-                )
+                values={
+                    "ic": osoba["ic"],
+                    "nazev": nazev,
+                    "jmeno": jmeno,
+                    "prijmeni": prijmeni,
+                }
+            )
 
     async def spravciNepodnikatele(self):
 
@@ -86,16 +87,18 @@ class StatsInsSpravci(Task):
 
             nazev, jmeno, prijmeni = self.sestavitJmeno(osoba)
 
-            await self.db.execute(query="""INSERT INTO stat_spravce
+            await self.db.execute(
+                query="""INSERT INTO stat_spravce
                 (ic, nazev, jmeno, prijmeni)
             VALUES
                 (:ic, :nazev, :jmeno, :prijmeni)""",
-                    values={
-                        "ic": None,
-                        "nazev": nazev,
-                        "jmeno": jmeno,
-                        "prijmeni": prijmeni,
-                    })
+                values={
+                    "ic": None,
+                    "nazev": nazev,
+                    "jmeno": jmeno,
+                    "prijmeni": prijmeni,
+                }
+            )
 
     async def naleztSpravce(self, isir_osoba):
         if isir_osoba["ic"]:
@@ -144,15 +147,17 @@ class StatsInsSpravci(Task):
                     print("{0}: Nelze najit spravce".format(row["spisovaznacka"]))
                     continue
 
-                await self.db.execute(query="""INSERT INTO stat_spravce_ins
+                await self.db.execute(
+                    query="""INSERT INTO stat_spravce_ins
                     (id_ins, id_spravce, druh_spravce)
                 VALUES
                     (:id_ins, :id_spravce, :druh_spravce)""",
-                        values={
-                            "id_ins": row["id"],
-                            "id_spravce": nalezenySpravce["id"],
-                            "druh_spravce": druh,
-                        })
+                    values={
+                        "id_ins": row["id"],
+                        "id_spravce": nalezenySpravce["id"],
+                        "druh_spravce": druh,
+                    }
+                )
 
     async def run(self):
 
