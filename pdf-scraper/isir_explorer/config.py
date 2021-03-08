@@ -37,6 +37,7 @@ class AppConfig:
         "request_timeout": 30,
         "verbose": False,
         "silent": False,
+        "ws.delay": 0,                                      # Zpozdeni v sekundach
         "parse_in_executor": True,
         "ins_filter": None,                                 # Filtr na spisove znacky ins. rizeni,
                                                             # napr. "INS [0-9]+/20(19|20|20|21|22)"

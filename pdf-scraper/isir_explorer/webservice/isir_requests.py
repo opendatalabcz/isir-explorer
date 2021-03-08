@@ -205,6 +205,8 @@ class RequestTask:
                     f"Isir service returned HTTP {resp.status}")
             data = await resp.text('utf-8')
             await self.process_response(data)
+        if self.parent.conf["ws.delay"]:
+            await asyncio.sleep(self.parent.conf["ws.delay"])
 
     async def process_response(self, data):
         root = ET.fromstring(data)
