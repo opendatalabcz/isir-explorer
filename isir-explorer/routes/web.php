@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\SpravciController;
+use App\Http\Controllers\StatController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('index');
 });
+
+Route::get('/insolvence', [StatController::class, 'insolvence']);
 
 Route::get('/mapy/kraje/insolvence', [MapController::class, 'insolvence'])->name("stat.mapy");
 Route::get('/mapy/kraje/insolvence_old', [MapController::class, 'insolvence2']);

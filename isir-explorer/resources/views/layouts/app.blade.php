@@ -27,7 +27,7 @@
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Insolvence</a>
+                        <a class="nav-link" href="/insolvence">Insolvence</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Dlužníci</a>
