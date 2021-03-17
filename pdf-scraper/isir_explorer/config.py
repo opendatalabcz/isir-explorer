@@ -3,45 +3,46 @@ import click
 
 class AppConfig:
 
-    CONF_CATEGORIES = ['app', 'db', 'dl']
+    CONF_CATEGORIES = ['app', 'db', 'dl', 'ws', 'sc']
 
     GLOBAL_CATEGORY = 'app'
 
     # Klice v nastaveni, ktere je vzdy nutne specifikovat
     REQUIRED = []
 
-    CONVERT_INT = ['min_id', 'max_id', 'retry_times', 'last_id', 'concurrency', 'request_timeout']
+    CONVERT_INT = ['ws.min_id', 'ws.max_id', 'ws.retry_times', 'ws.last_id',
+        'ws.concurrency', 'ws.request_timeout']
 
     # Vychozi hodnoty v nastaveni a popis konfigurace
     DEFAULTS = {
         # Globalni
         "tmp_dir": "/tmp/isir",                             # Adresar pro docasne soubory
         "debug": False,
+        "verbose": False,
+        "silent": False,
 
         # Scraper
-        "pdftotext": "pdftotext",                           # Cesta ke spusteni programu pdftotext
-        "pdftk": "pdftk",                                   # Cesta ke spusteni programu pdftk
-        "doctype": False,                                   # Typ dokumentu, nespecifikovan => autodetekce
-        "unpack_filter": "^D-DS-|^K-DS-",
+        "sc.pdftotext": "pdftotext",                        # Cesta ke spusteni programu pdftotext
+        "sc.pdftk": "pdftk",                                # Cesta ke spusteni programu pdftk
+        "sc.doctype": False,                                # Typ dokumentu, nespecifikovan => autodetekce
+        "sc.unpack_filter": "^D-DS-|^K-DS-",
         "sc.save_unreadable": False,
         "sc.save_text": False,
         "sc.save_unpacked": False,
         "sc._cli": False,
 
         # Isir ws
-        "last_id": None,
-        "min_id": None,
-        "max_id": None,
-        "retry_times": 5,
-        "concurrency": 4,
-        "request_timeout": 30,
-        "verbose": False,
-        "silent": False,
+        "ws.last_id": None,
+        "ws.min_id": None,
+        "ws.max_id": None,
+        "ws.retry_times": 5,
+        "ws.concurrency": 4,
+        "ws.request_timeout": 30,
         "ws.delay": 0,                                      # Zpozdeni v sekundach
-        "parse_in_executor": True,
-        "ins_filter": None,                                 # Filtr na spisove znacky ins. rizeni,
+        "ws.parse_in_executor": True,
+        "ws.ins_filter": None,                              # Filtr na spisove znacky ins. rizeni,
                                                             # napr. "INS [0-9]+/20(19|20|20|21|22)"
-
+        # Isir dl
         "dl.concurrency": 5,
         "dl.request_timeout": 300,
         "dl.retry_times": 3,

@@ -57,7 +57,7 @@ def validate_config_file(ctx, param, value):
               type=click.IntRange(min=-1, max=None))
 def isirClient(config, last_id):
 
-    config.set_opt("last_id", last_id)
+    config.set_opt("ws.last_id", last_id)
 
     app = IsirClient(config)
     app.start_loop()

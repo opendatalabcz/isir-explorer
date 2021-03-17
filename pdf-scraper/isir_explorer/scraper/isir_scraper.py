@@ -76,7 +76,7 @@ class IsirScraper:
             os.makedirs(tmp_unpack_dir)
         try:
             await asyncio.create_subprocess_exec(
-                self.config['pdftk'],
+                self.config['sc.pdftk'],
                 input_path,
                 "unpack_files",
                 "output",
@@ -91,8 +91,8 @@ class IsirScraper:
         files = os.listdir(tmp_unpack_dir)
         if files:
             self.unpacked_dir = tmp_unpack_dir
-            if self.config['unpack_filter']:
-                regex = re.compile(self.config['unpack_filter'])
+            if self.config['sc.unpack_filter']:
+                regex = re.compile(self.config['sc.unpack_filter'])
                 files = [i for i in files if not regex.match(i)]
 
             files = [tmp_unpack_dir + "/" + i for i in files]
@@ -138,7 +138,7 @@ class IsirScraper:
     async def readDocumentSingle(self, input_path, multidoc=True):
         output_path = self.tmp_path + '/' + self.document_name
         process = await asyncio.create_subprocess_exec(
-            self.config['pdftotext'],
+            self.config['sc.pdftotext'],
             "-layout",
             "-nodiag",
             "-nopgbrk",
@@ -167,9 +167,9 @@ class IsirScraper:
 
         # Parse
         documents = []
-        if self.config['doctype']:
+        if self.config['sc.doctype']:
             # Use only the parser selected by the user
-            parsers = [self.getParserByName(self.config['doctype'])]
+            parsers = [self.getParserByName(self.config['sc.doctype'])]
         else:
             # Use all parser types (detect document type)
             parsers = self.PARSER_TYPES.values()

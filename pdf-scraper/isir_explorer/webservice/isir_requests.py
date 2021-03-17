@@ -21,11 +21,11 @@ class IsirRequests:
         self.pos = 0
         self.exit_code = 0
         self.executor = concurrent.futures.ThreadPoolExecutor(
-            max_workers=self.conf["concurrency"],
+            max_workers=self.conf["ws.concurrency"],
         )
         self.speedCounter = {"samples": 0}
         self.ins_filter = re.compile(
-            self.conf["ins_filter"]) if self.conf["ins_filter"] is not None else None
+            self.conf["ws.ins_filter"]) if self.conf["ws.ins_filter"] is not None else None
 
         # can be postgresql / postgres
         if "postgres" in self.db.url.scheme:
@@ -34,7 +34,7 @@ class IsirRequests:
             self.dialect = self.db.url.scheme
 
     def schedule_task(self, session, pos):
-        if self.conf["max_id"] is not None and self.pos > self.conf["max_id"]:
+        if self.conf["ws.max_id"] is not None and self.pos > self.conf["ws.max_id"]:
             return
 
         request_task = RequestTask(self, session, pos)
@@ -61,7 +61,7 @@ class IsirRequests:
         self.tasks = []
 
     async def start(self):
-        timeout = aiohttp.ClientTimeout(total=self.conf["request_timeout"])
+        timeout = aiohttp.ClientTimeout(total=self.conf["ws.request_timeout"])
         headers = {'Accept': 'text/xml',
                    'Content-Type': 'text/xml;charset=UTF-8'}
 
@@ -71,7 +71,7 @@ class IsirRequests:
             await self.requests_loop(session)
 
     async def requests_loop(self, session):
-        for i in range(self.conf["concurrency"]):
+        for i in range(self.conf["ws.concurrency"]):
             self.schedule_task(session, self.pos)
 
         while len(self.tasks):
@@ -100,12 +100,12 @@ class IsirRequests:
                 self.last_completed_id = front.pos + 1000
                 self.front_task_done.set()
 
-            if len(self.tasks) < self.conf["concurrency"]:
+            if len(self.tasks) < self.conf["ws.concurrency"]:
                 self.schedule_task(session, self.pos)
 
     async def get_last_id(self):
-        if self.conf["last_id"] is not None:
-            return self.conf["last_id"]
+        if self.conf["ws.last_id"] is not None:
+            return self.conf["ws.last_id"]
 
         row = await self.db.fetch_one(query=f"SELECT MAX(id) FROM {IsirUdalost.TABLE_NAME}")
         last_id = row[0]
@@ -113,8 +113,8 @@ class IsirRequests:
         if last_id is None:
             last_id = 0
 
-        if self.conf["min_id"] is not None and last_id < self.conf["min_id"]:
-            last_id = self.conf["min_id"]
+        if self.conf["ws.min_id"] is not None and last_id < self.conf["ws.min_id"]:
+            last_id = self.conf["ws.min_id"]
 
         return last_id
 
@@ -184,7 +184,7 @@ class RequestTask:
                 '</soapenv:Envelope>')
 
     def retry(self):
-        max_retry = self.parent.conf["retry_times"]
+        max_retry = self.parent.conf["ws.retry_times"]
         self.finished = False
         self.retry_count += 1
         if self.retry_count > max_retry:
@@ -269,7 +269,7 @@ class RequestTask:
         return udalost_rows, models
 
     async def save_records(self, records):
-        if self.parent.conf["parse_in_executor"]:
+        if self.parent.conf["ws.parse_in_executor"]:
             loop = asyncio.get_event_loop()
             blocking_task = loop.run_in_executor(
                 self.parent.executor, self.parseRows, records)
