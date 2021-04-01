@@ -4,12 +4,23 @@ import click
 import configparser
 from asyncio import events
 
+def read_with_configparser(str_content):
+    config = configparser.ConfigParser()
+    config.optionxform = str    # Zachovat velikosti pismen v klicich konfigurace
+    config.read_string(str_content)
+    return config
 
 def validate_config_file(ctx, param, value):
-    config = configparser.ConfigParser()
-    config.optionxform = str    # maintain case sensitivity in keys
-    str_content = value.read()
-    config.read_string(str_content)
+    if value is not None:
+        config = read_with_configparser(value.read())
+    else:
+        # Cesta ke konf. souboru nebyla zadana parametrem => zkusit vychozi nazev
+        try:
+            with open(AppConfig.DEFAULT_CONFIG_FILENAME, 'r') as file:
+                config = read_with_configparser(file.read())
+        except FileNotFoundError:
+            # Konf. soubor neexistuje => vsechna nastaveni budou vychozi
+            config = None
 
     return AppConfig(config)
 
@@ -40,7 +51,6 @@ def validate_doctype(ctx, param, value):
               metavar='FILENAME',
               help='Cesta ke konfiguracnimu souboru.',
               show_default=True,
-              default='app.cfg',
               type=click.File('r'),
               callback=validate_config_file)
 @click.option('-d', '--doctype',

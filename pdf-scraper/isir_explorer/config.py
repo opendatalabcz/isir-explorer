@@ -3,7 +3,9 @@ import click
 
 class AppConfig:
 
-    CONF_CATEGORIES = ['app', 'db', 'dl', 'ws', 'sc']
+    DEFAULT_CONFIG_FILENAME = 'app.cfg'
+
+    CONF_CATEGORIES = ['app', 'db', 'dl', 'ws', 'scraper']
 
     GLOBAL_CATEGORY = 'app'
 
@@ -53,9 +55,10 @@ class AppConfig:
         "dl.start": 0,                                      # ID události v rejstříku, od které zahájit stahování
     }
 
-    def __init__(self, conf):
+    def __init__(self, conf=None):
         self.data = {}
-        self.init(conf)
+        if conf:
+            self.init(conf)
         self.validate_required()
         self.set_defaults()
         self.validate_fields()
