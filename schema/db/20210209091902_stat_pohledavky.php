@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class StatSpravce extends AbstractMigration
+final class StatPohledavky extends AbstractMigration
 {
     public function change(): void
     {
 
-        $table = $this->table('stat_vec', [
+        $table = $this->table('stat_pohledavky', [
             'comment' => 'Statistiky pohledavek u jednotlivych rizeni'
         ]);
         $table->addColumn('spisovaznacka', 'string', ['null' => false, 'limit' => 50])
@@ -28,7 +28,6 @@ final class StatSpravce extends AbstractMigration
             ->addColumn('celkova_vyse_nezajistenych', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addColumn('celkova_vyse_zajistenych', 'decimal', ['scale' => DEC_SCAL, 'precision' => DEC_PREC])
 
-            ->addColumn('celkova_vyse', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addColumn('vykonatelne', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addColumn('nevykonatelne', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
             ->addColumn('duplicitni', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC])
