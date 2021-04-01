@@ -41,8 +41,6 @@ final class StatSpravce extends AbstractMigration
             ->addColumn('datum_zpusob_reseni', 'date', ['null' => true, 'comment' => 'Datum, kdy byl stanoven zpusob reseni upadku'])
             ->addColumn('datum_ukonceni', 'date', ['null' => true, 'comment' => 'Datum konce rizeni'])
             ->addColumn('delka_rizeni', 'smallinteger', ['null' => true, 'comment' => 'Doba trvani rizeni (Pocet dnu)'])
-            ->addColumn('pohledavky_pocet', 'smallinteger', ['null' => true, 'comment' => 'Pocet prihlasenych pohledavek'])
-            ->addColumn('pohledavky_celkem', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC, 'comment' => 'Celkova prihlasena castka'])
 
             ->addForeignKey('spisovaznacka', 'isir_vec', 'spisovaznacka', ['delete'=> 'CASCADE', 'update'=> 'CASCADE'])
             ->addIndex(['spisovaznacka'], ['unique' => true])
