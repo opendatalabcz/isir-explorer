@@ -22,14 +22,14 @@ class AppConfig:
         "silent": False,
 
         # Scraper
-        "sc.pdftotext": "pdftotext",                        # Cesta ke spusteni programu pdftotext
-        "sc.pdftk": "pdftk",                                # Cesta ke spusteni programu pdftk
-        "sc.doctype": False,                                # Typ dokumentu, nespecifikovan => autodetekce
-        "sc.unpack_filter": "^D-DS-|^K-DS-",
-        "sc.save_unreadable": False,
-        "sc.save_text": False,
-        "sc.save_unpacked": False,
-        "sc._cli": False,
+        "scraper.pdftotext": "pdftotext",                        # Cesta ke spusteni programu pdftotext
+        "scraper.pdftk": "pdftk",                                # Cesta ke spusteni programu pdftk
+        "scraper.doctype": False,                                # Typ dokumentu, nespecifikovan => autodetekce
+        "scraper.unpack_filter": "^D-DS-|^K-DS-",
+        "scraper.save_unreadable": False,
+        "scraper.save_text": False,
+        "scraper.save_unpacked": False,
+        "scraper._cli": False,
 
         # Isir ws
         "ws.last_id": None,

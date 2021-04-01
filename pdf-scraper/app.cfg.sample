@@ -1,3 +1,5 @@
 [app]
-pdftotext=/usr/bin/pdftotext2
 tmp_dir=/tmp/isir
+
+[scraper]
+pdftotext=/usr/bin/pdftotext2

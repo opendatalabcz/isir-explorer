@@ -57,7 +57,7 @@ class IsirScraper:
             os.makedirs(self.tmp_path)
         if not os.path.exists(self.unpack_path):
             os.makedirs(self.unpack_path)
-        if self.config['sc.save_unreadable'] and not os.path.exists(self.unreadable_path):
+        if self.config['scraper.save_unreadable'] and not os.path.exists(self.unreadable_path):
             os.makedirs(self.unreadable_path)
 
     @staticmethod
@@ -76,7 +76,7 @@ class IsirScraper:
             os.makedirs(tmp_unpack_dir)
         try:
             await asyncio.create_subprocess_exec(
-                self.config['sc.pdftk'],
+                self.config['scraper.pdftk'],
                 input_path,
                 "unpack_files",
                 "output",
@@ -91,8 +91,8 @@ class IsirScraper:
         files = os.listdir(tmp_unpack_dir)
         if files:
             self.unpacked_dir = tmp_unpack_dir
-            if self.config['sc.unpack_filter']:
-                regex = re.compile(self.config['sc.unpack_filter'])
+            if self.config['scraper.unpack_filter']:
+                regex = re.compile(self.config['scraper.unpack_filter'])
                 files = [i for i in files if not regex.match(i)]
 
             files = [tmp_unpack_dir + "/" + i for i in files]
@@ -124,7 +124,7 @@ class IsirScraper:
         for file in files:
             documents += await self.readDocumentSingle(file, **kwargs)
 
-        if not documents and self.config['sc.save_unreadable'] and not self.config['sc._cli']:
+        if not documents and self.config['scraper.save_unreadable'] and not self.config['scraper._cli']:
             os.rename(input_path, self.unreadable_path +
                       "/" + self.document_name + ".pdf")
 
@@ -132,13 +132,13 @@ class IsirScraper:
         return documents
 
     def cleanup(self):
-        if self.unpacked_dir and not self.config['sc.save_unpacked']:
+        if self.unpacked_dir and not self.config['scraper.save_unpacked']:
             shutil.rmtree(self.unpacked_dir)
 
     async def readDocumentSingle(self, input_path, multidoc=True):
         output_path = self.tmp_path + '/' + self.document_name
         process = await asyncio.create_subprocess_exec(
-            self.config['sc.pdftotext'],
+            self.config['scraper.pdftotext'],
             "-layout",
             "-nodiag",
             "-nopgbrk",
@@ -161,15 +161,15 @@ class IsirScraper:
         data = decryptor.decrypt(txtBytes)
 
         # Ulozit desifrovany textovy vystup
-        if self.config['sc.save_text']:
+        if self.config['scraper.save_text']:
             with open(output_path + ".dec", "w") as f:
                 f.write(data)
 
         # Parse
         documents = []
-        if self.config['sc.doctype']:
+        if self.config['scraper.doctype']:
             # Use only the parser selected by the user
-            parsers = [self.getParserByName(self.config['sc.doctype'])]
+            parsers = [self.getParserByName(self.config['scraper.doctype'])]
         else:
             # Use all parser types (detect document type)
             parsers = self.PARSER_TYPES.values()
