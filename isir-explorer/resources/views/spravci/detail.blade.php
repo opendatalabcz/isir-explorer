@@ -78,7 +78,7 @@
                                     <td>{{ $spravce->ins_celkem }}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Zahájení činnosti</th>
+                                    <th scope="row">První evidované řízení</th>
                                     <td>{{ $info['zahajeniCinnosti']->translatedFormat('F Y') }}</td>
                                 </tr>
                                 <tr>
