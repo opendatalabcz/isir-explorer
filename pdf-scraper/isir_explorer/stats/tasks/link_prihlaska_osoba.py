@@ -25,7 +25,7 @@ class LinkPrihlaskaOsoba(LinkOsoby):
         hledana_osoba["jmeno"] = self.upravaProSrovnani(hledana_osoba["jmeno"])
         hledana_osoba["nazevosoby_slova"] = \
             hledana_osoba["nazevosoby"].split(
-                " ") if hledana_osoba["nazevosoby"] is not None else None
+                " ") if hledana_osoba["nazevosoby"] is not None else []
         if hledana_osoba["jmeno"] is not None:
             hledana_osoba["nazevosoby_slova"] += hledana_osoba["jmeno"].split(
                 " ")
