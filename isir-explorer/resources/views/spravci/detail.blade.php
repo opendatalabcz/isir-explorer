@@ -99,6 +99,7 @@
                         <script>
                             var mapData = '{!!  json_encode($kraje) !!}';
                             var mapboxToken = '{{ config('app.mapbox_key') }}';
+                            var infobox_metric = 'Počet insolvencí';
                         </script>
                         <div class="mt-4" id="map"></div>
 
