@@ -59,6 +59,22 @@
     </nav>
 
     @yield('content')
+
+    <footer class="container">
+        <div class="row">
+            <div class="col-md-12">
+                &copy; 2021 IsirExplorer
+                <br>
+                <a href="https://github.com/opendatalabcz/isir-explorer" target="_blank">Zdrojový kod</a> je dostupný pod licencí GNU General Public License v3.0
+                <br><br>
+                <p style="text-align: justify">
+                Zdrojem pro data prezentovaná ve statistikách v tomto nástroji je databáze insolvenčního rejstříku a dokumenty v něm zveřejňované.
+                Část statistik vychází pouze z dat u takových řízení, kde bylo možné data automatizovaně získat. Správnost takto přečtených údajů z insolvenčních dokumentů není manuálně kontrolována, a v údajích se tak mohou vyskytovat nepřestnosti.
+                Provozovatel žádným způsobem neodpovídá za správnost údajů a statistik prezentovaných v nástroji IsirExplorer.
+                </p>
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>
