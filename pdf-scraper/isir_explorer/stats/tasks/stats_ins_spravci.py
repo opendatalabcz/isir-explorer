@@ -1,6 +1,6 @@
 from ..task import Task
 from isir_explorer.webservice.enums import DRUH_SPRAVCE
-
+from asyncpg.exceptions import UniqueViolationError
 
 class StatsInsSpravci(Task):
 
@@ -150,17 +150,20 @@ class StatsInsSpravci(Task):
                     print("{0}: Nelze najit spravce".format(row["spisovaznacka"]))
                     continue
 
-                await self.db.execute(
-                    query="""INSERT INTO stat_spravce_ins
-                    (id_ins, id_spravce, druh_spravce)
-                VALUES
-                    (:id_ins, :id_spravce, :druh_spravce)""",
-                    values={
-                        "id_ins": row["id"],
-                        "id_spravce": nalezenySpravce["id"],
-                        "druh_spravce": druh,
-                    }
-                )
+                try:
+                    await self.db.execute(
+                        query="""INSERT INTO stat_spravce_ins
+                        (id_ins, id_spravce, druh_spravce)
+                    VALUES
+                        (:id_ins, :id_spravce, :druh_spravce)""",
+                        values={
+                            "id_ins": row["id"],
+                            "id_spravce": nalezenySpravce["id"],
+                            "druh_spravce": druh,
+                        }
+                    )
+                except UniqueViolationError:
+                    pass
 
     async def run(self):
 
