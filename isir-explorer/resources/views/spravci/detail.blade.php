@@ -53,8 +53,13 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header subject_header">
                         <h1>{{ $spravce->nazev }}</h1>
+                        @if(!empty($spravce->ic))
+                            <div class="subject_ic">
+                                IČ: <a href="https://or.justice.cz/ias/ui/rejstrik-$firma?ico={{ $spravce->ic }}" target="_blank">{{ $spravce->ic }}</a>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -39,45 +39,54 @@ body{
    -webkit-border-radius: 1em;
  }
 
- .tablesorter-header {
-     position: relative;
- }
+.tablesorter-header {
+    position: relative;
+}
 
- .tablesorter-header::before,
- .tablesorter-header::after {
-     position: absolute;
-     right: 0.75em;
-     font-family: 'FontAwesome';
-     opacity: 0.3;
- }
+.tablesorter-header::before,
+.tablesorter-header::after {
+    position: absolute;
+    right: 0.75em;
+    font-family: 'FontAwesome';
+    opacity: 0.3;
+}
 
- .tablesorter-header::before {
-     content: '\f0de';
-     top: calc(50% - 0.75em);
- }
+.tablesorter-header::before {
+content: '\f0de';
+    top: calc(50% - 0.75em);
+}
 
- .tablesorter-header::after {
-     content: '\f0dd';
-     bottom: calc(50% - 0.75em);
- }
+.tablesorter-header::after {
+content: '\f0dd';
+    bottom: calc(50% - 0.75em);
+}
 
- .tablesorter-header.tablesorter-headerAsc::before,
- .tablesorter-header.tablesorter-headerDesc::after {
-     opacity: 1;
- }
+.tablesorter-header.tablesorter-headerAsc::before,
+.tablesorter-header.tablesorter-headerDesc::after {
+    opacity: 1;
+}
 
-
- .card-header{
+.card-header{
     .form-group{
         margin: 0.3rem;
     }
     button .fa{
         margin-right: 0.5em;
     }
- }
+}
 
- footer{
+footer{
     margin-top: 40px;
     margin-bottom: 20px;
     text-align: center;
- }
+}
+
+.subject_ic{
+    font-size: 1.2rem;
+}
+
+.subject_header{
+    display: flex;
+    align-items:center;
+    justify-content: space-between;
+}
