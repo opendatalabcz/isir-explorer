@@ -42,7 +42,13 @@
                                 @foreach ($spravci as $spravce)
                                     <tr>
                                         <td>{{ $spravce->nazev }}</td>
-                                        <td>{{ $spravce->ic }}</td>
+                                        <td>
+                                            @isset($spravce->ic)
+                                                <a href="https://or.justice.cz/ias/ui/rejstrik-$firma?ico={{ $spravce->ic }}" target="_blank">{{ $spravce->ic }}</a>
+                                            @else
+                                                -
+                                            @endisset
+                                        </td>
                                         <td>{{ $spravce->ins_celkem }}</td>
                                         <td>{{ $spravce->ins_aktivnich }}</td>
                                         <td><a href="{{ route("spravci.detail", ['id' => $spravce->id]) }}">Detail</a></td>
