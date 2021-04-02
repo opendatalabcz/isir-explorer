@@ -139,6 +139,8 @@ class StatsInsSpravci(Task):
                     druh = DRUH_SPRAVCE["INS SPRÁV"]
                 elif druh == DRUH_SPRAVCE["ZÁST SPR"]:
                     druh = DRUH_SPRAVCE["ZÁST INS S"]
+                if not druh:
+                    druh = DRUH_SPRAVCE["INS SPRÁV"]
 
                 # Nalezt zaznam konkretniho spravce dle IC nebo jmena
                 nalezenySpravce = await self.naleztSpravce(isir_osoba_spravce)
