@@ -123,11 +123,12 @@ class StatsInsSpravci(Task):
 
         for row in rows:
             # Najit spravce k danemu INS v isir_osoba
+            # Aby bylo mozne evidovat spravce i u starsich rizeni, neni vyuzita podminka
+            # datumosobavevecizrusena IS NULL
             spravci = await self.db.fetch_all(query="""
                 SELECT * FROM isir_osoba
                 WHERE
                     druhrolevrizeni = '2' AND
-                    datumosobavevecizrusena IS NULL AND
                     spisovaznacka = :spisovaznacka
             """, values={"spisovaznacka": row["spisovaznacka"]})
 
