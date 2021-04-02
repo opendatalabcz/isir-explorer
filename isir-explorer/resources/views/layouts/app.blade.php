@@ -36,7 +36,7 @@
                         <a class="nav-link" href="#">Věřitelé</a>
                     </li>
                     <li class="nav-item {{ \str_starts_with(\Request::route()->getName(), "spravci") ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route("spravci") }}">Správci</a>
+                        <a class="nav-link" href="{{ route("spravci.ins") }}">Správci</a>
                     </li>
                     <li class="nav-item dropdown {{ \str_starts_with(\Request::route()->getName(), "stat") ? 'active' : '' }}">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"

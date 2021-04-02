@@ -24,6 +24,22 @@
             </div>
         </div>
 
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Typ zobrazení</h3>
+            </div>
+            <div class="card-header">
+                @foreach (\App\Http\Controllers\SpravciController::TYP_ZOBRAZENI as $routeId => $info)
+                    @if(\Request::route()->getName() == $routeId)
+                        <span class="btn btn-link disabled">{{ $info['nazev'] }}</span>
+                    @else
+                        <a class="btn btn-link" href="{{ route($routeId) }}">{{ $info['nazev'] }}</a>
+                    @endif
+
+                @endforeach
+            </div>
+        </div>
+
         <div class="row mt-4">
             <div class="col-md-12">
                 <div class="card">

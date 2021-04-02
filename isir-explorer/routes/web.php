@@ -30,7 +30,7 @@ Route::get('/mapy/kraje/insolvence_na_obyvatele', [PocetInsolvenciController::cl
 Route::get('/mapy/kraje/prihlasene_pohledavky', [PohledavkyController::class, 'pohledavky'])
     ->name("stat.mapy.pohledavky");
 
-Route::get('/spravci', [SpravciController::class, 'list'])->name("spravci");
+Route::get('/spravci', [SpravciController::class, 'list'])->name("spravci.ins");
 Route::get('/spravci/{id}', [SpravciController::class, 'detail'])->name("spravci.detail");
 
 Route::get('/mapy', function () {

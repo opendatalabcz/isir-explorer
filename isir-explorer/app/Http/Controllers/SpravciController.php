@@ -9,6 +9,12 @@ use Illuminate\Http\Request;
 class SpravciController extends Controller
 {
 
+    public const TYP_ZOBRAZENI = [
+        'spravci.ins' => [
+            'nazev' => 'Počty insolvencí'
+        ],
+    ];
+
     public function list(Request $request){
 
         $spravci = Spravce::orderBy('nazev','ASC')->get();
