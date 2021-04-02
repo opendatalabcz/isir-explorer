@@ -8,16 +8,24 @@ class StatsOddluzeni(Task):
 
     def __init__(self, config, **kwargs):
         super().__init__(config, **kwargs)
+        self.posledni_spisovaznacka = ""
 
     async def seznamInsRizeni(self):
-        return await self.db.fetch_all(query="""
+        rows = await self.db.fetch_all(query="""
             SELECT iv.* FROM isir_vec iv
                 LEFT JOIN stat_oddluzeni so ON (iv.spisovaznacka = so.spisovaznacka)
             WHERE
                 so.id IS NULL AND
-                NOT iv.vyrazeno
+                NOT iv.vyrazeno AND
+                iv.spisovaznacka > :posledni_spisovaznacka
+            ORDER BY iv.spisovaznacka ASC
             LIMIT 5000
-        """)
+        """, values={
+            "posledni_spisovaznacka": self.posledni_spisovaznacka
+        })
+        if rows:
+            self.posledni_spisovaznacka = rows[-1]["spisovaznacka"]
+        return rows
 
     def osvobozeni(self, mira, vyse):
         if mira is None or vyse is None or mira == 0:

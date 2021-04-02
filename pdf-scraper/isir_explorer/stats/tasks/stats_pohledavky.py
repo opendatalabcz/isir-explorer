@@ -6,6 +6,8 @@ class StatsPohledavky(Task):
     def __init__(self, config, **kwargs):
         super().__init__(config, **kwargs)
 
+        self.posledni_spisovaznacka = ""
+
         self.init()
 
     def init(self):
@@ -33,14 +35,21 @@ class StatsPohledavky(Task):
         self.celkova_vyse_zajistenych = None
 
     async def seznamInsRizeni(self):
-        return await self.db.fetch_all(query="""
+        rows = await self.db.fetch_all(query="""
             SELECT iv.* FROM isir_vec iv
                 LEFT JOIN stat_pohledavky sp ON (iv.spisovaznacka = sp.spisovaznacka)
             WHERE
                 sp.id IS NULL AND
-                NOT iv.vyrazeno
+                NOT iv.vyrazeno AND
+                iv.spisovaznacka > :posledni_spisovaznacka
+            ORDER BY iv.spisovaznacka ASC
             LIMIT 5000
-        """)
+        """, values={
+            "posledni_spisovaznacka": self.posledni_spisovaznacka
+        })
+        if rows:
+            self.posledni_spisovaznacka = rows[-1]["spisovaznacka"]
+        return rows
 
     async def analyzaPrehledovehoListu(self, ins_vec):
         # Najit nejaktualnejsi verzi prehledoveho listu pro toto rizeni
