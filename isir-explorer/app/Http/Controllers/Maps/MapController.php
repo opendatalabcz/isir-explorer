@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Maps;
 
+use App\Http\Controllers\Controller;
 use App\Models\InsRizeni;
 use App\Models\Statistiky;
 use Carbon\Carbon;
@@ -28,39 +29,7 @@ class MapController extends Controller
         'ZL' => 'Zlínský kraj',
     ];
 
-    public function insolvence2(Request $request){
-        if($request->has("rok")){
-            $rok = $request->get("rok");
-            $mesic = $request->get("mesic");
-        }else{
-            $rok = 2019;
-            $mesic = null;
-        }
-
-        $varianty = Statistiky::where('nazev','=','mapy.kraje.ins')->orderBy('rok','ASC')->orderBy('mesic', 'ASC')->get();
-
-        $datarow = Statistiky::where('nazev','=','mapy.kraje.ins')
-            ->where('rok','=',$rok)
-            ->where('mesic','=',$mesic)
-            ->first();
-
-        if(!$datarow) abort(404);
-
-        $data = $datarow->data;
-        $data = json_decode($data, true);
-
-        return view('maps-prev', [
-            'data' => $data,
-            'nazvyKraju' => self::KRAJE,
-            'nazevHodnoty' => 'Insolvencí',
-            'nazevMapy' => 'Počet insolvencí dle krajů',
-            'varianty' => $varianty,
-            'datarow' => $datarow,
-        ]);
-    }
-
-    public function insolvence_na_obyvatele(Request $request){
-    }
+    protected $obdobi;
 
     protected function koncovaDataObdobi(string $obdobi){
         $rozmezi = new \stdClass;
@@ -98,19 +67,15 @@ class MapController extends Controller
         return $res;
     }
 
-    public function insolvence(Request $request){
-        if($request->has("obdobi")){
-            $obdobi = $request->get("obdobi");
-        }else{
-            $obdobi = "2019";
-        }
+    public function kraje(Request $request){
+        $geojson = file_get_contents(resource_path('geodata/kraje.min.geojson'));
+        $kraje = json_decode($geojson, true);
 
-        $obdobi = $this->koncovaDataObdobi($obdobi);
+        // add cache
+        return response()->json($kraje);
+    }
 
-        $filtr = InsRizeni::query()
-            ->where('datum_zahajeni', '>=', $obdobi->od)
-            ->where('datum_zahajeni', '<=', $obdobi->do);
-
+    protected function filtrParamTypOsoby(Request $request, $filtr){
         if($request->has("typOsoby")){
             $typOsoby = $request->get("typOsoby");
             if("FN" == $typOsoby){
@@ -123,38 +88,45 @@ class MapController extends Controller
                 $filtr->where('typ_osoby', '=', 'P');
             }
         }
+    }
 
+    protected function filtrParamZpusobReseni(Request $request, $filtr){
         if($request->has("zpusobReseni")){
             $zpusobReseni = $request->get("zpusobReseni");
             $filtr->where('typ_rizeni', '=', $zpusobReseni);
         }
-
-        $rows = $filtr
-            ->whereNotNull('kraj')
-            ->select('kraj', DB::raw('count(*) as pocet'))
-            ->groupBy('kraj')
-            ->get();
-
-        $kraje = [];
-        foreach ($rows as $row) {
-            $kraje[$row->kraj] = $row->pocet;
-        }
-
-        return view('maps', [
-            'data' => $kraje,
-            'nazvyKraju' => self::KRAJE,
-            'nazevHodnoty' => 'Insolvencí',
-            'nazevMapy' => 'Počet insolvencí dle krajů',
-            'varianty' => $this->vyberObdobi(),
-            'obdobi' => $obdobi,
-        ]);
     }
 
-    public function kraje(Request $request){
-        $geojson = file_get_contents(resource_path('geodata/kraje.min.geojson'));
-        $kraje = json_decode($geojson, true);
+    protected function filtrParamObdobi(Request $request, $filtr){
+        if($request->has("obdobi")){
+            $obdobi = $request->get("obdobi");
+        }else{
+            $obdobi = "2019";
+        }
 
-        // add cache
-        return response()->json($kraje);
+        $obdobi = $this->koncovaDataObdobi($obdobi);
+
+        $filtr
+            ->where('datum_zahajeni', '>=', $obdobi->od)
+            ->where('datum_zahajeni', '<=', $obdobi->do);
+
+        $this->obdobi = $obdobi;
+    }
+
+    protected function mapView($data){
+
+        $data = $data + [
+            'nazvyKraju' => self::KRAJE,
+            'nazevHodnoty' => '?',
+            'nazevMapy' => '?',
+            'varianty' => $this->vyberObdobi(),
+            'obdobi' => $this->obdobi,
+            'poznamky' => [],
+        ];
+
+        if(empty($data['nazevHodnotyInfobox']))
+            $data['nazevHodnotyInfobox'] = $data['nazevHodnoty'];
+
+        return view('maps', $data);
     }
 }

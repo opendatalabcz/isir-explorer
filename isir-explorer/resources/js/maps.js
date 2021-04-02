@@ -87,7 +87,7 @@ $(document).ready(function(){
 
         info.update = function (props) {
             this._div.innerHTML = (props ?
-                '<b>' + props.name + '</b><br>Počet insolvencí: ' + props.val
+                '<b>' + props.name + '</b><br>' + infobox_metric + ': ' + props.val
                 : 'Umístěte kurzor na kraj');
         };
 

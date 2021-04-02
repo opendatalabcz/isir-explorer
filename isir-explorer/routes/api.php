@@ -18,4 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/mapy/kraje', '\App\Http\Controllers\MapController@kraje');
+Route::get('/mapy/kraje', [\App\Http\Controllers\Maps\MapController::class, 'kraje']);

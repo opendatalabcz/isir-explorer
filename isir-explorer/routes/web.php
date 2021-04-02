@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\MapController;
+use App\Http\Controllers\Maps\PocetInsolvenciController;
+use App\Http\Controllers\Maps\PohledavkyController;
 use App\Http\Controllers\SpravciController;
 use App\Http\Controllers\StatController;
 use Illuminate\Support\Facades\Route;
@@ -22,9 +23,12 @@ Route::get('/', function () {
 
 Route::get('/insolvence', [StatController::class, 'insolvence']);
 
-Route::get('/mapy/kraje/insolvence', [MapController::class, 'insolvence'])->name("stat.mapy");
-Route::get('/mapy/kraje/insolvence_old', [MapController::class, 'insolvence2']);
-Route::get('/mapy/kraje/insolvence_na_obyvatele', [MapController::class, 'insolvence_na_obyvatele']);
+Route::get('/mapy/kraje/insolvence', [PocetInsolvenciController::class, 'insolvence'])
+    ->name("stat.mapy");
+Route::get('/mapy/kraje/insolvence_na_obyvatele', [PocetInsolvenciController::class, 'insolvenceNaObyvatele'])
+    ->name("stat.mapy.ins.obyv");
+Route::get('/mapy/kraje/prihlasene_pohledavky', [PohledavkyController::class, 'pohledavky'])
+    ->name("stat.mapy.pohledavky");
 
 Route::get('/spravci', [SpravciController::class, 'list'])->name("spravci");
 Route::get('/spravci/{id}', [SpravciController::class, 'detail'])->name("spravci.detail");

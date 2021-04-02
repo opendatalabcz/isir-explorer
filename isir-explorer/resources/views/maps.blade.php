@@ -107,7 +107,7 @@
                                 <script>
                                     var mapData = '{!!  json_encode($data) !!}';
                                     var mapboxToken = '{{ config('app.mapbox_key') }}';
-
+                                    var infobox_metric = '{!!  $nazevHodnotyInfobox !!}';
                                 </script>
                                 <div id="map"></div>
                             </div>
@@ -116,7 +116,7 @@
                                     <thead>
                                         <tr>
                                             <th>Kraj</th>
-                                            <th>{{ $nazevHodnoty }}</th>
+                                            <th>{!! $nazevHodnoty !!}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -135,10 +135,21 @@
                     <div class="card-header">
                     </div>
                     <div class="card-body">
-                        Zobrazena jsou insolvenční řízení zahájena v období mezi {{ $obdobi->od->format("j. n. Y") }} a {{ $obdobi->do->format("j. n. Y") }}.
+                        Zobrazeny jsou hodnoty pro insolvenční řízení zahájena v období mezi {{ $obdobi->od->format("j. n. Y") }} a {{ $obdobi->do->format("j. n. Y") }}.
+                        @foreach ($poznamky as $pozn)
+                            <br>{!!$pozn!!}
+                        @endforeach
                     </div>
-
                 </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3>Další statistiky krajů</h3>
+                    </div>
+                    <div class="card-header">
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
