@@ -127,6 +127,6 @@ class MapController extends Controller
         if(empty($data['nazevHodnotyInfobox']))
             $data['nazevHodnotyInfobox'] = $data['nazevHodnoty'];
 
-        return view('maps', $data);
+        return view('mapy.map-view', $data);
     }
 }

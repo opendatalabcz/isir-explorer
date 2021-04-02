@@ -24,7 +24,7 @@ Route::get('/', function () {
 Route::get('/insolvence', [StatController::class, 'insolvence']);
 
 Route::get('/mapy/kraje/insolvence', [PocetInsolvenciController::class, 'insolvence'])
-    ->name("stat.mapy");
+    ->name("stat.mapy.ins");
 Route::get('/mapy/kraje/insolvence_na_obyvatele', [PocetInsolvenciController::class, 'insolvenceNaObyvatele'])
     ->name("stat.mapy.ins.obyv");
 Route::get('/mapy/kraje/prihlasene_pohledavky', [PohledavkyController::class, 'pohledavky'])

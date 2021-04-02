@@ -147,6 +147,14 @@
                         <h3>Další statistiky krajů</h3>
                     </div>
                     <div class="card-header">
+                        @foreach (\App\Http\Controllers\Maps\MapIndex::MAPY as $routeId => $mapInfo)
+                            @if(\Request::route()->getName() == $routeId)
+                                <span class="btn btn-link disabled">{{ $mapInfo['nazev'] }}</span>
+                            @else
+                                <a class="btn btn-link" href="{{ route($routeId) }}">{{ $mapInfo['nazev'] }}</a>
+                            @endif
+
+                        @endforeach
                     </div>
                 </div>
 

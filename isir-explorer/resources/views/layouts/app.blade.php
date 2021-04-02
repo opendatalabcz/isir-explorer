@@ -42,7 +42,7 @@
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
                             aria-haspopup="true" aria-expanded="false">Statistiky</a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ route("stat.mapy") }}">Mapy</a>
+                            <a class="dropdown-item" href="{{ route("stat.mapy.ins") }}">Mapy</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Oddlužení</a>
                             <a class="dropdown-item" href="#">Konkurz</a>
