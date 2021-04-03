@@ -71,7 +71,7 @@ class SpravciController extends Controller
         return $result;
     }
 
-    protected function odmenySpravce($idSpravce){
+    protected function odmenySpravce($idSpravce, $limit = 10){
         $odmenySpravce = DB::table('stat_spravce_ins')
                 ->where('stat_spravce_ins.id_spravce', '=', $idSpravce)
                 ->join('stat_vec', 'stat_vec.id', '=', 'stat_spravce_ins.id_ins')
@@ -83,7 +83,7 @@ class SpravciController extends Controller
                 )
                 ->whereNotNull('dokument.zverejneni')
                 ->orderBy('dokument.zverejneni','DESC')
-                ->limit(10)->get();
+                ->limit($limit)->get();
 
 
         foreach($odmenySpravce as &$odmena){
@@ -96,6 +96,19 @@ class SpravciController extends Controller
         }
 
         return $odmenySpravce;
+    }
+
+    public function odmeny($id, Request $request){
+
+        $spravce = Spravce::where('id','=',$id)->first();
+
+        if(!$spravce)
+            abort(404);
+
+        return view('spravci.odmeny', [
+            'spravce' => $spravce,
+            'odmeny' => $this->odmenySpravce($id, 1000),
+        ]);
     }
 
     public function detail($id, Request $request){
