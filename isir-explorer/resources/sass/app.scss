@@ -90,3 +90,60 @@ footer{
     align-items:center;
     justify-content: space-between;
 }
+
+ #spravce-timeline{
+    .ti-tt {
+        min-height: 100px;
+        min-width: 300px;
+        padding: 1em 1.5em 0 1em;
+    }
+
+    .ti-title {
+        font-size: 1rem;
+        display: block;
+        font-weight: bold;
+        width: 100%;
+        border-bottom: 1px solid grey;
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.2rem;
+    }
+
+    dl.ti-info {
+        display: grid;
+        grid-template-columns: max-content auto;
+        grid-gap: 0 1rem;
+    }
+
+    dt {
+        grid-column-start: 1;
+    }
+
+    dd {
+        grid-column-start: 2;
+    }
+ }
+
+.spravce-info{
+    #map {
+        width: 100%;
+        min-height: 500px;
+    }
+
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.374rem !important;
+    }
+
+    .key-value td {
+        text-align:right;
+    }
+}

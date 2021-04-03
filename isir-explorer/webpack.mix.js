@@ -16,3 +16,4 @@ mix.js('resources/js/app.js', 'public/js')
     .sourceMaps();
 
 mix.js('resources/js/maps.js', 'public/js');
+mix.js('resources/js/detail-spravce.js', 'public/js');
