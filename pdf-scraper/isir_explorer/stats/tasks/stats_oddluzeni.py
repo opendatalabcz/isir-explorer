@@ -83,7 +83,8 @@ class StatsOddluzeni(Task):
                 n_uspokojeni_predpoklad = min(100, zprava_splneni_oddluzeni["n_predpoklad_uspokojeni_mira"])
                 n_uspokojeni_vs_predpoklad = n_uspokojeni_mira - n_uspokojeni_predpoklad
             
-            z_uspokojeni_mira = min(100, zprava_splneni_oddluzeni["z_uspokojeni_mira"])
+            if zprava_splneni_oddluzeni["z_uspokojeni_mira"]:
+                z_uspokojeni_mira = min(100, zprava_splneni_oddluzeni["z_uspokojeni_mira"])
             
             # Delka oddluzeni
             if zprava_splneni_oddluzeni["posledni_splatka"] and zprava_splneni_oddluzeni["oddluzeni_schvaleno"]:
