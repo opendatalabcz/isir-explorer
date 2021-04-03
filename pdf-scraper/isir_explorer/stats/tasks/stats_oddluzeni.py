@@ -92,22 +92,22 @@ class StatsOddluzeni(Task):
             # Delka oddluzeni
             if zprava_splneni_oddluzeni["posledni_splatka"] and zprava_splneni_oddluzeni["oddluzeni_schvaleno"]:
                 delta = zprava_splneni_oddluzeni["posledni_splatka"] - zprava_splneni_oddluzeni["oddluzeni_schvaleno"]
-                delka_oddluzeni = delta.days if abs(delta.days) < MAX_DELTA_DAYS else None
+                delka_oddluzeni = delta.days if abs(delta.days) < self.MAX_DELTA_DAYS else None
 
             # Doba zjistovani upadku
             if zprava_splneni_oddluzeni["zahajeno"] and zprava_splneni_oddluzeni["zjisteni_upadku"]:
                 delta = zprava_splneni_oddluzeni["zjisteni_upadku"] - zprava_splneni_oddluzeni["zahajeno"]
-                delka_zjis_upadku = delta.days if abs(delta.days) < MAX_DELTA_DAYS else None
+                delka_zjis_upadku = delta.days if abs(delta.days) < self.MAX_DELTA_DAYS else None
 
             # Doba schvaleni oddluzeni
             if zprava_splneni_oddluzeni["oddluzeni_povoleno"] and zprava_splneni_oddluzeni["oddluzeni_schvaleno"]:
                 delta = zprava_splneni_oddluzeni["oddluzeni_schvaleno"] - zprava_splneni_oddluzeni["oddluzeni_povoleno"]
-                delka_schvalovani = delta.days if abs(delta.days) < MAX_DELTA_DAYS else None
+                delka_schvalovani = delta.days if abs(delta.days) < self.MAX_DELTA_DAYS else None
 
             # Celkova doba pred schvalenim oddluzeni
             if zprava_splneni_oddluzeni["zahajeno"] and zprava_splneni_oddluzeni["oddluzeni_schvaleno"]:
                 delta = zprava_splneni_oddluzeni["oddluzeni_schvaleno"] - zprava_splneni_oddluzeni["zahajeno"]
-                delka_pred_schvalenim = delta.days if abs(delta.days) < MAX_DELTA_DAYS else None
+                delka_pred_schvalenim = delta.days if abs(delta.days) < self.MAX_DELTA_DAYS else None
 
             if vysledek_oddluzeni:
                 n_osvobozeno = self.osvobozeni(
