@@ -70,6 +70,22 @@ class SpravciController extends Controller
         return $result;
     }
 
+    protected function odmenySpravce($idSpravce){
+        $odmenySpravce = DB::table('stat_spravce_ins')
+                ->where('stat_spravce_ins.id_spravce', '=', $idSpravce)
+                ->join('stat_vec', 'stat_vec.id', '=', 'stat_spravce_ins.id_ins')
+                ->join('stat_oddluzeni', 'stat_oddluzeni.spisovaznacka', '=', 'stat_vec.spisovaznacka')
+                ->join('zspo_odmena_spravce', 'stat_oddluzeni.zspo_id', '=', 'zspo_odmena_spravce.zspo_id')
+                ->join('dokument', 'dokument.id', '=', 'zspo_odmena_spravce.zspo_id')
+                ->select(
+                    '*'
+                )
+                //->whereNotNull('dokument.zverejneni')
+                //->orderBy('dokument.zverejneni','DESC')
+                ->limit(10)->get();
+        return $odmenySpravce;
+    }
+
     public function detail($id, Request $request){
 
         $spravce = Spravce::where('id','=',$id)->first();
@@ -110,6 +126,7 @@ class SpravciController extends Controller
             'kraje' => $kraje,
             'info' => $info,
             'ins_stats' => $this->typyRizeniSpravce($id),
+            'odmeny' => $this->odmenySpravce($id),
         ]);
 
     }
