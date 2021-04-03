@@ -78,7 +78,8 @@ class StatsOddluzeni(Task):
             elif zprava_splneni_oddluzeni["doporuceni_spravce"] == self.DOPORUCENI_ZRUSENI:
                 vysledek_oddluzeni = False
 
-            if zprava_splneni_oddluzeni["n_predpoklad_uspokojeni_mira"]:
+            if zprava_splneni_oddluzeni["n_predpoklad_uspokojeni_mira"]
+                    and zprava_splneni_oddluzeni["n_uspokojeni_mira"]:
                 n_uspokojeni_mira = min(100, zprava_splneni_oddluzeni["n_uspokojeni_mira"])
                 n_uspokojeni_predpoklad = min(100, zprava_splneni_oddluzeni["n_predpoklad_uspokojeni_mira"])
                 n_uspokojeni_vs_predpoklad = n_uspokojeni_mira - n_uspokojeni_predpoklad
