@@ -14,3 +14,16 @@ function getInsDocLink($id) {
 function formatKc($number){
     return number_format($number, 2, ',', ' ');
 }
+
+function setUriParam(array $query){
+    $r = request();
+    $question = $r->getBaseUrl().$r->getPathInfo() === '/' ? '/?' : '?';
+
+    if(count($r->query()) > 0){
+        $query = array_merge($r->query(), $query);
+        unset($query["page"]);
+        return $r->url().$question.\Illuminate\Support\Arr::query($query);
+    }else{
+        return $r->fullUrl().$question.\Illuminate\Support\Arr::query($query);
+    }
+}

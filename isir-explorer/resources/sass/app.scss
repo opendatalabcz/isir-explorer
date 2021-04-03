@@ -147,3 +147,19 @@ footer{
         text-align:right;
     }
 }
+
+.detail-btn{
+    padding: 0.1rem 0.75rem !important;
+}
+
+.btn-link{
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.text-right {
+    &.tablesorter-header::before, &.tablesorter-header::after {
+        right: unset !important;
+        left: 0.4em;
+    }
+}

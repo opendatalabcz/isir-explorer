@@ -11,18 +11,51 @@ class SpravciController extends Controller
 {
 
     public const TYP_ZOBRAZENI = [
-        'spravci.ins' => [
+        'pocty-insolvenci' => [
             'nazev' => 'Počty insolvencí'
+        ],
+        'velikosti-insolvenci' => [
+            'nazev' => 'Velikosti insolvencí'
         ],
     ];
 
     public function list(Request $request){
 
-        $spravci = Spravce::where('posledni_ins', '>=', '2019-01-01')
-            ->orderBy('nazev','ASC')->get();
+        $spravci_rows = DB::table('stat_spravce')
+            ->where('posledni_ins', '>=', '2019-01-01')
+            ->orderBy('nazev','ASC')
+            ->get();
+        $spravci = [];
+        foreach ($spravci_rows as $value) {
+            $spravci[$value->id] = $value;
+        }
+
+        $zobrazeni = $request->get('zobrazeni');
+
+        if('velikosti-insolvenci' == $zobrazeni){
+            $dataSpravcu = DB::table('stat_spravce')
+                ->where('posledni_ins', '>=', '2019-01-01')
+                ->join('stat_spravce_ins', 'stat_spravce_ins.id_spravce', '=', 'stat_spravce.id')
+                ->join('stat_vec', 'stat_vec.id', '=', 'stat_spravce_ins.id_ins')
+                ->join('stat_pohledavky', 'stat_pohledavky.spisovaznacka', '=', 'stat_vec.spisovaznacka')
+                ->select(
+                    'stat_spravce.id',
+                    DB::raw('count(*) as pocet'),
+                    DB::raw('sum(celkova_vyse) as celkova_vyse'),
+                    DB::raw('sum(pohledavky_pocet) as pohledavky_pocet'),
+                )
+                ->groupBy('stat_spravce.id')
+                ->get();
+            foreach ($dataSpravcu as $value) {
+                $spravci[$value->id]->agreagace = $value;
+            }
+        }else{
+            $zobrazeni = 'pocty-insolvenci';
+        }
 
         return view('spravci.list', [
             'spravci' => $spravci,
+            'zobrazeni' => $zobrazeni,
         ]);
     }
 

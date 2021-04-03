@@ -38,7 +38,6 @@ $("table").tablesorter({
     theme : "bootstrap",
     widthFixed: true,
     widgets : ["columns"],
-    sortList: [[0,0]]
 });
 };
 </script>

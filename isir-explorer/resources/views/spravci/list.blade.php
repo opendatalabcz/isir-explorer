@@ -30,10 +30,10 @@
             </div>
             <div class="card-header">
                 @foreach (\App\Http\Controllers\SpravciController::TYP_ZOBRAZENI as $routeId => $info)
-                    @if(\Request::route()->getName() == $routeId)
+                    @if($zobrazeni == $routeId)
                         <span class="btn btn-link disabled">{{ $info['nazev'] }}</span>
                     @else
-                        <a class="btn btn-link" href="{{ route($routeId) }}">{{ $info['nazev'] }}</a>
+                        <a class="btn btn-link" href="{{ setUriParam(['zobrazeni' => $routeId]) }}">{{ $info['nazev'] }}</a>
                     @endif
 
                 @endforeach
@@ -48,26 +48,53 @@
                             <thead>
                                 <tr>
                                     <th>Název subjektu</th>
-                                    <th>IČ</th>
-                                    <th>Insolvence</th>
-                                    <th>Aktivní</th>
-                                    <th>Detail</th>
+
+                                    @if($zobrazeni != 'velikosti-insolvenci')
+                                        <th class="text-right">IČ</th>
+                                    @endif
+
+                                    @if($zobrazeni == 'pocty-insolvenci')
+                                        <th class="text-right">Insolvence</th>
+                                        <th class="text-right">Aktivní</th>
+                                    @elseif($zobrazeni == 'velikosti-insolvenci')
+                                        <th class="text-right">Počet pohledávek</th>
+                                        <th class="text-right">Celková výše přihlášených<br>pohledávek (Kč)</th>
+                                        <th class="text-right">Průměrná výše<br>pohledávky (Kč)</th>
+                                    @endif
+
+                                    <th class="text-right">Detail</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($spravci as $spravce)
                                     <tr>
                                         <td>{{ $spravce->nazev }}</td>
-                                        <td>
+
+                                        @if($zobrazeni != 'velikosti-insolvenci')
+                                        <td class="text-right">
                                             @isset($spravce->ic)
                                                 <a href="https://or.justice.cz/ias/ui/rejstrik-$firma?ico={{ $spravce->ic }}" target="_blank">{{ $spravce->ic }}</a>
                                             @else
                                                 -
                                             @endisset
                                         </td>
-                                        <td>{{ $spravce->ins_celkem }}</td>
-                                        <td>{{ $spravce->ins_aktivnich }}</td>
-                                        <td><a href="{{ route("spravci.detail", ['id' => $spravce->id]) }}">Detail</a></td>
+                                        @endif
+
+                                        @if($zobrazeni == 'pocty-insolvenci')
+                                            <td class="text-right">{{ $spravce->ins_celkem }}</td>
+                                            <td class="text-right">{{ $spravce->ins_aktivnich }}</td>
+                                        @elseif($zobrazeni == 'velikosti-insolvenci')
+                                            <td class="text-right">{{ $spravce->agreagace->pohledavky_pocet }}</td>
+                                            <td class="text-right"
+                                                data-text="{{$spravce->agreagace->celkova_vyse}}">
+                                                {{ formatKc($spravce->agreagace->celkova_vyse) }}</td>
+                                            <td class="text-right"
+                                                data-text="{{round($spravce->agreagace->celkova_vyse / $spravce->agreagace->pohledavky_pocet)}}">
+                                                {{ formatKc($spravce->agreagace->celkova_vyse / $spravce->agreagace->pohledavky_pocet) }}</td>
+                                        @endif
+
+
+                                        <td class="text-right"><a class="btn btn-info detail-btn" href="{{ route("spravci.detail", ['id' => $spravce->id]) }}">Detail</a></td>
                                     </tr>
                                 @endforeach
                             </tbody>

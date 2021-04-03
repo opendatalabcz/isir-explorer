@@ -31,6 +31,7 @@ Route::get('/mapy/kraje/prihlasene_pohledavky', [PohledavkyController::class, 'p
     ->name("stat.mapy.pohledavky");
 
 Route::get('/spravci', [SpravciController::class, 'list'])->name("spravci.ins");
+
 Route::get('/spravci/{id}', [SpravciController::class, 'detail'])->name("spravci.detail");
 Route::get('/spravci/{id}/odmeny', [SpravciController::class, 'odmeny'])->name("spravci.detail.odmeny");
 
