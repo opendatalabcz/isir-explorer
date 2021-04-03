@@ -18,7 +18,8 @@ class SpravciController extends Controller
 
     public function list(Request $request){
 
-        $spravci = Spravce::orderBy('nazev','ASC')->get();
+        $spravci = Spravce::where('posledni_ins', '>=', '2019-01-01')
+            ->orderBy('nazev','ASC')->get();
 
         return view('spravci.list', [
             'spravci' => $spravci,
@@ -80,9 +81,20 @@ class SpravciController extends Controller
                 ->select(
                     '*'
                 )
-                //->whereNotNull('dokument.zverejneni')
-                //->orderBy('dokument.zverejneni','DESC')
+                ->whereNotNull('dokument.zverejneni')
+                ->orderBy('dokument.zverejneni','DESC')
                 ->limit(10)->get();
+
+
+        foreach($odmenySpravce as &$odmena){
+            $celkemOdmena = ($odmena->celkova_odmena ?? 0) + ($odmena->hotove_vydaje ?? 0);
+            $celkemUhrazeno = ($odmena->celkova_odmena_uhrazeno ?? 0) + ($odmena->hotove_vydaje_uhrazeno ?? 0);
+            if(empty($celkemOdmena))
+                $odmena->uhrazeno = 100;
+            else
+                $odmena->uhrazeno = ($celkemUhrazeno / $celkemOdmena) * 100;
+        }
+
         return $odmenySpravce;
     }
 
