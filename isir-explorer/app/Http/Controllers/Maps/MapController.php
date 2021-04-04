@@ -65,15 +65,15 @@ class MapController extends Controller
         $rozmezi = new \stdClass;
         $rozmezi->obdobi_nazev = 'Nezvoleno';
         $rozmezi->nabidka = true;
-        $rozmezi->od = Carbon::createFromDate(self::VOLBA_ROK_MIN, 1, 1);
-        $rozmezi->do = Carbon::createFromDate(self::VOLBA_ROK_MAX, 1, 1);
+        $rozmezi->od = Carbon::createFromDate(static::VOLBA_ROK_MIN, 1, 1);
+        $rozmezi->do = Carbon::createFromDate(static::VOLBA_ROK_MAX, 1, 1);
         return $rozmezi;
     }
 
     protected function vyberObdobi($mesice = true){
         $res = [];
-        $now = Carbon::createFromDate(self::VOLBA_ROK_MAX, 1, 1);
-        $date = Carbon::createFromDate(self::VOLBA_ROK_MIN, 1, 1);
+        $now = Carbon::createFromDate(static::VOLBA_ROK_MAX, 1, 1);
+        $date = Carbon::createFromDate(static::VOLBA_ROK_MIN, 1, 1);
 
         while($date < $now){
             if($date->month == 1){
@@ -144,6 +144,7 @@ class MapController extends Controller
             'poznamky' => [],
             'inverze' => false, // true pokud je vyssi hodnota metriky prizniva (otocit barvy)
             'jeCastka' => false,
+            'nazevVolbyObdobi' => null,
             'nastaveni' => ['obdobi', 'typOsoby', 'insZpusob']
         ];
 

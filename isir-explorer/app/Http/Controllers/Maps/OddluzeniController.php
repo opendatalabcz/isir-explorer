@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 class OddluzeniController extends MapController
 {
     const FIXED_DECIMAL = 4;
+    protected const VOLBA_ROK_MIN = 2012;
 
     protected $celkemPocetIns = 0;
 
@@ -47,8 +48,8 @@ class OddluzeniController extends MapController
         }
 
         $filtr
-            ->where('datum_zahajeni', '>=', $obdobi->od)
-            ->where('datum_zahajeni', '<=', $obdobi->do);
+            ->where('ukonceni_oddluzeni', '>=', $obdobi->od)
+            ->where('ukonceni_oddluzeni', '<=', $obdobi->do);
 
         $this->obdobi = $obdobi;
     }
@@ -68,6 +69,7 @@ class OddluzeniController extends MapController
             'jeCastka' => true,
             'inverze' => true,
             'vyberPoMesicich' => false,
+            'nazevVolbyObdobi' => 'Období ukončení řízení',
             'nastaveni' => ['obdobi', 'typOsoby'],
         ]);
     }

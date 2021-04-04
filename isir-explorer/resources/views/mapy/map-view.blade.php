@@ -67,7 +67,13 @@
                         <form method="GET">
                             @if(in_array('obdobi', $nastaveni))
                             <div class="form-group row">
-                                <label for="insObdobi" class="col-sm-2 col-form-label">Období zahájení řízení</label>
+                                <label for="insObdobi" class="col-sm-2 col-form-label">
+                                    @if(!empty($nazevVolbyObdobi))
+                                        {{ $nazevVolbyObdobi }}
+                                    @else
+                                        Období zahájení řízení
+                                    @endif
+                                </label>
                                 <div class="col-sm-10">
                                     <select name="obdobi" class="form-control" id="insObdobi">
                                         @if (!empty($obdobi->nabidka))
