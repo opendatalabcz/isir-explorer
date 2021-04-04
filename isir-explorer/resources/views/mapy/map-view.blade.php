@@ -42,7 +42,24 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+
                 <div class="card">
+                    <div class="card-header">
+                        <h3>Statistiky krajů</h3>
+                    </div>
+                    <div class="card-header">
+                        @foreach (\App\Http\Controllers\Maps\MapIndex::MAPY as $routeId => $mapInfo)
+                            @if(\Request::route()->getName() == $routeId)
+                                <span class="btn btn-link disabled">{{ $mapInfo['nazev'] }}</span>
+                            @else
+                                <a class="btn btn-link" href="{{ route($routeId) }}">{{ $mapInfo['nazev'] }}</a>
+                            @endif
+
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="card  mt-4">
                     <div class="card-header">
                         <h1>{{ $nazevMapy }}</h1>
                     </div>
@@ -161,22 +178,6 @@
                         @endisset
                         @foreach ($poznamky as $pozn)
                             <br>{!!$pozn!!}
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h3>Další statistiky krajů</h3>
-                    </div>
-                    <div class="card-header">
-                        @foreach (\App\Http\Controllers\Maps\MapIndex::MAPY as $routeId => $mapInfo)
-                            @if(\Request::route()->getName() == $routeId)
-                                <span class="btn btn-link disabled">{{ $mapInfo['nazev'] }}</span>
-                            @else
-                                <a class="btn btn-link" href="{{ route($routeId) }}">{{ $mapInfo['nazev'] }}</a>
-                            @endif
-
                         @endforeach
                     </div>
                 </div>
