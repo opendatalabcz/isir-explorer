@@ -32,6 +32,10 @@ Route::get('/mapy/kraje/prihlasene_pohledavky', [PohledavkyController::class, 'p
     ->name("stat.mapy.pohledavky");
 Route::get('/mapy/kraje/uspesnost_oddluzeni', [OddluzeniController::class, 'uspesnost'])
     ->name("stat.mapy.oddl.uspesnost");
+Route::get('/mapy/kraje/zrusena_oddluzeni', [OddluzeniController::class, 'zrusena'])
+    ->name("stat.mapy.oddl.zrusena");
+Route::get('/mapy/kraje/vyse_osvobozeni', [OddluzeniController::class, 'osvobozeni'])
+    ->name("stat.mapy.oddl.osvobozeni");
 
 Route::get('/spravci', [SpravciController::class, 'list'])->name("spravci.ins");
 

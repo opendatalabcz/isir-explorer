@@ -21,6 +21,12 @@ class MapIndex extends Controller
         'stat.mapy.oddl.uspesnost' => [
             'nazev' => 'Úspěšnost oddlužení'
         ],
+        'stat.mapy.oddl.zrusena' => [
+            'nazev' => 'Zrušená oddlužení'
+        ],
+        'stat.mapy.oddl.osvobozeni' => [
+            'nazev' => 'Oddlužení - výše osvobození od dluhů'
+        ],
     ];
 
 }
