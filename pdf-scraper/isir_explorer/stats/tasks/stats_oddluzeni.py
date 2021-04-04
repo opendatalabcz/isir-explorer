@@ -14,8 +14,9 @@ class StatsOddluzeni(Task):
 
     async def seznamInsRizeni(self):
         rows = await self.db.fetch_all(query="""
-            SELECT iv.* FROM isir_vec iv
+            SELECT iv.*, sv.datum_ukonceni FROM isir_vec iv
                 LEFT JOIN stat_oddluzeni so ON (iv.spisovaznacka = so.spisovaznacka)
+                LEFT JOIN stat_vec sv ON (sv.spisovaznacka = iv.spisovaznacka)
             WHERE
                 so.id IS NULL AND
                 NOT iv.vyrazeno AND
@@ -49,6 +50,7 @@ class StatsOddluzeni(Task):
         delka_zjis_upadku = None
         delka_schvalovani = None
         delka_pred_schvalenim = None
+        ukonceni_oddluzeni = None
 
         zprava_pro_oddluzeni = await self.db.fetch_one(query="""
             SELECT
@@ -109,21 +111,32 @@ class StatsOddluzeni(Task):
                 delta = zprava_splneni_oddluzeni["oddluzeni_schvaleno"] - zprava_splneni_oddluzeni["zahajeno"]
                 delka_pred_schvalenim = delta.days if abs(delta.days) < self.MAX_DELTA_DAYS else None
 
+            # Datum ukonceni
+            if zprava_splneni_oddluzeni["posledni_splatka"]:
+                ukonceni_oddluzeni = zprava_splneni_oddluzeni["posledni_splatka"]
+            elif zprava_splneni_oddluzeni["zaslani_vyzvy_ukonceni_srazek"]:
+                ukonceni_oddluzeni = zprava_splneni_oddluzeni["zaslani_vyzvy_ukonceni_srazek"]
+
+            # Vysledek
             if vysledek_oddluzeni:
                 n_osvobozeno = self.osvobozeni(
                     zprava_splneni_oddluzeni["n_uspokojeni_mira"], zprava_splneni_oddluzeni["n_uspokojeni_vyse"])
                 z_osvobozeno = self.osvobozeni(
                     zprava_splneni_oddluzeni["z_uspokojeni_mira"], zprava_splneni_oddluzeni["z_uspokojeni_vyse"])
 
+        # Pokud se nepodari najit datum ukonceni ve zspo, pouzit datum z ins_vec
+        if not ukonceni_oddluzeni:
+            ukonceni_oddluzeni = ins_vec["datum_ukonceni"]
+
         await self.db.execute(
             query="""INSERT INTO stat_oddluzeni
             (spisovaznacka, zpro_id, zspo_id, vysledek_oddluzeni, n_osvobozeno, z_osvobozeno,
             n_uspokojeni_mira, z_uspokojeni_mira, n_uspokojeni_vs_predpoklad, n_uspokojeni_predpoklad,
-            delka_oddluzeni, delka_zjis_upadku, delka_schvalovani, delka_pred_schvalenim)
+            delka_oddluzeni, ukonceni_oddluzeni, delka_zjis_upadku, delka_schvalovani, delka_pred_schvalenim)
         VALUES
             (:spisovaznacka, :zpro_id, :zspo_id, :vysledek_oddluzeni, :n_osvobozeno, :z_osvobozeno,
             :n_uspokojeni_mira, :z_uspokojeni_mira, :n_uspokojeni_vs_predpoklad, :n_uspokojeni_predpoklad,
-            :delka_oddluzeni, :delka_zjis_upadku, :delka_schvalovani, :delka_pred_schvalenim)""",
+            :delka_oddluzeni, :ukonceni_oddluzeni, :delka_zjis_upadku, :delka_schvalovani, :delka_pred_schvalenim)""",
             values={
                 "spisovaznacka": ins_vec["spisovaznacka"],
                 "zpro_id": zprava_pro_oddluzeni["doc_id"] if zprava_pro_oddluzeni is not None else None,
@@ -135,6 +148,7 @@ class StatsOddluzeni(Task):
                 "z_uspokojeni_mira": z_uspokojeni_mira,
                 "n_uspokojeni_vs_predpoklad": n_uspokojeni_vs_predpoklad,
                 "n_uspokojeni_predpoklad": n_uspokojeni_predpoklad,
+                "ukonceni_oddluzeni": ukonceni_oddluzeni,
                 "delka_oddluzeni": delka_oddluzeni,
                 "delka_zjis_upadku": delka_zjis_upadku,
                 "delka_schvalovani": delka_schvalovani,

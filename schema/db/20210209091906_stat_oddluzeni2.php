@@ -16,6 +16,7 @@ final class StatOddluzeni2 extends AbstractMigration
             ->addColumn('n_uspokojeni_vs_predpoklad', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC, 'comment' => 'Rozdil usp. nez. oproti predpokladu uspokojeni (= mira - predpolad)' ])
             ->addColumn('n_uspokojeni_predpoklad', 'decimal', ['null' => true, 'scale' => DEC_SCAL, 'precision' => DEC_PREC, 'comment' => 'Predpoklad usp. nez.' ])
             
+            ->addColumn('ukonceni_oddluzeni', 'date', ['null' => true, 'comment' => 'Datum ukonceni - kombinace posledni splatka a ukonceni rizeni (pokud spl. neni k disp.)' ])
             ->addColumn('delka_oddluzeni', 'smallinteger', ['null' => true, 'comment' => 'Rozdil hodnot posledni_splatka a oddluzeni_schvaleno' ])
             ->addColumn('delka_zjis_upadku', 'smallinteger', ['null' => true, 'comment' => 'Rozdil hodnot zahajeno a zjisteni_upadku' ])
             ->addColumn('delka_schvalovani', 'smallinteger', ['null' => true, 'comment' => 'Rozdil hodnot oddluzeni_povoleno a oddluzeni_schvaleno' ])
