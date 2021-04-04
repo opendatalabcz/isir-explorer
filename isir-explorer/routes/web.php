@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Maps\OddluzeniController;
 use App\Http\Controllers\Maps\PocetInsolvenciController;
 use App\Http\Controllers\Maps\PohledavkyController;
 use App\Http\Controllers\SpravciController;
@@ -29,6 +30,8 @@ Route::get('/mapy/kraje/insolvence_na_obyvatele', [PocetInsolvenciController::cl
     ->name("stat.mapy.ins.obyv");
 Route::get('/mapy/kraje/prihlasene_pohledavky', [PohledavkyController::class, 'pohledavky'])
     ->name("stat.mapy.pohledavky");
+Route::get('/mapy/kraje/uspesnost_oddluzeni', [OddluzeniController::class, 'uspesnost'])
+    ->name("stat.mapy.oddl.uspesnost");
 
 Route::get('/spravci', [SpravciController::class, 'list'])->name("spravci.ins");
 

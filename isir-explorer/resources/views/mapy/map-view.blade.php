@@ -48,16 +48,24 @@
                     </div>
                     <div class="card-header">
                         <form method="GET">
+                            @if(in_array('obdobi', $nastaveni))
                             <div class="form-group row">
                                 <label for="insObdobi" class="col-sm-2 col-form-label">Období zahájení řízení</label>
                                 <div class="col-sm-10">
                                     <select name="obdobi" class="form-control" id="insObdobi">
+                                        @if (!empty($obdobi->nabidka))
+                                            <option value="" selected="">{{ $obdobi->obdobi_nazev }}</option>
+                                        @endif
+
                                         @foreach ($varianty as $v)
-                                            <option @if($v == Request::get('obdobi'))selected=""@endif>{{ $v }}</option>
+                                            <option @if($v == $obdobi->obdobi_nazev)selected=""@endif>{{ $v }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
+                            @endif
+
+                            @if(in_array('typOsoby', $nastaveni))
                             <div class="form-group row">
                                 <label for="insDluznik" class="col-sm-2 col-form-label">Dlužník</label>
                                 <div class="col-sm-10">
@@ -76,6 +84,9 @@
                                     </select>
                                 </div>
                             </div>
+                            @endif
+
+                            @if(in_array('insZpusob', $nastaveni))
                             <div class="form-group row">
                                 <label for="insZpusob" class="col-sm-2 col-form-label">Způsob řešení</label>
                                 <div class="col-sm-10">
@@ -94,6 +105,7 @@
                                     </select>
                                 </div>
                             </div>
+                            @endif
                             <div class="form-group row" style="margin-top: 0.5rem">
                                 <div class="col-12 text-right">
                                     <button type="submit" class="btn btn-primary"><i class="fa fa-filter"></i> Filtrovat</button>
@@ -107,6 +119,7 @@
                                 <script>
                                     var mapData = '{!!  json_encode($data) !!}';
                                     var mapboxToken = '{{ config('app.mapbox_key') }}';
+                                    var mapInvert = {{$inverze ? "true" : "false" }};
                                     var infobox_metric = '{!!  $nazevHodnotyInfobox !!}';
                                 </script>
                                 <div id="map"></div>
@@ -123,7 +136,15 @@
                                         @foreach ($data as $key => $value)
                                             <tr>
                                                 <td>{{ $nazvyKraju[$key] }}</td>
-                                                <td>{{ $value }}</td>
+
+                                                @if(!$jeCastka)
+                                                    <td>{{ $value }}</td>
+                                                @else
+                                                    <td data-text="{{$value}}">
+                                                        {{ formatKc($value) }}
+                                                    </td>
+                                                @endif
+
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -135,7 +156,9 @@
                     <div class="card-header">
                     </div>
                     <div class="card-body">
-                        Zobrazeny jsou hodnoty pro insolvenční řízení zahájena v období mezi {{ $obdobi->od->format("j. n. Y") }} a {{ $obdobi->do->format("j. n. Y") }}.
+                        @isset($obdobi)
+                            Zobrazeny jsou hodnoty pro insolvenční řízení zahájena v období mezi {{ $obdobi->od->format("j. n. Y") }} a {{ $obdobi->do->format("j. n. Y") }}.
+                        @endisset
                         @foreach ($poznamky as $pozn)
                             <br>{!!$pozn!!}
                         @endforeach

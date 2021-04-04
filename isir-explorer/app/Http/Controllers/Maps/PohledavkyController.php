@@ -51,6 +51,7 @@ class PohledavkyController extends MapController
                 'Započteny jsou pouze pohledávky, z kterých bylo možné údaje automaticky přečíst. Absolutní hodnoty částek proto nereflektují skutečný stav - nástroj slouží pouze pro orientační srovnání mezi kraji ČR.'
                 .'Celkový počet insolvencí zahrnutých v kalkulaci pro toto období: ' . $this->celkemPocetIns . '.'
             ],
+            'jeCastka' => true,
         ]);
     }
 }

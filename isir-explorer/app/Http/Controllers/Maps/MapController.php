@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\DB;
 class MapController extends Controller
 {
 
+    /**
+     * Zkratky krajů a jejich názvy
+     */
     public const KRAJE = [
         'PR' => 'Praha',
         'JC' => 'Jihočeský kraj',
@@ -29,10 +32,17 @@ class MapController extends Controller
         'ZL' => 'Zlínský kraj',
     ];
 
+    protected const VOLBA_ROK_MIN = 2010;
+    protected const VOLBA_ROK_VYCHOZI = 2020;
+    protected const VOLBA_ROK_MAX = 2021;
+
+
     protected $obdobi;
 
     protected function koncovaDataObdobi(string $obdobi){
         $rozmezi = new \stdClass;
+
+        $rozmezi->obdobi_nazev = $obdobi;
 
         if(strlen($obdobi) == 4){
             $rok = (int)$obdobi;
@@ -51,16 +61,26 @@ class MapController extends Controller
         return $rozmezi;
     }
 
-    protected function vyberObdobi(){
+    protected function maximalniObdobi(){
+        $rozmezi = new \stdClass;
+        $rozmezi->obdobi_nazev = 'Nezvoleno';
+        $rozmezi->nabidka = true;
+        $rozmezi->od = Carbon::createFromDate(self::VOLBA_ROK_MIN, 1, 1);
+        $rozmezi->do = Carbon::createFromDate(self::VOLBA_ROK_MAX, 1, 1);
+        return $rozmezi;
+    }
+
+    protected function vyberObdobi($mesice = true){
         $res = [];
-        $now = Carbon::now();
-        $date = Carbon::createFromDate(2019, 1, 1);
+        $now = Carbon::createFromDate(self::VOLBA_ROK_MAX, 1, 1);
+        $date = Carbon::createFromDate(self::VOLBA_ROK_MIN, 1, 1);
 
         while($date < $now){
             if($date->month == 1){
                 $res[] = $date->year;
             }
-            $res[] = $date->year . "/" . str_pad($date->month, 2, '0', STR_PAD_LEFT);
+            if($mesice)
+                $res[] = $date->year . "/" . str_pad($date->month, 2, '0', STR_PAD_LEFT);
             $date->addMonth();
         }
 
@@ -101,7 +121,7 @@ class MapController extends Controller
         if($request->has("obdobi")){
             $obdobi = $request->get("obdobi");
         }else{
-            $obdobi = "2019";
+            $obdobi = self::VOLBA_ROK_VYCHOZI;
         }
 
         $obdobi = $this->koncovaDataObdobi($obdobi);
@@ -119,9 +139,12 @@ class MapController extends Controller
             'nazvyKraju' => self::KRAJE,
             'nazevHodnoty' => '?',
             'nazevMapy' => '?',
-            'varianty' => $this->vyberObdobi(),
+            'varianty' => $this->vyberObdobi($data['vyberPoMesicich'] ?? true),
             'obdobi' => $this->obdobi,
             'poznamky' => [],
+            'inverze' => false, // true pokud je vyssi hodnota metriky prizniva (otocit barvy)
+            'jeCastka' => false,
+            'nastaveni' => ['obdobi', 'typOsoby', 'insZpusob']
         ];
 
         if(empty($data['nazevHodnotyInfobox']))
