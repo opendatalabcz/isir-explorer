@@ -145,7 +145,8 @@ class MapController extends Controller
             'inverze' => false, // true pokud je vyssi hodnota metriky prizniva (otocit barvy)
             'jeCastka' => false,
             'nazevVolbyObdobi' => null,
-            'nastaveni' => ['obdobi', 'typOsoby', 'insZpusob']
+            'nastaveni' => ['obdobi', 'typOsoby', 'insZpusob'],
+            'vyraditTypOsoby' => [],
         ];
 
         if(empty($data['nazevHodnotyInfobox']))

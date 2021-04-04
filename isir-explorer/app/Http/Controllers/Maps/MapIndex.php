@@ -18,6 +18,9 @@ class MapIndex extends Controller
         'stat.mapy.pohledavky' => [
             'nazev' => 'Výše přihlášených pohledávek'
         ],
+        'stat.mapy.dluznik.vek' => [
+            'nazev' => 'Věk dlužníka'
+        ],
         'stat.mapy.oddl.uspesnost' => [
             'nazev' => 'Úspěšnost oddlužení'
         ],

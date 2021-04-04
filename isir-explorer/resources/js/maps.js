@@ -49,7 +49,7 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 function getColor(val, minMax) {
     let gradient = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026'];
-    if(mapInvert)
+    if(typeof mapInvert !== "undefined" && mapInvert)
         gradient.reverse();
     let kus = (minMax[1] - minMax[0]) / (gradient.length+1);
     let color =  gradient[Math.floor((val-minMax[0]) / kus)];

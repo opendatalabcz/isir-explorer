@@ -38,7 +38,12 @@
                     <li class="nav-item {{ \str_starts_with(\Request::route()->getName(), "spravci") ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route("spravci.ins") }}">Správci</a>
                     </li>
-                    <li class="nav-item dropdown {{ \str_starts_with(\Request::route()->getName(), "stat") ? 'active' : '' }}">
+                    <li class="nav-item {{ \str_starts_with(\Request::route()->getName(), "stat.mapy") ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route("stat.mapy.ins") }}">Mapy</a>
+                    </li>
+                    <li class="nav-item dropdown {{
+                        \str_starts_with(\Request::route()->getName(), "stat") &&
+                        !\str_starts_with(\Request::route()->getName(), "stat.mapy") ? 'active' : '' }}">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
                             aria-haspopup="true" aria-expanded="false">Statistiky</a>
                         <div class="dropdown-menu">

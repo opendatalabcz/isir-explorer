@@ -102,7 +102,9 @@
                                     @endphp
                                     <select name="typOsoby" class="form-control" id="insDluznik">
                                         @foreach ($typOsoby as $item)
-                                            <option value="{{$item[0]}}" {{ Request::get('typOsoby') == $item[0] ? "selected" : "" }}>{{ $item[1] }}</option>
+                                            @if(!in_array($item[0], $vyraditTypOsoby))
+                                                <option value="{{$item[0]}}" {{ Request::get('typOsoby') == $item[0] ? "selected" : "" }}>{{ $item[1] }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
