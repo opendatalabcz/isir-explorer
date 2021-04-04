@@ -14,7 +14,7 @@ class StatsOddluzeni(Task):
 
     async def seznamInsRizeni(self):
         rows = await self.db.fetch_all(query="""
-            SELECT iv.*, sv.datum_ukonceni FROM isir_vec iv
+            SELECT iv.*, sv.datum_ukonceni, sv.datum_zahajeni FROM isir_vec iv
                 LEFT JOIN stat_oddluzeni so ON (iv.spisovaznacka = so.spisovaznacka)
                 LEFT JOIN stat_vec sv ON (sv.spisovaznacka = iv.spisovaznacka)
             WHERE
@@ -90,6 +90,8 @@ class StatsOddluzeni(Task):
             
             if zprava_splneni_oddluzeni["z_uspokojeni_mira"]:
                 z_uspokojeni_mira = min(100, zprava_splneni_oddluzeni["z_uspokojeni_mira"])
+
+            # Neni pouzito zspo["zahajeno"], protoze muze nekdy vyjadrovat zahajeni oddluzeni vs zahajeni rizeni
             
             # Delka oddluzeni
             if zprava_splneni_oddluzeni["posledni_splatka"] and zprava_splneni_oddluzeni["oddluzeni_schvaleno"]:
@@ -97,8 +99,8 @@ class StatsOddluzeni(Task):
                 delka_oddluzeni = delta.days if abs(delta.days) < self.MAX_DELTA_DAYS else None
 
             # Doba zjistovani upadku
-            if zprava_splneni_oddluzeni["zahajeno"] and zprava_splneni_oddluzeni["zjisteni_upadku"]:
-                delta = zprava_splneni_oddluzeni["zjisteni_upadku"] - zprava_splneni_oddluzeni["zahajeno"]
+            if ins_vec["datum_zahajeni"] and zprava_splneni_oddluzeni["zjisteni_upadku"]:
+                delta = zprava_splneni_oddluzeni["zjisteni_upadku"] - ins_vec["datum_zahajeni"]
                 delka_zjis_upadku = delta.days if abs(delta.days) < self.MAX_DELTA_DAYS else None
 
             # Doba schvaleni oddluzeni
@@ -107,8 +109,8 @@ class StatsOddluzeni(Task):
                 delka_schvalovani = delta.days if abs(delta.days) < self.MAX_DELTA_DAYS else None
 
             # Celkova doba pred schvalenim oddluzeni
-            if zprava_splneni_oddluzeni["zahajeno"] and zprava_splneni_oddluzeni["oddluzeni_schvaleno"]:
-                delta = zprava_splneni_oddluzeni["oddluzeni_schvaleno"] - zprava_splneni_oddluzeni["zahajeno"]
+            if ins_vec["datum_zahajeni"] and zprava_splneni_oddluzeni["oddluzeni_schvaleno"]:
+                delta = zprava_splneni_oddluzeni["oddluzeni_schvaleno"] - ins_vec["datum_zahajeni"]
                 delka_pred_schvalenim = delta.days if abs(delta.days) < self.MAX_DELTA_DAYS else None
 
             # Datum ukonceni
