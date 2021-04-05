@@ -49,9 +49,9 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{{ route("stat.mapy.ins") }}">Mapy</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Oddlužení</a>
-                            <a class="dropdown-item" href="#">Konkurz</a>
-                            <a class="dropdown-item" href="#">Reorganizace</a>
+                            <a class="dropdown-item" href="{{ route("stat.prehled.oddluzeni") }}">Oddlužení</a>
+                            <a class="dropdown-item" href="{{ route("stat.prehled.konkurz") }}">Konkurz</a>
+                            <a class="dropdown-item" href="{{ route("stat.prehled.reorg") }}">Reorganizace</a>
                         </div>
                     </li>
                 </ul>

@@ -15,5 +15,6 @@ mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
     .sourceMaps();
 
+mix.js('resources/js/grafy.js', 'public/js');
 mix.js('resources/js/maps.js', 'public/js');
 mix.js('resources/js/detail-spravce.js', 'public/js');

@@ -45,5 +45,6 @@ class StatsInsVecDatum(Task):
 
     async def run(self):
         rows = await self.seznamInsRizeni()
-        await self.analyzaRizeni(dict(row))
-        print("Zpracovano {0} ...".format(count(rows)))
+        for row in rows:
+            await self.analyzaRizeni(dict(row))
+        print("Zpracovano {0} ...".format(len(rows)))

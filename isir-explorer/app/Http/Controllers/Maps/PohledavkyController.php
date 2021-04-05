@@ -18,11 +18,13 @@ class PohledavkyController extends MapController
     protected function dataKraje(Request $request){
         $filtr = InsRizeni::query();
 
-        $this->filtrParamObdobi($request, $filtr);
+        $obdobi = $this->getObdobi($request);
+        $typOsoby = $this->getTypOsoby($request);
+        $zpusobReseni = $this->getZpusobReseni($request);
 
-        $this->filtrParamTypOsoby($request, $filtr);
-
-        $this->filtrParamZpusobReseni($request, $filtr);
+        $this->filtrParamObdobi($obdobi, $filtr);
+        $this->filtrParamTypOsoby($typOsoby, $filtr);
+        $this->filtrParamZpusobReseni($zpusobReseni, $filtr);
 
         $rows = $filtr
             ->whereNotNull('kraj')

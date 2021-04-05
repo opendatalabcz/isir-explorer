@@ -19,9 +19,11 @@ class OddluzeniController extends MapController
     protected function dataKrajeUspesnost(Request $request){
         $filtr = InsRizeni::query();
 
-        $this->filtrParamObdobi($request, $filtr);
+        $obdobi = $this->getObdobi($request);
+        $typOsoby = $this->getTypOsoby($request);
 
-        $this->filtrParamTypOsoby($request, $filtr);
+        $this->filtrParamObdobi($obdobi, $filtr);
+        $this->filtrParamTypOsoby($typOsoby, $filtr);
 
         $rows = $filtr
             ->whereNotNull('kraj')
@@ -42,9 +44,11 @@ class OddluzeniController extends MapController
     protected function dataKrajeZrusena(Request $request){
         $filtr = InsRizeni::query();
 
-        $this->filtrParamObdobi($request, $filtr);
+        $obdobi = $this->getObdobi($request);
+        $typOsoby = $this->getTypOsoby($request);
 
-        $this->filtrParamTypOsoby($request, $filtr);
+        $this->filtrParamObdobi($obdobi, $filtr);
+        $this->filtrParamTypOsoby($typOsoby, $filtr);
 
         $rows = $filtr
             ->whereNotNull('kraj')
@@ -65,9 +69,11 @@ class OddluzeniController extends MapController
     protected function dataKrajeOsvobozeni(Request $request){
         $filtr = InsRizeni::query();
 
-        $this->filtrParamObdobi($request, $filtr);
+        $obdobi = $this->getObdobi($request);
+        $typOsoby = $this->getTypOsoby($request);
 
-        $this->filtrParamTypOsoby($request, $filtr);
+        $this->filtrParamObdobi($obdobi, $filtr);
+        $this->filtrParamTypOsoby($typOsoby, $filtr);
 
         $rows = $filtr
             ->whereNotNull('kraj')
@@ -86,14 +92,7 @@ class OddluzeniController extends MapController
         return $kraje;
     }
 
-    protected function filtrParamObdobi(Request $request, $filtr){
-        if($request->has("obdobi")){
-            $obdobi = $request->get("obdobi");
-            $obdobi = $this->koncovaDataObdobi($obdobi);
-        }else{
-            $obdobi = $this->maximalniObdobi();
-        }
-
+    protected function filtrParamObdobi($obdobi, $filtr){
         $filtr
             ->where('ukonceni_oddluzeni', '>=', $obdobi->od)
             ->where('ukonceni_oddluzeni', '<=', $obdobi->do);
