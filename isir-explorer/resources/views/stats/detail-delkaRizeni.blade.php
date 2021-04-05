@@ -2,14 +2,14 @@
 
 @section('graf')
 
-<div id="el_vekDluznika"></div>
+<div id="el_delkaRizeni"></div>
 @include('components.zmenaRozliseniHistogr')
 
 <script>
-var vekDluznika_json = '{!!  json_encode($vekDluznika) !!}';
+var delkaRizeni_json = '{!!  json_encode($delkaRizeni) !!}';
 
 window.addEventListener("load", function(){
-    histogram('el_vekDluznika', vekDluznika_json);
+    histogram('el_delkaRizeni', delkaRizeni_json);
 });
 </script>
 

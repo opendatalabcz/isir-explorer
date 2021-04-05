@@ -9,6 +9,7 @@ use App\Http\Controllers\Prehledy\OddluzeniController as PrehledyOddluzeniContro
 use App\Http\Controllers\Prehledy\ReorgController;
 use App\Http\Controllers\SpravciController;
 use App\Http\Controllers\StatController;
+use App\Http\Controllers\Stats\DelkaRizeniController;
 use App\Http\Controllers\Stats\OsobaController;
 use App\Http\Controllers\Stats\PocetInsController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,8 @@ Route::get('/statistiky/typ_dluznika', [OsobaController::class, 'typOsoby_detail
     ->name("stat.detail.dluznik.typ");
 Route::get('/statistiky/pocet_insolvenci', [PocetInsController::class, 'pocet_detail'])
     ->name("stat.detail.pocet");
+Route::get('/statistiky/delka_rizeni', [DelkaRizeniController::class, 'delkaRizeni_detail'])
+    ->name("stat.detail.rizeni.delka");
 
 /** Prehledove stranky */
 Route::get('/statistiky/konkurz', [KonkurzController::class, 'index'])

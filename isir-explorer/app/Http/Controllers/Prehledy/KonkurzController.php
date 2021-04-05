@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Prehledy;
 
+use App\Http\Controllers\Stats\DelkaRizeniController;
 use App\Http\Controllers\Stats\OsobaController;
 use App\Http\Controllers\Stats\PocetInsController;
 use Illuminate\Http\Request;
@@ -29,6 +30,13 @@ class KonkurzController extends BasePrehledController
 
         $viewData['vekDluznika'] = OsobaController::vekDluznika([
             'typ' => static::TYP_RIZENI,
+            'vychoziRozliseni' => 5,
+        ]);
+
+        $viewData['delkaRizeni'] = DelkaRizeniController::delkaRizeni([
+            'typ' => static::TYP_RIZENI,
+            'rok' => 2010,
+            'vychoziRozliseni' => 365,
         ]);
 
         return view('prehledy.konkurz', $viewData);

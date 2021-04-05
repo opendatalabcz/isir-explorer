@@ -81,20 +81,11 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h2>Věk dlužníka</h2>
-                    </div>
-                    <div class="card-body">
-                        <div id="el_vekDluznikcccccca"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
                         <h2>Délka řízení</h2>
                     </div>
                     <div class="card-body">
-                        <div id="el_delkaRizeni"></div>
+                        <div class="chartBox sm" id="el_delkaRizeni"></div>
+                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.delka', ['zpusobReseni'=>'K', 'obdobi' => 2010]) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -106,6 +97,7 @@
         var pocetNovychRoky_json = '{!!  json_encode($pocetNovychRoky) !!}';
         var typyOsob_json = '{!!  json_encode($typOsoby) !!}';
         var vekDluznika_json = '{!!  json_encode($vekDluznika) !!}';
+        var delkaRizeni_json = '{!!  json_encode($delkaRizeni) !!}';
 
         window.addEventListener("load", function(){
             google.charts.load('current', {
@@ -121,6 +113,7 @@
             pocetNovychIns('el_pocetNovychIns', pocetNovychIns_json);
             pocetNovychIns('el_pocetNovychRoky', pocetNovychRoky_json);
             typOsoby('el_typyOsob', typyOsob_json);
+            histogram('el_delkaRizeni', delkaRizeni_json);
         }
     </script>
 
