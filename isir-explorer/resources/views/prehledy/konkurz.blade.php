@@ -89,6 +89,18 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Počet pohledávek</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="chartBox sm" id="el_pohledavky"></div>
+                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.pohledavky', ['zpusobReseni'=>'K', 'obdobi' => 2019]) }}">Detail</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -98,6 +110,7 @@
         var typyOsob_json = '{!!  json_encode($typOsoby) !!}';
         var vekDluznika_json = '{!!  json_encode($vekDluznika) !!}';
         var delkaRizeni_json = '{!!  json_encode($delkaRizeni) !!}';
+        var pohledavky_json = '{!!  json_encode($pohledavky) !!}';
 
         window.addEventListener("load", function(){
             google.charts.load('current', {
@@ -107,13 +120,14 @@
 
             //plotly calls
             histogram('el_vekDluznika', vekDluznika_json);
+            histogram('el_delkaRizeni', delkaRizeni_json);
+            histogram('el_pohledavky', pohledavky_json);
         });
 
         function drawCharts(){
             pocetNovychIns('el_pocetNovychIns', pocetNovychIns_json);
             pocetNovychIns('el_pocetNovychRoky', pocetNovychRoky_json);
             typOsoby('el_typyOsob', typyOsob_json);
-            histogram('el_delkaRizeni', delkaRizeni_json);
         }
     </script>
 

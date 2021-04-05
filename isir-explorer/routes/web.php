@@ -12,6 +12,7 @@ use App\Http\Controllers\StatController;
 use App\Http\Controllers\Stats\DelkaRizeniController;
 use App\Http\Controllers\Stats\OsobaController;
 use App\Http\Controllers\Stats\PocetInsController;
+use App\Http\Controllers\Stats\PohledavkyController as StatsPohledavkyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,6 +39,9 @@ Route::get('/statistiky/pocet_insolvenci', [PocetInsController::class, 'pocet_de
     ->name("stat.detail.pocet");
 Route::get('/statistiky/delka_rizeni', [DelkaRizeniController::class, 'delkaRizeni_detail'])
     ->name("stat.detail.rizeni.delka");
+Route::get('/statistiky/pohledavky', [StatsPohledavkyController::class, 'pohledavky_detail'])
+    ->name("stat.detail.rizeni.pohledavky");
+
 
 /** Prehledove stranky */
 Route::get('/statistiky/konkurz', [KonkurzController::class, 'index'])

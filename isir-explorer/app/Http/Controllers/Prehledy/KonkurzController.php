@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Prehledy;
 use App\Http\Controllers\Stats\DelkaRizeniController;
 use App\Http\Controllers\Stats\OsobaController;
 use App\Http\Controllers\Stats\PocetInsController;
+use App\Http\Controllers\Stats\PohledavkyController;
 use Illuminate\Http\Request;
 
 class KonkurzController extends BasePrehledController
@@ -38,6 +39,13 @@ class KonkurzController extends BasePrehledController
             'rok' => 2010,
             'vychoziRozliseni' => 365,
         ]);
+
+        $viewData['pohledavky'] = PohledavkyController::pohledavky([
+            'typ' => static::TYP_RIZENI,
+            'rok' => 2019,
+            'vychoziRozliseni' => 5,
+        ]);
+
 
         return view('prehledy.konkurz', $viewData);
     }
