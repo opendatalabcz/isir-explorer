@@ -157,11 +157,59 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <h2>Poslední evidované odměny</h2>
+                        <h2>Poslední evidované odměny z oddlužení</h2>
 
                         @if(!empty($odmeny))
                             @include('spravci.partials.tabulka-odmen')
                             <a class="btn btn-primary pull-right" href="{{ route('spravci.detail.odmeny', ['id' => $spravce->id]) }}">Zobrazit vše</a>
+                        @else
+                            Žádné údaje o odměnách toho správce nejsou k dispozici.
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Poslední skončená oddlužení</h2>
+
+                        @if(!empty($oddluzeni))
+
+                        <table class="table table-hover mt-4">
+                            <thead>
+                                <tr>
+                                    <th>Ins. řízení</th>
+                                    <th>Ukončení</th>
+                                    <th>Délka (roky)</th>
+                                    <th>Velikost (Kč)</th>
+                                    <th>Výsledek</th>
+                                    <th>Uspokojeno</th>
+                                    <th>Celková odměna (Kč)</th>
+                                    <th>Uhrazeno</th>
+                                    <th>Zdroj</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($oddluzeni as $odmena)
+                                    <tr>
+                                        <td><a target="_blank" href="{{getInsLink($odmena->spisovaznacka)}}">{{ $odmena->spisovaznacka }}</a></td>
+                                        <td>{{ \Carbon\Carbon::parse($odmena->zverejneni)->format('j. n. Y') }}</td>
+                                        <td>{{ formatKc(round($odmena->delka_oddluzeni/365,2)) }}</td>
+                                        <td>{{ formatKc($odmena->celkova_vyse) }}</td>
+                                        <td>{{ $odmena->vysledek_oddluzeni ? "Splněno" : "Zrušeno"}}</td>
+                                        <td>{{ $odmena->n_uspokojeni_mira ? $odmena->n_uspokojeni_mira . " %" : ""}}</td>
+                                        <td>{{ formatKc($odmena->celkova_odmena) }}</td>
+                                        <td>{{ round($odmena->uhrazeno) }} %</td>
+                                        <td><a target="_blank" href="{{getInsDocLink($odmena->isir_id)}}">Dokument</a></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
+
                         @else
                             Žádné údaje o odměnách toho správce nejsou k dispozici.
                         @endif

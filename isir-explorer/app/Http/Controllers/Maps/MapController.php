@@ -55,6 +55,7 @@ class MapController extends StatsController
             'nazevVolbyObdobi' => null,
             'nastaveni' => ['obdobi', 'typOsoby', 'insZpusob'],
             'vyraditTypOsoby' => [],
+            'extraNastaveni' => [],
         ];
 
         if(empty($data['nazevHodnotyInfobox']))

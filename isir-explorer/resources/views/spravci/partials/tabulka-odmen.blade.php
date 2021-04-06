@@ -3,6 +3,7 @@
         <tr>
             <th>Ins. řízení</th>
             <th>Zveřejnění</th>
+            <th>Délka (roky)</th>
             <th>Celková odměna (Kč)</th>
             <th>Hotové výdaje (Kč)</th>
             <th>Uhrazeno</th>
@@ -14,6 +15,7 @@
             <tr>
                 <td><a target="_blank" href="{{getInsLink($odmena->spisovaznacka)}}">{{ $odmena->spisovaznacka }}</a></td>
                 <td>{{ \Carbon\Carbon::parse($odmena->zverejneni)->format('j. n. Y') }}</td>
+                <td>{{ formatKc(round($odmena->delka_oddluzeni/365,2)) }}</td>
                 <td>{{ formatKc($odmena->celkova_odmena) }}</td>
                 <td>{{ formatKc($odmena->hotove_vydaje) }}</td>
                 <td>{{ round($odmena->uhrazeno) }} %</td>

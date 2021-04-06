@@ -112,7 +112,36 @@ class SpravciController extends Controller
                 ->join('zspo_odmena_spravce', 'stat_oddluzeni.zspo_id', '=', 'zspo_odmena_spravce.zspo_id')
                 ->join('dokument', 'dokument.id', '=', 'zspo_odmena_spravce.zspo_id')
                 ->select(
-                    '*'
+                    '*',
+                )
+                ->whereNotNull('dokument.zverejneni')
+                ->orderBy('dokument.zverejneni','DESC')
+                ->limit($limit)->get();
+
+
+        foreach($odmenySpravce as &$odmena){
+            $celkemOdmena = ($odmena->celkova_odmena ?? 0) + ($odmena->hotove_vydaje ?? 0);
+            $celkemUhrazeno = ($odmena->celkova_odmena_uhrazeno ?? 0) + ($odmena->hotove_vydaje_uhrazeno ?? 0);
+            if(empty($celkemOdmena))
+                $odmena->uhrazeno = 100;
+            else
+                $odmena->uhrazeno = ($celkemUhrazeno / $celkemOdmena) * 100;
+        }
+
+        return $odmenySpravce;
+    }
+
+    protected function posledniOddluzeni($idSpravce, $limit = 10){
+        $odmenySpravce = DB::table('stat_spravce_ins')
+                ->where('stat_spravce_ins.id_spravce', '=', $idSpravce)
+                ->where('stat_pohledavky.celkova_vyse', '>', 0)
+                ->join('stat_vec', 'stat_vec.id', '=', 'stat_spravce_ins.id_ins')
+                ->join('stat_oddluzeni', 'stat_oddluzeni.spisovaznacka', '=', 'stat_vec.spisovaznacka')
+                ->leftJoin('stat_pohledavky', 'stat_pohledavky.spisovaznacka', '=', 'stat_vec.spisovaznacka')
+                ->join('zspo_odmena_spravce', 'stat_oddluzeni.zspo_id', '=', 'zspo_odmena_spravce.zspo_id')
+                ->join('dokument', 'dokument.id', '=', 'zspo_odmena_spravce.zspo_id')
+                ->select(
+                    '*', DB::raw('stat_vec.spisovaznacka as spisovaznacka')
                 )
                 ->whereNotNull('dokument.zverejneni')
                 ->orderBy('dokument.zverejneni','DESC')
@@ -185,6 +214,7 @@ class SpravciController extends Controller
             'info' => $info,
             'ins_stats' => $this->typyRizeniSpravce($id),
             'odmeny' => $this->odmenySpravce($id),
+            'oddluzeni' => $this->posledniOddluzeni($id),
         ]);
 
     }
