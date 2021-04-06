@@ -15,5 +15,14 @@
         @include('components.filters.zobrazitPoLetech')
     @endif
 
+    @if(in_array('typPohledavky', $extraNastaveni))
+        @include('components.filters.typPohledavky')
+    @endif
+
+    @if(in_array('idRozsahu', $extraNastaveni))
+        @include('components.filters.idRozsahuZobrazeni')
+    @endif
+
+
     @include('components.filters.potvrditFiltr')
 </form>

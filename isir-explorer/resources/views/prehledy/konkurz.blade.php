@@ -102,6 +102,33 @@
                 </div>
             </div>
         </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Velikosti konkurzů</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="chartBox sm" id="el_pohledavkyVyseCelkem"></div>
+                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.pohledavky.vyse', ['zpusobReseni'=>'K', 'obdobi' => 2019]) }}">Detail</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Zajištěné pohledávky</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="chartBox sm" id="el_pohledavkyVyseZaji"></div>
+                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.pohledavky.vyse', ['zpusobReseni'=>'K', 'obdobi' => 2019, 'typPohledavky' => 'Z']) }}">Detail</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script>
@@ -111,6 +138,8 @@
         var vekDluznika_json = '{!!  json_encode($vekDluznika) !!}';
         var delkaRizeni_json = '{!!  json_encode($delkaRizeni) !!}';
         var pohledavky_json = '{!!  json_encode($pohledavky) !!}';
+        var pohledavkyVyseCelkem_json = '{!!  json_encode($pohledavkyVyseCelkem) !!}';
+        var pohledavkyVyseZaji_json = '{!!  json_encode($pohledavkyVyseZaji) !!}';
 
         window.addEventListener("load", function(){
             google.charts.load('current', {
@@ -122,6 +151,8 @@
             histogram('el_vekDluznika', vekDluznika_json);
             histogram('el_delkaRizeni', delkaRizeni_json);
             histogram('el_pohledavky', pohledavky_json);
+            histogram('el_pohledavkyVyseCelkem', pohledavkyVyseCelkem_json);
+            histogram('el_pohledavkyVyseZaji', pohledavkyVyseZaji_json);
         });
 
         function drawCharts(){

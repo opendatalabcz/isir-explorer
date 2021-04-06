@@ -41,6 +41,8 @@ Route::get('/statistiky/delka_rizeni', [DelkaRizeniController::class, 'delkaRize
     ->name("stat.detail.rizeni.delka");
 Route::get('/statistiky/pohledavky', [StatsPohledavkyController::class, 'pohledavky_detail'])
     ->name("stat.detail.rizeni.pohledavky");
+Route::get('/statistiky/pohledavky_vyse', [StatsPohledavkyController::class, 'pohledavkyVyse_detail'])
+    ->name("stat.detail.rizeni.pohledavky.vyse");
 
 
 /** Prehledove stranky */

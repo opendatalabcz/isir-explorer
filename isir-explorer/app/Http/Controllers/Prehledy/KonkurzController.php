@@ -46,6 +46,21 @@ class KonkurzController extends BasePrehledController
             'vychoziRozliseni' => 5,
         ]);
 
+        $viewData['pohledavkyVyseCelkem'] = PohledavkyController::pohledavkyVyse([
+            'typ' => static::TYP_RIZENI,
+            'rok' => 2019,
+            //'typPohledavky' => $request->get("typPohledavky"),
+            'idRozsahu' => 2,
+            'vychoziRozliseni' => 1000000,
+        ]);
+
+        $viewData['pohledavkyVyseZaji'] = PohledavkyController::pohledavkyVyse([
+            'typ' => static::TYP_RIZENI,
+            'rok' => 2019,
+            'typPohledavky' => 'Z',
+            'idRozsahu' => 2,
+            'vychoziRozliseni' => 1000000,
+        ]);
 
         return view('prehledy.konkurz', $viewData);
     }
