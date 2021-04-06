@@ -49,7 +49,6 @@ class KonkurzController extends BasePrehledController
         $viewData['pohledavkyVyseCelkem'] = PohledavkyController::pohledavkyVyse([
             'typ' => static::TYP_RIZENI,
             'rok' => 2019,
-            //'typPohledavky' => $request->get("typPohledavky"),
             'idRozsahu' => 2,
             'vychoziRozliseni' => 1000000,
         ]);
