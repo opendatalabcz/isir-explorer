@@ -58,7 +58,7 @@
                                         <th class="text-right">Aktivní</th>
                                     @elseif($zobrazeni == 'velikosti-insolvenci')
                                         <th class="text-right">Počet pohledávek</th>
-                                        <th class="text-right">Celková výše přihlášených<br>pohledávek (Kč)</th>
+                                        <th class="text-right">Výše přihlášených<br>pohledávek (Kč)</th>
                                         <th class="text-right">Průměrná výše<br>pohledávky (Kč)</th>
                                     @endif
                                 </tr>
