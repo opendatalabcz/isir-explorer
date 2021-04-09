@@ -61,14 +61,14 @@
                                         <th class="text-right">Celková výše přihlášených<br>pohledávek (Kč)</th>
                                         <th class="text-right">Průměrná výše<br>pohledávky (Kč)</th>
                                     @endif
-
-                                    <th class="text-right">Detail</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($spravci as $spravce)
                                     <tr>
-                                        <td>{{ $spravce->nazev }}</td>
+                                        <td>
+                                            <a href="{{ route("spravci.detail", ['id' => $spravce->id]) }}">{{ $spravce->nazev }}</a>
+                                        </td>
 
                                         @if($zobrazeni != 'velikosti-insolvenci')
                                         <td class="text-right">
@@ -93,8 +93,6 @@
                                                 {{ formatKc($spravce->agreagace->celkova_vyse / $spravce->agreagace->pohledavky_pocet) }}</td>
                                         @endif
 
-
-                                        <td class="text-right"><a class="btn btn-info detail-btn" href="{{ route("spravci.detail", ['id' => $spravce->id]) }}">Detail</a></td>
                                     </tr>
                                 @endforeach
                             </tbody>
