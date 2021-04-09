@@ -34,11 +34,24 @@ services:
   isir_npm:
     user: 1002:1002
     image: node:13.7
-    container_name: npm
+    container_name: isir_npm
     volumes:
       - www-volume:/var/www/html
     working_dir: /var/www/html
-    entrypoint: ['npm', 'run', 'prod']
+    entrypoint: ['npm']
+    networks:
+      - laravel
+
+  isir_artisan:
+    build:
+      context: .
+      dockerfile: docker/php/php.dockerfile
+    container_name: isir_artisan
+    volumes:
+      - www-volume:/var/www/html
+    working_dir: /var/www/html
+    user: 1002:1002
+    entrypoint: ['php', '/var/www/html/artisan']
     networks:
       - laravel
 
@@ -54,7 +67,7 @@ services:
     depends_on:
       - isir_php
     user: laravel
-    entrypoint: ['composer', 'install']
+    entrypoint: ['composer']
     networks:
       - laravel
 
