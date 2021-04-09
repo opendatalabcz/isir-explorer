@@ -78,6 +78,28 @@
                         </table>
                     </div>
                 </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h2>Míra přečtení dat</h2>
+                        <table class="table table-hover mt-4 key-value">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Zpráva pro oddlužení</th>
+                                    <td>{{ $mira_precteni['zpro'] }} / {{ $mira_precteni['celkem'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Splnění oddlužení</th>
+                                    <td>{{ $mira_precteni['zspo'] }} / {{ $mira_precteni['celkem'] }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Celkem</th>
+                                    <td>{{ formatKc($mira_precteni['mira']) }} %</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-8">

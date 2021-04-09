@@ -221,6 +221,36 @@ class SpravciController extends Controller
         return $odmenySpravce;
     }
 
+    protected function miraPrecteniUdaju($idSpravce){
+        $dotazDataSpravcu = DB::table('stat_spravce')
+            ->join('stat_spravce_ins', 'stat_spravce_ins.id_spravce', '=', 'stat_spravce.id')
+            ->join('stat_vec', 'stat_vec.id', '=', 'stat_spravce_ins.id_ins')
+            ->join('stat_oddluzeni', 'stat_oddluzeni.spisovaznacka', '=', 'stat_vec.spisovaznacka')
+            ->select(DB::raw('count(*) as pocet'))
+            ->groupBy('stat_spravce.id')
+            ->where('stat_spravce.id', '=', $idSpravce);
+
+        $dotazDataSpravcuCelkem = clone $dotazDataSpravcu;
+        $dotazDataSpravcuCelkem = $dotazDataSpravcuCelkem->get();
+
+        $dotazDataSpravcuZpro = clone $dotazDataSpravcu;
+        $dotazDataSpravcuZpro = $dotazDataSpravcuZpro->whereNotNull('stat_oddluzeni.zpro_id')->get();
+
+        $dotazDataSpravcuZspo = clone $dotazDataSpravcu;
+        $dotazDataSpravcuZspo = $dotazDataSpravcuZspo->whereNotNull('stat_oddluzeni.zspo_id')->get();
+
+        $res =  [
+            'celkem' => $dotazDataSpravcuCelkem[0]->pocet ?? 0,
+            'zpro' => $dotazDataSpravcuZpro[0]->pocet ?? 0,
+            'zspo' => $dotazDataSpravcuZspo[0]->pocet ?? 0,
+            'mira' => 0,
+        ];
+        if($res['celkem']){
+            $res['mira'] = ($res['zpro'] + $res['zspo']) / (($res['celkem'] * 2) / 100);
+        }
+        return $res;
+    }
+
     public function odmeny($id, Request $request){
 
         $spravce = Spravce::where('id','=',$id)->first();
@@ -276,6 +306,7 @@ class SpravciController extends Controller
             'ins_stats' => $this->typyRizeniSpravce($id),
             'odmeny' => $this->odmenySpravce($id),
             'oddluzeni' => $this->posledniOddluzeni($id),
+            'mira_precteni' => $this->miraPrecteniUdaju($id),
         ]);
 
     }
