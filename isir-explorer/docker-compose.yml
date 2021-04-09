@@ -1,5 +1,8 @@
 version: '3'
 
+volumes:
+  www-volume:
+
 networks:
   laravel:
 
@@ -12,29 +15,31 @@ services:
     ports:
       - 8080:80
     volumes:
-      - .:/var/www/html:delegated
+      - www-volume:/var/www/html
     depends_on:
       - isir_php
     networks:
       - laravel
 
   isir_php:
+    user: 1002:1002
     build:
       context: .
       dockerfile: ./docker/php/php.dockerfile
     container_name: isir_php
     volumes:
-      - .:/var/www/html:delegated
+      - www-volume:/var/www/html
     networks:
       - laravel
 
   isir_composer:
+    user: 1002:1002
     build:
       context: .
       dockerfile: ./docker/composer/composer.dockerfile
     container_name: isir_composer
     volumes:
-      - .:/var/www/html:delegated
+      - www-volume:/var/www/html
     working_dir: /var/www/html
     depends_on:
       - isir_php
@@ -42,4 +47,6 @@ services:
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
       - laravel
+
+
 
