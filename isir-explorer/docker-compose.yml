@@ -34,7 +34,7 @@ services:
       dockerfile: ./docker/composer/composer.dockerfile
     container_name: isir_composer
     volumes:
-      - .:/var/www/html
+      - .:/var/www/html:delegated
     working_dir: /var/www/html
     depends_on:
       - isir_php
