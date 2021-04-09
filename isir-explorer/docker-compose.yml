@@ -22,13 +22,23 @@ services:
       - laravel
 
   isir_php:
-    user: 1002:1002
     build:
       context: .
       dockerfile: ./docker/php/php.dockerfile
     container_name: isir_php
     volumes:
       - www-volume:/var/www/html
+    networks:
+      - laravel
+
+  isir_npm:
+    user: 1002:1002
+    image: node:13.7
+    container_name: npm
+    volumes:
+      - www-volume:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ['npm run prod']
     networks:
       - laravel
 
@@ -44,7 +54,7 @@ services:
     depends_on:
       - isir_php
     user: laravel
-    entrypoint: ['composer', '--ignore-platform-reqs']
+    entrypoint: ['composer install']
     networks:
       - laravel
 
