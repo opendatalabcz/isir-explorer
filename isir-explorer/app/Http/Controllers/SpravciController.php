@@ -17,6 +17,12 @@ class SpravciController extends Controller
         'velikosti-insolvenci' => [
             'nazev' => 'Velikosti insolvencí'
         ],
+        'evidovana-odmena' => [
+            'nazev' => 'Evidovaná odměna'
+        ],
+        'prumerna-odmena' => [
+            'nazev' => 'Průměrná odměna'
+        ],
     ];
 
     public function list(Request $request){
@@ -48,6 +54,61 @@ class SpravciController extends Controller
                 ->get();
             foreach ($dataSpravcu as $value) {
                 $spravci[$value->id]->agreagace = $value;
+            }
+        }else if('evidovana-odmena' == $zobrazeni){
+            $zobrazeni = 'evidovana-odmena';
+            $dataSpravcu = DB::table('stat_spravce')
+                ->where('posledni_ins', '>=', '2019-01-01')
+                ->join('stat_spravce_ins', 'stat_spravce_ins.id_spravce', '=', 'stat_spravce.id')
+                ->join('stat_vec', 'stat_vec.id', '=', 'stat_spravce_ins.id_ins')
+                ->join('stat_oddluzeni', 'stat_oddluzeni.spisovaznacka', '=', 'stat_vec.spisovaznacka')
+                ->join('zspo_odmena_spravce', 'zspo_odmena_spravce.zspo_id', '=', 'stat_oddluzeni.zspo_id')
+
+                ->select(
+                    'stat_spravce.id',
+                    DB::raw('count(*) as pocet'),
+                    DB::raw('sum(zspo_odmena_spravce.celkova_odmena) as celkova_odmena'),
+                    DB::raw('sum(hotove_vydaje) as hotove_vydaje'),
+                )
+                ->groupBy('stat_spravce.id')
+                ->get();
+            foreach ($dataSpravcu as $value) {
+                $spravci[$value->id]->agreagace = $value;
+            }
+            foreach ($spravci as $id => $value) {
+                if(!property_exists($spravci[$id], 'agreagace'))
+                    unset($spravci[$id]);
+            }
+        }else if('prumerna-odmena' == $zobrazeni){
+            $zobrazeni = 'prumerna-odmena';
+            $dataSpravcu = DB::table('stat_spravce')
+                ->where('posledni_ins', '>=', '2019-01-01')
+                ->join('stat_spravce_ins', 'stat_spravce_ins.id_spravce', '=', 'stat_spravce.id')
+                ->join('stat_vec', 'stat_vec.id', '=', 'stat_spravce_ins.id_ins')
+                ->join('stat_oddluzeni', 'stat_oddluzeni.spisovaznacka', '=', 'stat_vec.spisovaznacka')
+                ->join('zspo_odmena_spravce', 'zspo_odmena_spravce.zspo_id', '=', 'stat_oddluzeni.zspo_id')
+
+                ->select(
+                    'stat_spravce.id',
+                    DB::raw('count(*) as pocet'),
+                    DB::raw('sum(zspo_odmena_spravce.celkova_odmena) as celkova_odmena'),
+                    DB::raw('sum(hotove_vydaje) as hotove_vydaje'),
+                )
+                ->groupBy('stat_spravce.id')
+                ->get();
+            foreach ($dataSpravcu as $value) {
+                $spravci[$value->id]->agreagace = $value;
+                if($spravci[$value->id]->agreagace->pocet){
+                    $spravci[$value->id]->agreagace->celkova_odmena /= $spravci[$value->id]->agreagace->pocet;
+                    $spravci[$value->id]->agreagace->hotove_vydaje /= $spravci[$value->id]->agreagace->pocet;
+                }else{
+                    $spravci[$value->id]->agreagace->celkova_odmena = 0;
+                    $spravci[$value->id]->agreagace->hotove_vydaje = 0;
+                }
+            }
+            foreach ($spravci as $id => $value) {
+                if(!property_exists($spravci[$id], 'agreagace'))
+                    unset($spravci[$id]);
             }
         }else{
             $zobrazeni = 'pocty-insolvenci';

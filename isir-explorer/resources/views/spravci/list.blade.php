@@ -60,6 +60,14 @@
                                         <th class="text-right">Počet pohledávek</th>
                                         <th class="text-right">Výše přihlášených<br>pohledávek (Kč)</th>
                                         <th class="text-right">Průměrná výše<br>pohledávky (Kč)</th>
+                                    @elseif($zobrazeni == 'evidovana-odmena')
+                                        <th class="text-right">Insolvencí</th>
+                                        <th class="text-right">Odměna (Kč)</th>
+                                        <th class="text-right">Hotové výdaje (Kč)</th>
+                                    @elseif($zobrazeni == 'prumerna-odmena')
+                                        <th class="text-right">Insolvencí</th>
+                                        <th class="text-right">Odměna (Kč)</th>
+                                        <th class="text-right">Hotové výdaje (Kč)</th>
                                     @endif
                                 </tr>
                             </thead>
@@ -91,8 +99,23 @@
                                             <td class="text-right"
                                                 data-text="{{round($spravce->agreagace->celkova_vyse / $spravce->agreagace->pohledavky_pocet)}}">
                                                 {{ formatKc($spravce->agreagace->celkova_vyse / $spravce->agreagace->pohledavky_pocet) }}</td>
+                                        @elseif($zobrazeni == 'evidovana-odmena')
+                                            <td class="text-right">{{ $spravce->agreagace->pocet }}</td>
+                                            <td class="text-right"
+                                                data-text="{{round($spravce->agreagace->celkova_odmena)}}">
+                                                {{ formatKc($spravce->agreagace->celkova_odmena) }}</td>
+                                            <td class="text-right"
+                                                data-text="{{round($spravce->agreagace->hotove_vydaje)}}">
+                                                {{ formatKc($spravce->agreagace->hotove_vydaje) }}</td>
+                                        @elseif($zobrazeni == 'prumerna-odmena')
+                                            <td class="text-right">{{ $spravce->agreagace->pocet }}</td>
+                                            <td class="text-right"
+                                                data-text="{{round($spravce->agreagace->celkova_odmena)}}">
+                                                {{ formatKc($spravce->agreagace->celkova_odmena) }}</td>
+                                            <td class="text-right"
+                                                data-text="{{round($spravce->agreagace->hotove_vydaje)}}">
+                                                {{ formatKc($spravce->agreagace->hotove_vydaje) }}</td>
                                         @endif
-
                                     </tr>
                                 @endforeach
                             </tbody>
