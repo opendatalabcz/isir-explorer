@@ -38,7 +38,7 @@ services:
     volumes:
       - www-volume:/var/www/html
     working_dir: /var/www/html
-    entrypoint: ['npm run prod']
+    entrypoint: ['npm', 'run', 'prod']
     networks:
       - laravel
 
@@ -54,7 +54,7 @@ services:
     depends_on:
       - isir_php
     user: laravel
-    entrypoint: ['composer install']
+    entrypoint: ['composer', 'install']
     networks:
       - laravel
 
