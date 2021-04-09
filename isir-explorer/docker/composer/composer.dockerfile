@@ -8,4 +8,4 @@ WORKDIR /var/www/html
 
 COPY . /var/www/html
 
-RUN chown laravel:laravel /var/www/html
+RUN chown -R laravel:laravel /var/www/html

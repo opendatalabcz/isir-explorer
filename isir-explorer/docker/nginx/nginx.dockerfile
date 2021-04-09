@@ -7,4 +7,4 @@ RUN mkdir -p /var/www/html
 
 RUN addgroup -g 1002 laravel && adduser --uid 1002 -G laravel -g laravel -s /bin/sh -D laravel
 
-RUN chown laravel:laravel /var/www/html
+RUN chown -R laravel:laravel /var/www/html

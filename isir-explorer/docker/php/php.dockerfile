@@ -7,7 +7,7 @@ RUN groupadd -g 1002 laravel && useradd --uid 1002 -G laravel -g laravel -s /bin
 
 RUN mkdir -p /var/www/html
 
-RUN chown laravel:laravel /var/www/html
+RUN chown -R laravel:laravel /var/www/html
 
 WORKDIR /var/www/html
 
