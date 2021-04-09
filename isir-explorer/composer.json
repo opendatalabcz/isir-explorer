@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "opendatalabcz/isir-explorer",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "ISIR explorer bude umoznovat zobrazeni agregovanych dat o insolvencich.",
     "keywords": [
         "framework",
         "laravel"
