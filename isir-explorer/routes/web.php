@@ -72,6 +72,7 @@ Route::get('/mapy/kraje/vyse_osvobozeni', [OddluzeniController::class, 'osvoboze
     ->name("stat.mapy.oddl.osvobozeni");
 
 Route::get('/veritele', [VeriteleController::class, 'list'])->name("veritele.ins");
+Route::get('/veritele/{id}', [VeriteleController::class, 'detail'])->name("veritele.detail");
 
 Route::get('/spravci', [SpravciController::class, 'list'])->name("spravci.ins");
 Route::get('/spravci/{id}', [SpravciController::class, 'detail'])->name("spravci.detail");

@@ -158,6 +158,6 @@ class StatsInsVeritele(Task):
         
     async def run(self):
 
-        #await self.veritelePodnikatele()
+        await self.veritelePodnikatele()
 
         await self.veriteleStatistikyRizeni()

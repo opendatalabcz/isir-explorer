@@ -16,7 +16,7 @@
                         <h1>Věřitelé</h1>
                     </div>
                     <div class="card-body">
-                        <p>Věřitel je osoba, které náleží plnění nějaké pohledávky od osoby dlužníka. Věřitelé do řízení vstupují podáním tzv. přihlášky pohledávky. Zájmy většiny věřitelů v řízení prosazují věřitelské orgány -- schůze věřitelů a věřitelský výbor. Postavení věřitelů v insolvenčním řízení se liší dle toho, zda jsou zajištění nebo nezajištění. Zajištěný věřitel se vyznačuje tím, že jeho pohledávka je zajištěna majetkem dlužníka.</p>
+                        <p>Věřitel je osoba, které náleží plnění nějaké pohledávky od osoby dlužníka. Věřitelé do řízení vstupují podáním tzv. přihlášky pohledávky. V tomto přehledovém seznamu je zobrazeno až 1000 věřitelů seřazených dle vybraného parametru. V seznamu nejsou zahrnuty nepodnikající fyzické osoby. Zdrojem počtů insolvencí u jednotlivých věřitelů jsou údaje z insolvenčního rejstříku. Zdrojem údajích o přihláškách a velikostech pohledávek jsou čteny z dokumentů přihlášek a údaje tak nemusí být kompletní ze všech pohledávek, které věřitel přihlásil.</p>
                     </div>
                 </div>
             </div>
@@ -47,27 +47,41 @@
                                 <tr>
                                     <th>Název subjektu</th>
 
-                                    @if($zobrazeni != 'velikosti-insolvenci')
+                                    @if($zobrazeni == 'pocty-insolvenci')
                                         <th class="text-right">IČ</th>
                                     @endif
 
                                     @if($zobrazeni == 'pocty-insolvenci')
                                         <th class="text-right">Insolvence</th>
-                                        <th class="text-right">Aktivní</th>
+                                    @elseif($zobrazeni == 'vyse-pohledavek')
+                                        <th class="text-right">Celková&nbsp;výše&nbsp;(Kč)</th>
+                                        <th class="text-right">Výše&nbsp;nezajištěných&nbsp;(Kč)</th>
+                                        <th class="text-right">Výše&nbsp;zajištěných&nbsp;(Kč)</th>
+                                    @elseif($zobrazeni == 'vyse-zaj-pohledavek')
+                                        <th class="text-right">Celková&nbsp;výše&nbsp;(Kč)</th>
+                                        <th class="text-right">Výše&nbsp;zajištěných&nbsp;(Kč)</th>
+                                    @elseif($zobrazeni == 'prumerna-vyse-pohledavky')
+                                        <th class="text-right">Počet&nbsp;přihlášek</th>
+                                        <th class="text-right">Průměrná&nbsp;výše<br>v&nbsp;přihlášce&nbsp;(Kč)</th>
+                                    @elseif($zobrazeni == 'pohledavek-v-prihlasce')
+                                        <th class="text-right">Počet&nbsp;přihlášek</th>
+                                        <th class="text-right">Počet&nbsp;pohledávek</th>
+                                        <th class="text-right">Průměrný počet pohl.<br>v&nbsp;přihlášce&nbsp;</th>
                                     @endif
+
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($spravci as $spravce)
+                                @foreach ($veritele as $veritel)
                                     <tr>
                                         <td>
-                                            <a href="{{ route("spravci.detail", ['id' => $spravce->id]) }}">{{ $spravce->nazev }}</a>
+                                            <a href="{{ route("veritele.detail", ['id' => $veritel->id]) }}">{{ $veritel->nazev }}</a>
                                         </td>
 
-                                        @if($zobrazeni != 'velikosti-insolvenci')
+                                        @if($zobrazeni == 'pocty-insolvenci')
                                         <td class="text-right">
-                                            @isset($spravce->ic)
-                                                <a href="https://or.justice.cz/ias/ui/rejstrik-$firma?ico={{ $spravce->ic }}" target="_blank">{{ $spravce->ic }}</a>
+                                            @isset($veritel->ic)
+                                                <a href="https://or.justice.cz/ias/ui/rejstrik-$firma?ico={{ $veritel->ic }}" target="_blank">{{ $veritel->ic }}</a>
                                             @else
                                                 -
                                             @endisset
@@ -75,8 +89,35 @@
                                         @endif
 
                                         @if($zobrazeni == 'pocty-insolvenci')
-                                            <td class="text-right">x</td>
-                                            <td class="text-right">x</td>
+                                            <td class="text-right">{{ $veritel->ins_celkem }}</td>
+                                        @elseif($zobrazeni == 'vyse-pohledavek')
+                                            <td class="text-right"
+                                                data-text="{{round($veritel->vyse_celkem)}}">
+                                                {{ formatKc($veritel->vyse_celkem) }}</td>
+                                            <td class="text-right"
+                                                data-text="{{round($veritel->vyse_nezaj)}}">
+                                                {{ formatKc($veritel->vyse_nezaj) }}</td>
+                                            <td class="text-right"
+                                                data-text="{{round($veritel->vyse_zaj)}}">
+                                                {{ formatKc($veritel->vyse_zaj) }}</td>
+                                        @elseif($zobrazeni == 'vyse-zaj-pohledavek')
+                                            <td class="text-right"
+                                                data-text="{{round($veritel->vyse_celkem)}}">
+                                                {{ formatKc($veritel->vyse_celkem) }}</td>
+                                            <td class="text-right"
+                                                data-text="{{round($veritel->vyse_zaj)}}">
+                                                {{ formatKc($veritel->vyse_zaj) }}</td>
+                                        @elseif($zobrazeni == 'prumerna-vyse-pohledavky')
+                                            <td class="text-right">{{ $veritel->prihlasky_pocet }}</td>
+                                            <td class="text-right"
+                                                data-text="{{round($veritel->vyse_celkem/$veritel->prihlasky_pocet)}}">
+                                                {{ formatKc($veritel->vyse_celkem/$veritel->prihlasky_pocet) }}</td>
+                                        @elseif($zobrazeni == 'pohledavek-v-prihlasce')
+                                            <td class="text-right">{{ $veritel->prihlasky_pocet }}</td>
+                                            <td class="text-right">{{ $veritel->pohledavky_pocet }}</td>
+                                            <td class="text-right"
+                                                data-text="{{round($veritel->pohledavky_pocet/$veritel->prihlasky_pocet)}}">
+                                                {{ formatKc($veritel->pohledavky_pocet/$veritel->prihlasky_pocet) }}</td>
                                         @endif
                                     </tr>
                                 @endforeach
@@ -95,7 +136,6 @@ $("table").tablesorter({
     theme : "bootstrap",
     widthFixed: true,
     widgets : ["columns"],
-    sortList: [[0,0]]
 });
 };
 </script>
