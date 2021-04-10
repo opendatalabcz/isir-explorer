@@ -13,6 +13,7 @@ use App\Http\Controllers\Stats\DelkaRizeniController;
 use App\Http\Controllers\Stats\OsobaController;
 use App\Http\Controllers\Stats\PocetInsController;
 use App\Http\Controllers\Stats\PohledavkyController as StatsPohledavkyController;
+use App\Http\Controllers\VeriteleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -69,6 +70,8 @@ Route::get('/mapy/kraje/zrusena_oddluzeni', [OddluzeniController::class, 'zrusen
     ->name("stat.mapy.oddl.zrusena");
 Route::get('/mapy/kraje/vyse_osvobozeni', [OddluzeniController::class, 'osvobozeni'])
     ->name("stat.mapy.oddl.osvobozeni");
+
+Route::get('/veritele', [VeriteleController::class, 'list'])->name("veritele.ins");
 
 Route::get('/spravci', [SpravciController::class, 'list'])->name("spravci.ins");
 Route::get('/spravci/{id}', [SpravciController::class, 'detail'])->name("spravci.detail");

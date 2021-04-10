@@ -26,8 +26,8 @@
 
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Věřitelé</a>
+                    <li class="nav-item {{ \str_starts_with(\Request::route()->getName(), "veritele") ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route("veritele.ins") }}">Věřitelé</a>
                     </li>
                     <li class="nav-item {{ \str_starts_with(\Request::route()->getName(), "spravci") ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route("spravci.ins") }}">Správci</a>
