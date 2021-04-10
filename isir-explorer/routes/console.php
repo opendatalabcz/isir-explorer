@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
+use App\Http\Cache\CacheCommands;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+Artisan::command('responsecache:statistiky', function () {
+    $this->comment("Odstranuje se puvodni cache ...");
+    $this->call('responsecache:clear');
+
+    $this->comment("Vytvari se cache statistik ...");
+    $cc = new CacheCommands();
+    $cc->cacheStatistik($this);
+})->purpose('Tvorba cache prehledovych statistik');
