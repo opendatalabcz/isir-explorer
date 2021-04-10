@@ -18,5 +18,5 @@ docker-compose run --rm isir_artisan config:clear
 # Vytvoreni cache
 docker-compose run --rm isir_artisan responsecache:statistiky
 
-# Spusteni webserveru
-docker-compose up
+# Spusteni webserveru (ponechano na uzivateli)
+# docker-compose up -d
