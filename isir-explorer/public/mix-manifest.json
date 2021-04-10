@@ -3,5 +3,6 @@
     "/js/grafy.js": "/js/grafy.js",
     "/js/maps.js": "/js/maps.js",
     "/js/detail-spravce.js": "/js/detail-spravce.js",
+    "/js/detail-veritel.js": "/js/detail-veritel.js",
     "/css/app.css": "/css/app.css"
 }

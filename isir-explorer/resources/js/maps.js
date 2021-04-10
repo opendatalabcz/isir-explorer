@@ -1,31 +1,9 @@
-function updateQueryStringParameter(uri, key, value) {
-    var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
-    if (uri.match(re)) {
-      return uri.replace(re, '$1' + key + "=" + value + '$2');
-    }
-    else {
-      return uri + separator + key + "=" + value;
-    }
-}
-
 $("table").tablesorter({
     theme : "bootstrap",
     widthFixed: true,
     widgets : ["columns"],
     sortList: [[1,1]]
 });
-
-$('select.date-changer').on('change', function() {
-    let optionSelected = $("option:selected", this);
-    let rok = optionSelected.data("rok");
-    let mesic = optionSelected.data("mesic");
-    let url = location.href;
-    url = updateQueryStringParameter(url, "rok", rok);
-    url = updateQueryStringParameter(url, "mesic", mesic);
-    location.href = url;
-});
-
 
 mapData = JSON.parse(mapData);
 var map = L.map('map').setView([49.8, 15.5], 7);

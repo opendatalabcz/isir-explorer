@@ -17,7 +17,6 @@
                     </div>
                     <div class="card-body">
                         <p>Insolvenční správce je fyzická nebo právnická osoba, kterou lze považovat za administrátora celého insolvenčního řízení. Činnosti mu ukládá insolvenční zákon a zákon o insolvenčních správcích. Mezi jeho úlohy patří například sepsání majetku dlužníka, přezkoumání přihlášených pohledávek nebo uspokojování věřitelů z prostředků dlužníka. Insolvenční správce musí mít pro výkon své činnosti povolení od Ministerstva spravedlnosti, které získá po složení zkoušky insolvenčního správce a splnění dalších zákonem definovaných požadavků. Insolvenčního správce pro konkrétní insolvenční řízení ustanovuje insolvenční soud výběrem ze seznamu insolvenčních správců.</p>
-
                     </div>
 
                 </div>
@@ -49,7 +48,7 @@
                                 <tr>
                                     <th>Název subjektu</th>
 
-                                    @if($zobrazeni != 'velikosti-insolvenci')
+                                    @if($zobrazeni == 'pocty-insolvenci')
                                         <th class="text-right">IČ</th>
                                     @endif
 
@@ -78,7 +77,7 @@
                                             <a href="{{ route("spravci.detail", ['id' => $spravce->id]) }}">{{ $spravce->nazev }}</a>
                                         </td>
 
-                                        @if($zobrazeni != 'velikosti-insolvenci')
+                                        @if($zobrazeni == 'pocty-insolvenci')
                                         <td class="text-right">
                                             @isset($spravce->ic)
                                                 <a href="https://or.justice.cz/ias/ui/rejstrik-$firma?ico={{ $spravce->ic }}" target="_blank">{{ $spravce->ic }}</a>

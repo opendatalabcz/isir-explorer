@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class SpravciController extends Controller
+class SpravciController extends SubjektController
 {
 
     public const TYP_ZOBRAZENI = [
@@ -118,51 +118,6 @@ class SpravciController extends Controller
             'spravci' => $spravci,
             'zobrazeni' => $zobrazeni,
         ]);
-    }
-
-    protected function typyRizeniSpravceZaRok($idSpravce, $rok){
-        $date = Carbon::createFromDate($rok, 1, 1);
-        $od = $date->copy()->startOfYear();
-        $do = $date->copy()->endOfYear();
-
-        $typyRizeni = DB::table('stat_spravce_ins')
-                ->where('stat_spravce_ins.id_spravce', '=', $idSpravce)
-                ->join('stat_vec', 'stat_vec.id', '=', 'stat_spravce_ins.id_ins')
-                ->join('stat_pohledavky', 'stat_pohledavky.spisovaznacka', '=', 'stat_vec.spisovaznacka')
-                ->select(
-                    'typ_rizeni',
-                    DB::raw('count(*) as pocet'),
-                    DB::raw('sum(celkova_vyse) as celkova_vyse'),
-                    DB::raw('sum(pohledavky_pocet) as pohledavky_pocet'),
-                    DB::raw('sum(popreno) as pohledavky_popreno')
-                )
-                ->groupBy('typ_rizeni')
-                ->where('datum_zahajeni', '>=', $od)
-                ->where('datum_zahajeni', '<=', $do)
-                ->get();
-
-        return $typyRizeni;
-    }
-
-    protected function typyRizeniSpravce($idSpravce){
-        $rok = intval(date("Y"));
-        $roky = [$rok-3, $rok-2, $rok-1];
-        $result = [];
-        foreach ($roky as $rok) {
-            $rows = $this->typyRizeniSpravceZaRok($idSpravce, $rok);
-            $dataZaRok = [];
-            $celkemZaRok = 0;
-            foreach ($rows as $row) {
-                $dataZaRok[$row->typ_rizeni] = $row->pocet;
-                $dataZaRok[$row->typ_rizeni . "_vyse"] = intval($row->celkova_vyse);
-                $dataZaRok[$row->typ_rizeni . "_pohl"] = $row->pohledavky_pocet;
-                $dataZaRok[$row->typ_rizeni . "_popreno"] = floatval($row->pohledavky_popreno);
-                $celkemZaRok += $row->pocet;
-            }
-            if($celkemZaRok)
-                $result[$rok] = $dataZaRok;
-        }
-        return $result;
     }
 
     protected function odmenySpravce($idSpravce, $limit = 10){
@@ -303,7 +258,7 @@ class SpravciController extends Controller
             'timeline' => $timeline,
             'kraje' => $kraje,
             'info' => $info,
-            'ins_stats' => $this->typyRizeniSpravce($id),
+            'ins_stats' => $this->typyRizeniSubjektu($id, self::TYP_SPRAVCE),
             'odmeny' => $this->odmenySpravce($id),
             'oddluzeni' => $this->posledniOddluzeni($id),
             'mira_precteni' => $this->miraPrecteniUdaju($id),

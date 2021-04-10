@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class VeriteleController extends Controller
+class VeriteleController extends SubjektController
 {
 
     public const TYP_ZOBRAZENI = [
@@ -68,12 +68,52 @@ class VeriteleController extends Controller
         ]);
     }
 
+    protected function miraPrecteniUdaju($veritel){
+
+        $res =  [
+            'celkem' => $veritel->ins_celkem ?? 0,
+            'pp' => $veritel->prihlasky_pocet ?? 0,
+            'mira' => 0,
+        ];
+        if($res['celkem']){
+            $res['mira'] = $res['pp'] / ($res['celkem'] / 100);
+        }
+        return $res;
+    }
+
     public function detail($id, Request $request){
 
         $veritel = Veritel::where('id','=',$id)->first();
 
         if(!$veritel)
             abort(404);
+
+        $insRizeni = $veritel->rizeni->sortByDesc('datum_zahajeni');
+
+        $info = [
+            'zahajeniCinnosti' => $insRizeni->last()->datum_zahajeni,
+        ];
+
+        $kraje = [];
+        foreach ($insRizeni as $ins) {
+            if(!$ins->kraj) continue;
+            if(isset($kraje[$ins->kraj]))
+                $kraje[$ins->kraj]++;
+            else
+                $kraje[$ins->kraj] = 1;
+        }
+
+        return view('veritele.detail', [
+            'veritel' => $veritel,
+            'kraje' => $kraje,
+            'info' => $info,
+            'ins_stats' => $this->typyRizeniSubjektu($id, self::TYP_VERITEL),
+            'mira_precteni' => $this->miraPrecteniUdaju($veritel),
+            /*'ins_stats' => $this->typyRizeniSpravce($id),
+            'odmeny' => $this->odmenySpravce($id),
+            'oddluzeni' => $this->posledniOddluzeni($id),
+            'mira_precteni' => $this->miraPrecteniUdaju($id),*/
+        ]);
 
     }
 
