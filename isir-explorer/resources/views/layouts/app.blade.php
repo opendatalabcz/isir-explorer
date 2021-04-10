@@ -20,18 +20,12 @@
         <div class="container">
             <a class="navbar-brand" href="#">{{ config('app.name') }}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-                aria-controls="navbarColor01" aria-expanded="false" aria-label="Zobrazení menu">
+                aria-controls="navbarColor01" aria-expanded="false" aria-label="Nabídka">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/insolvence">Insolvence</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Dlužníci</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Věřitelé</a>
                     </li>
@@ -47,7 +41,7 @@
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
                             aria-haspopup="true" aria-expanded="false">Statistiky</a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ route("stat.mapy.ins") }}">Mapy</a>
+                            <a class="dropdown-item" href="#">Všechny insolvence</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ route("stat.prehled.oddluzeni") }}">Oddlužení</a>
                             <a class="dropdown-item" href="{{ route("stat.prehled.konkurz") }}">Konkurz</a>
