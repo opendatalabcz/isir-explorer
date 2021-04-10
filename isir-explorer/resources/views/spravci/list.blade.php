@@ -32,7 +32,7 @@
                     @if($zobrazeni == $routeId)
                         <span class="btn btn-link disabled">{{ $info['nazev'] }}</span>
                     @else
-                        <a class="btn btn-link" href="{{ setUriParam(['zobrazeni' => $routeId]) }}">{{ $info['nazev'] }}</a>
+                        <a class="btn btn-link" href="{{ route('spravci.ins', ['zobrazeni' => $routeId]) }}">{{ $info['nazev'] }}</a>
                     @endif
 
                 @endforeach
