@@ -4,11 +4,11 @@ use App\Http\Controllers\Maps\DluznikController;
 use App\Http\Controllers\Maps\OddluzeniController;
 use App\Http\Controllers\Maps\PocetInsolvenciController;
 use App\Http\Controllers\Maps\PohledavkyController;
+use App\Http\Controllers\Prehledy\InsController;
 use App\Http\Controllers\Prehledy\KonkurzController;
 use App\Http\Controllers\Prehledy\OddluzeniController as PrehledyOddluzeniController;
 use App\Http\Controllers\Prehledy\ReorgController;
 use App\Http\Controllers\SpravciController;
-use App\Http\Controllers\StatController;
 use App\Http\Controllers\Stats\DelkaRizeniController;
 use App\Http\Controllers\Stats\OsobaController;
 use App\Http\Controllers\Stats\PocetInsController;
@@ -47,14 +47,14 @@ Route::get('/statistiky/pohledavky_vyse', [StatsPohledavkyController::class, 'po
 
 
 /** Prehledove stranky */
+Route::get('/statistiky/insolvence', [InsController::class, 'index'])
+    ->name("stat.prehled.ins");
 Route::get('/statistiky/konkurz', [KonkurzController::class, 'index'])
     ->name("stat.prehled.konkurz");
 Route::get('/statistiky/oddluzeni', [PrehledyOddluzeniController::class, 'index'])
     ->name("stat.prehled.oddluzeni");
 Route::get('/statistiky/reorganizace', [ReorgController::class, 'index'])
     ->name("stat.prehled.reorg");
-
-Route::get('/insolvence', [StatController::class, 'insolvence']);
 
 Route::get('/mapy/kraje/insolvence', [PocetInsolvenciController::class, 'insolvence'])
     ->name("stat.mapy.ins");
@@ -82,10 +82,3 @@ Route::get('/mapy', function () {
     return view('maps');
 });
 
-Route::get('/1', function () {
-    return view('welcome');
-});
-
-Route::get('/2', function () {
-    return view('welcome2');
-});

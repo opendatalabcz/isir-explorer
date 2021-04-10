@@ -41,7 +41,7 @@
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
                             aria-haspopup="true" aria-expanded="false">Statistiky</a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Všechny insolvence</a>
+                            <a class="dropdown-item" href="{{ route("stat.prehled.ins") }}">Všechny insolvence</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ route("stat.prehled.oddluzeni") }}">Oddlužení</a>
                             <a class="dropdown-item" href="{{ route("stat.prehled.konkurz") }}">Konkurz</a>
