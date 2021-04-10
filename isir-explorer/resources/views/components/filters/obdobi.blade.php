@@ -1,12 +1,12 @@
 <div class="form-group row">
-    <label for="insObdobi" class="col-sm-2 col-form-label">
+    <label for="insObdobi" class="{{$classFormLabels}} col-form-label">
         @if(!empty($nazevVolbyObdobi))
             {{ $nazevVolbyObdobi }}
         @else
             Období zahájení řízení
         @endif
     </label>
-    <div class="col-sm-10">
+    <div class="{{$classFormFields}}">
         <select name="obdobi" class="form-control" id="insObdobi">
             @if (!empty($obdobi->zahrnout_v_nabidce))
                 <option value="" selected="">{{ $obdobi->obdobi_nazev }}</option>

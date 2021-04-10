@@ -1,6 +1,6 @@
 <div class="form-group row">
-    <label for="zobrazeniPo" class="col-sm-2 col-form-label">Zobrazení</label>
-    <div class="col-sm-10">
+    <label for="zobrazeniPo" class="{{$classFormLabels}} col-form-label">Zobrazení</label>
+    <div class="{{$classFormFields}}">
         @php
             $poLetech = [
                 [0, "Po měsících"],

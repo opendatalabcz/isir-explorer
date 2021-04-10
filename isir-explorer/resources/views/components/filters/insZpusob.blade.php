@@ -1,6 +1,6 @@
 <div class="form-group row">
-    <label for="insZpusob" class="col-sm-2 col-form-label">Způsob řešení</label>
-    <div class="col-sm-10">
+    <label for="insZpusob" class="{{$classFormLabels}} col-form-label">Způsob řešení</label>
+    <div class="{{$classFormFields}}">
         @php
             $insZpusob = [
                 ["", "Všechny způsoby"],

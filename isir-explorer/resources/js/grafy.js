@@ -169,7 +169,7 @@ function drawPlot(elemId, res){
     }];
 
     let layout = {
-        xaxis: {title: {text: histObject.insData.labels.x, font: {size: 11}}, color:"black", spikemode:"across", spikesnap: "data"},
+        xaxis: {type: 'log', title: {text: histObject.insData.labels.x, font: {size: 11}}, color:"black", spikemode:"across", spikesnap: "data"},
         yaxis: {title: {text: histObject.insData.labels.y, font: {size: 11}}, color:"black", gridcolor:"#ccc", spikemode:"marker", showspikes: false},
         barmode: 'relative',
         margin: {

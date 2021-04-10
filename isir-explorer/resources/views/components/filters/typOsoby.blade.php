@@ -1,6 +1,6 @@
 <div class="form-group row">
-    <label for="insDluznik" class="col-sm-2 col-form-label">Dlužník</label>
-    <div class="col-sm-10">
+    <label for="insDluznik" class="{{$classFormLabels}} col-form-label">Typ dlužníka</label>
+    <div class="{{$classFormFields}}">
         @php
             $typOsoby = [
                 ["", "Všechny typy"],

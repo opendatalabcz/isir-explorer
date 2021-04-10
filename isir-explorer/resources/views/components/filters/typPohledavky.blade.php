@@ -1,6 +1,6 @@
 <div class="form-group row">
-    <label for="zobrazeniPo" class="col-sm-2 col-form-label">Typ pohledávky</label>
-    <div class="col-sm-10">
+    <label for="zobrazeniPo" class="{{$classFormLabels}} col-form-label">Typ pohledávky</label>
+    <div class="{{$classFormFields}}">
         @php
             $typPohledavky = [
                 ["", "Všechny typy"],
