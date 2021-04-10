@@ -17,10 +17,17 @@ class CacheCommands{
         "stat.prehled.konkurz",
         "stat.prehled.reorg",
         "stat.prehled.oddluzeni",
-        "spravci.ins"
+        "spravci.ins",
+        "veritele.ins",
     ];
 
     public function cacheStatistik($console){
+        $res = ini_set('memory_limit', '1000M');
+        if(!$res){
+            $console->comment("Nepodarilo se nastavit memory_limit!");
+            $console->comment("Chache pro statistiky nebude vytvorena.");
+            return;
+        }
         $this->app = $this->createApplication();
         foreach (self::CACHED_ROUTES as $value) {
             $console->comment("=> " . $value);
