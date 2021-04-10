@@ -37,7 +37,7 @@ class OddluzeniController extends BasePrehledController
         $viewData['delkaRizeni'] = DelkaRizeniController::delkaRizeni([
             'typ' => static::TYP_RIZENI,
             'rok' => 2012,
-            'vychoziRozliseni' => 30,
+            'vychoziRozliseni' => 1,
         ]);
 
         $viewData['pohledavky'] = PohledavkyController::pohledavky([

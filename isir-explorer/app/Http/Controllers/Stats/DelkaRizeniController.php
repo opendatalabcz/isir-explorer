@@ -22,23 +22,23 @@ class DelkaRizeniController extends StatsController
         self::filtrTypOsoby($filtr, $conf);
 
         $maximalniDelka = 365*10;
-        $filtr->select('delka_rizeni')
-        //$filtr->select(DB::raw('delka_rizeni/365 as delka_rizeni')) // po letech
+        $maximalniDelkaMesice = ceil($maximalniDelka/30);
+        //$filtr->select('delka_rizeni')
+        $filtr->select(DB::raw('delka_rizeni/30 as delka_rizeni_m')) // po letech
             ->where('delka_rizeni', '>=', 1)
             ->where('delka_rizeni', '<=', $maximalniDelka)
             ->whereNotNull('delka_rizeni');
 
         $rows = $filtr->get();
 
-        $histogram = self::intervalMode($rows, 10, 0, $maximalniDelka, 'delka_rizeni');
-        //$histogram = self::intervalMode($rows, 1, 0, 10, 'delka_rizeni'); // po letech
-        $histogram["defRes"] = $conf['vychoziRozliseni'] ?? 30;
+        $histogram = self::intervalMode($rows, 1, 0, $maximalniDelkaMesice, 'delka_rizeni_m');
+        $histogram["defRes"] = $conf['vychoziRozliseni'] ?? 1;
         $histogram["xtype"] = $conf['zobrazeniTyp'] == "log" ? "log" : "linear";
 
         return [
             'data' => $histogram,
             'labels' => [
-                'x' => 'Délka řízení (dny)',
+                'x' => 'Délka řízení (měsíce)',
                 'y' => 'Počet insolvencí',
             ],
         ];
@@ -47,7 +47,7 @@ class DelkaRizeniController extends StatsController
     public function delkaRizeni_detail(Request $request){
         $viewData = [
             'nazevStatistiky' => 'Délka řízení',
-            'jednotkaRozsahu' => 'dní',
+            'jednotkaRozsahu' => 'měsíců',
             'povolitPrazdneObdobi' => false,
             'extraNastaveni' => ['zobrazeniTyp'],
         ];
@@ -57,7 +57,7 @@ class DelkaRizeniController extends StatsController
             'rok' => $this->getRok($request, static::VOLBA_ROK_VYCHOZI),
             'typOsoby' => $this->getTypOsoby($request),
             'zobrazeniTyp' => $request->get("zobrazeniTyp"),
-            'vychoziRozliseni' => 30,
+            'vychoziRozliseni' => 1,
         ]);
 
         return $this->statView('stats.detail-delkaRizeni', $viewData);
