@@ -16,9 +16,8 @@
                         <h1>Věřitelé</h1>
                     </div>
                     <div class="card-body">
-                        <p>TODO</p>
+                        <p>Věřitel je osoba, které náleží plnění nějaké pohledávky od osoby dlužníka. Věřitelé do řízení vstupují podáním tzv. přihlášky pohledávky. Zájmy většiny věřitelů v řízení prosazují věřitelské orgány -- schůze věřitelů a věřitelský výbor. Postavení věřitelů v insolvenčním řízení se liší dle toho, zda jsou zajištění nebo nezajištění. Zajištěný věřitel se vyznačuje tím, že jeho pohledávka je zajištěna majetkem dlužníka.</p>
                     </div>
-
                 </div>
             </div>
         </div>
