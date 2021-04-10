@@ -13,6 +13,8 @@ class DelkaRizeniController extends StatsController
 
     public static function delkaRizeni(array $conf){
 
+        $conf = $conf + ['zobrazeniTyp' => 'linear'];
+
         $filtr = InsRizeni::query();
 
         self::filtrObdobi($filtr, $conf);
@@ -31,6 +33,7 @@ class DelkaRizeniController extends StatsController
         $histogram = self::intervalMode($rows, 10, 0, $maximalniDelka, 'delka_rizeni');
         //$histogram = self::intervalMode($rows, 1, 0, 10, 'delka_rizeni'); // po letech
         $histogram["defRes"] = $conf['vychoziRozliseni'] ?? 30;
+        $histogram["xtype"] = $conf['zobrazeniTyp'] == "log" ? "log" : "linear";
 
         return [
             'data' => $histogram,
@@ -46,12 +49,14 @@ class DelkaRizeniController extends StatsController
             'nazevStatistiky' => 'Délka řízení',
             'jednotkaRozsahu' => 'dní',
             'povolitPrazdneObdobi' => false,
+            'extraNastaveni' => ['zobrazeniTyp'],
         ];
 
         $viewData['delkaRizeni'] = DelkaRizeniController::delkaRizeni([
             'typ' => $this->getZpusobReseni($request),
             'rok' => $this->getRok($request, static::VOLBA_ROK_VYCHOZI),
             'typOsoby' => $this->getTypOsoby($request),
+            'zobrazeniTyp' => $request->get("zobrazeniTyp"),
             'vychoziRozliseni' => 30,
         ]);
 

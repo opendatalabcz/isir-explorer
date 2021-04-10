@@ -1,0 +1,16 @@
+<div class="form-group row">
+    <label for="zobrazeniTyp" class="{{$classFormLabels}} col-form-label">Typ zobrazení</label>
+    <div class="{{$classFormFields}}">
+        @php
+            $poLetech = [
+                ["lin", "Lineární"],
+                ["log", "Logaritmické"],
+            ];
+        @endphp
+        <select name="zobrazeniTyp" class="form-control" id="zobrazeniPo">
+            @foreach ($poLetech as $item)
+                <option value="{{$item[0]}}" {{ Request::get('zobrazeniTyp') == $item[0] ? "selected" : "" }}>{{ $item[1] }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>

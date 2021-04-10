@@ -23,15 +23,27 @@
         @endif
 
         @if(in_array('poLetech', $extraNastaveni))
-            @include('components.filters.zobrazitPoLetech')
+            <div class="col-lg-6">
+                @include('components.filters.zobrazitPoLetech')
+            </div>
         @endif
 
         @if(in_array('typPohledavky', $extraNastaveni))
-            @include('components.filters.typPohledavky')
+            <div class="col-lg-6">
+                @include('components.filters.typPohledavky')
+            </div>
         @endif
 
         @if(in_array('idRozsahu', $extraNastaveni))
-            @include('components.filters.idRozsahuZobrazeni')
+            <div class="col-lg-6">
+                @include('components.filters.idRozsahuZobrazeni')
+            </div>
+        @endif
+
+        @if(in_array('zobrazeniTyp', $extraNastaveni))
+            <div class="col-lg-6">
+                @include('components.filters.zobrazitLogaritmicky')
+            </div>
         @endif
     </div>
 
