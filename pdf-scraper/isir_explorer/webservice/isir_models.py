@@ -1,7 +1,7 @@
 from .helpers import *
 from .enums import *
 import re
-import xml.etree.ElementTree as ET # nosec - cteni xml z ins. rejstriku
+import xml.etree.ElementTree as ET  # nosec - cteni xml z ins. rejstriku
 import dateutil.parser
 from datetime import datetime
 import json
@@ -95,8 +95,8 @@ class IsirModel:
                 f"ON DUPLICATE KEY UPDATE {update_part} {edit_counter}"
         else:
             edit_counter = f", pocet_zmen={self.TABLE_NAME}.pocet_zmen+1" if self.COUNT_EDITS else ""
-            q = f"INSERT INTO {self.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) " # nosec - const
-            q += f"ON CONFLICT {self.UNIQUE_CONSTRAINT} DO UPDATE SET {update_part} {edit_counter}" # nosec - const
+            q = f"INSERT INTO {self.TABLE_NAME} ({column_order}) VALUES ({column_placeholders}) "  # nosec - const
+            q += f"ON CONFLICT {self.UNIQUE_CONSTRAINT} DO UPDATE SET {update_part} {edit_counter}"  # nosec - const
             return q
 
     @staticmethod
@@ -225,7 +225,7 @@ class IsirUdalost(IsirModel):
             else:
                 return data
         elif columnName == "poznamka":
-            return ET.fromstring(data) # nosec - predpoklad konsistentnich dat z ins. resjtriku
+            return ET.fromstring(data)  # nosec - predpoklad konsistentnich dat z ins. resjtriku
         return data
 
 
