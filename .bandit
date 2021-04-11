@@ -1,2 +1,2 @@
 [bandit]
-skips: B608,B405
+skips: B608,B405,B108
