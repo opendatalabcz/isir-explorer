@@ -1,5 +1,5 @@
 import aiohttp
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET # nosec - pro cteni xml z ins. rejstriku
 from .exceptions import IsirServiceException, TooManyRetries, NoRecordsInResponse
 from .isir_models import IsirOsoba, IsirUdalost, IsirVec, IsirStavVeci, IsirAdresa
 import asyncio
@@ -107,7 +107,8 @@ class IsirRequests:
         if self.conf["ws.last_id"] is not None:
             return self.conf["ws.last_id"]
 
-        row = await self.db.fetch_one(query=f"SELECT MAX(id) FROM {IsirUdalost.TABLE_NAME}")
+        query = f"SELECT MAX(id) FROM {IsirUdalost.TABLE_NAME}" # nosec - konstanta
+        row = await self.db.fetch_one(query=query)
         last_id = row[0]
 
         if last_id is None:
@@ -209,7 +210,7 @@ class RequestTask:
             await asyncio.sleep(self.parent.conf["ws.delay"])
 
     async def process_response(self, data):
-        root = ET.fromstring(data)
+        root = ET.fromstring(data) # nosec - predpoklad konsistentnich dat z ins. resjtriku
         body = root.find('soap:Body', self.NAMESPACES)
         isir_res = body.find(
             'isir:getIsirWsPublicDataResponse', self.NAMESPACES)

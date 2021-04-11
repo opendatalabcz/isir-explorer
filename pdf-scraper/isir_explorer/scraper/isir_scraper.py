@@ -5,7 +5,7 @@ import re
 import sys
 import json
 import logging
-import subprocess
+import subprocess   # nosec - pro lokalni spusteni pdftotext, pdftk
 from .isir_decryptor import IsirDecryptor
 from .parser.prihlaska_pohledavky import PrihlaskaParser
 from .parser.prehledovy_list import PrehledovyListParser

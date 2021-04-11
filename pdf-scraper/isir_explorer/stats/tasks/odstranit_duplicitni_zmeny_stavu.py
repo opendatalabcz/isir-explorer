@@ -34,7 +34,8 @@ class OdstranitDuplicitniZmenyStavu(Task):
                 posledni = stav["druhstavrizeni"]
 
             if duplicitni:
-                await self.db.execute(query="DELETE FROM isir_vec_stav WHERE id IN (" + ",".join(duplicitni) + ")")
+                query = "DELETE FROM isir_vec_stav WHERE id IN (" + ",".join(duplicitni) + ")" # nosec - bezp. vstup
+                await self.db.execute(query=query)
             i += 1
 
             if i % 100 == 0:

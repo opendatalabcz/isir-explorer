@@ -35,7 +35,7 @@ class StatsOddluzeni(Task):
             return None
         if mira == 100:
             return 0
-        celkovy_dluh = vyse/mira * 100
+        celkovy_dluh = vyse / mira * 100
         return celkovy_dluh - vyse
 
     async def analyzaPohledavekRizeni(self, ins_vec):

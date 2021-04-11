@@ -100,7 +100,7 @@ class Downloader:
                 iu2.dl_precteno IS NULL AND
                 iu2.dokumenturl IS NOT NULL AND
                 iu.typudalosti IN ({typyudalosti}) ORDER BY iu.id ASC LIMIT 1000)
-        """
+        """ # nosec - vlozeni preddefinovanych konstant
 
         # Odstranit duplicitni udalosti, ktere odkazuji na stejny dokument
         rows = await self.db.fetch_all(query=query)

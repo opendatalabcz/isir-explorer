@@ -4,11 +4,13 @@ import click
 import configparser
 from asyncio import events
 
+
 def read_with_configparser(str_content):
     config = configparser.ConfigParser()
     config.optionxform = str    # Zachovat velikosti pismen v klicich konfigurace
     config.read_string(str_content)
     return config
+
 
 def validate_config_file(ctx, param, value):
     if value is not None:

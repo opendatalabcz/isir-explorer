@@ -13,12 +13,12 @@ class AppConfig:
     REQUIRED = []
 
     CONVERT_INT = ['ws.min_id', 'ws.max_id', 'ws.retry_times', 'ws.last_id',
-        'ws.concurrency', 'ws.request_timeout']
+            'ws.concurrency', 'ws.request_timeout']
 
     # Vychozi hodnoty v nastaveni a popis konfigurace
     DEFAULTS = {
         # Globalni
-        "tmp_dir": "/tmp/isir",                             # Adresar pro docasne soubory
+        "tmp_dir": "/tmp/isir",                             # nosec - Vychozi adresar pro docasne soubory
         "debug": False,
         "verbose": False,
         "silent": False,

@@ -1,9 +1,8 @@
 from ..task import Task
-from isir_explorer.webservice.enums import DRUH_SPRAVCE
 from asyncpg.exceptions import NotNullViolationError
 
-class StatsInsVeritele(Task):
 
+class StatsInsVeritele(Task):
 
     def __init__(self, config, **kwargs):
         super().__init__(config, **kwargs)

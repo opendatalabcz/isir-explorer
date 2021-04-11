@@ -2,6 +2,7 @@ from ..task import Task
 from isir_explorer.webservice.enums import DRUH_SPRAVCE
 from asyncpg.exceptions import UniqueViolationError
 
+
 class StatsInsSpravci(Task):
 
     def sestavitJmeno(self, osoba):

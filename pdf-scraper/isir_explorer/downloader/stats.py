@@ -36,8 +36,8 @@ class DownloadStats:
             self.__repr__()
         column_names = list(self.stats_record.keys())
         placeholders = map(lambda x: ":" + x, column_names)
-        query = "INSERT INTO dl_stats (" + ",".join(column_names) + \
-            ") VALUES (" + ",".join(placeholders) + ")"
+        query = "INSERT INTO dl_stats (" + ",".join(column_names) + ") " # nosec - konst. nazvy
+        query += "VALUES (" + ",".join(placeholders) + ")"
         await db.execute(query=query, values=self.stats_record)
 
     def __repr__(self):
