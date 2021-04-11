@@ -13,7 +13,7 @@ class AppConfig:
     REQUIRED = []
 
     CONVERT_INT = ['ws.min_id', 'ws.max_id', 'ws.retry_times', 'ws.last_id',
-            'ws.concurrency', 'ws.request_timeout']
+                   'ws.concurrency', 'ws.request_timeout']
 
     # Vychozi hodnoty v nastaveni a popis konfigurace
     DEFAULTS = {
