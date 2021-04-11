@@ -20,10 +20,10 @@ do
   refPath="$REF_DIR/$refFile"
 
   if [ "$1" == "--init" ]; then
-    python3 scraper.py -o "$refPath" "$f"
+    isir-scraper "$refPath" "$f"
   else
     output="$TEST_PATH/tmp.json"
-    python3 scraper.py -o "$output" "$f"
+    isir-scraper -o "$output" "$f"
     diff "$output" "$refPath" >/dev/null
     if [ $? -ne 0 ]; then
       echo -e "\e[91m===chyba===\e[39m";
