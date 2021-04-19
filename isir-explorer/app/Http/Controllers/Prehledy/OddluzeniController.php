@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Prehledy;
 
 use App\Http\Controllers\Stats\DelkaRizeniController;
+use App\Http\Controllers\Stats\OddlMiraUspokojeniController;
 use App\Http\Controllers\Stats\OsobaController;
 use App\Http\Controllers\Stats\PocetInsController;
 use App\Http\Controllers\Stats\PohledavkyController;
@@ -59,6 +60,20 @@ class OddluzeniController extends BasePrehledController
             'typPohledavky' => 'Z',
             'idRozsahu' => 2,
             'vychoziRozliseni' => 130000,
+        ]);
+
+        $viewData['miraUspokojeni'] = OddlMiraUspokojeniController::miraUspokojeni([
+            'miraUspokojeni' => OddlMiraUspokojeniController::ZOBRAZ_MIRA_SKUTECNA,
+            'zobrazeniTyp' => 'lin',
+            'rok' => null,
+            'vychoziRozliseni' => 2,
+        ]);
+
+        $viewData['miraUspokojeniRozdil'] = OddlMiraUspokojeniController::miraUspokojeni([
+            'miraUspokojeni' => OddlMiraUspokojeniController::ZOBRAZ_MIRA_ROZDIL,
+            'zobrazeniTyp' => 'log',
+            'rok' => null,
+            'vychoziRozliseni' => 4,
         ]);
 
         return view('prehledy.oddluzeni', $viewData);
