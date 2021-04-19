@@ -45,6 +45,12 @@
                 @include('components.filters.zobrazitLogaritmicky')
             </div>
         @endif
+
+        @if(in_array('miraUspokojeni', $extraNastaveni))
+            <div class="col-lg-6">
+                @include('components.filters.miraUspokojeni')
+            </div>
+        @endif
     </div>
 
     @include('components.filters.potvrditFiltr')

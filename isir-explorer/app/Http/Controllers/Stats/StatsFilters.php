@@ -9,6 +9,12 @@ trait StatsFilters {
         }
     }
 
+    protected static function filtrObdobiUkonceni($filtr, $conf){
+        if(!empty($conf['rok'])){
+            $filtr->where('ukonceni_r', '=', $conf['rok']);
+        }
+    }
+
     protected static function filtrZpusobReseni($filtr, $conf){
         if(!empty($conf['typ'])){
             $filtr->where('typ_rizeni', '=', $conf['typ']);

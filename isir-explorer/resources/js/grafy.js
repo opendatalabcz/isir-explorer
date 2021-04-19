@@ -169,8 +169,8 @@ function drawPlot(elemId, res){
     }];
 
     let layout = {
-        xaxis: {type: histObject.xtype, title: {text: histObject.insData.labels.x, font: {size: 11}}, color:"black", spikemode:"across", spikesnap: "data"},
-        yaxis: {title: {text: histObject.insData.labels.y, font: {size: 11}}, color:"black", gridcolor:"#ccc", spikemode:"marker", showspikes: false},
+        xaxis: {type: histObject.xtype || "linear", title: {text: histObject.insData.labels.x, font: {size: 11}}, color:"black", spikemode:"across", spikesnap: "data"},
+        yaxis: {type: histObject.ytype || "linear", title: {text: histObject.insData.labels.y, font: {size: 11}}, color:"black", gridcolor:"#ccc", spikemode:"marker", showspikes: false},
         barmode: 'relative',
         margin: {
             l: 50,
