@@ -203,9 +203,20 @@ function drawPlot(elemId, res){
 
     }];
 
+    let xAxisDef = {type: histObject.xtype || "linear", title: {text: histObject.insData.labels.x, font: {size: 11}}, color:"black", spikemode:"across", spikesnap: "data"};
+    let yAxisDef = {type: histObject.ytype || "linear", title: {text: histObject.insData.labels.y, font: {size: 11}}, color:"black", gridcolor:"#ccc", spikemode:"marker", showspikes: false};
+
+    // V logaritmickych grafech se pri pouziti "autorange" vynecha prvni sloupec, je nutna korekce:
+    if("log" == histObject.xtype){
+        // Definice range vypne autorange
+        let rangeMin = histObj.min == 0 ? 0 : Math.log10(histObj.min);
+        let rangeMax = histObj.max == 0 ? 0 : Math.log10(histObj.max);
+        xAxisDef.range = [rangeMin, rangeMax];
+    }
+
     let layout = {
-        xaxis: {type: histObject.xtype || "linear", title: {text: histObject.insData.labels.x, font: {size: 11}}, color:"black", spikemode:"across", spikesnap: "data"},
-        yaxis: {type: histObject.ytype || "linear", title: {text: histObject.insData.labels.y, font: {size: 11}}, color:"black", gridcolor:"#ccc", spikemode:"marker", showspikes: false},
+        xaxis: xAxisDef,
+        yaxis: yAxisDef,
         barmode: 'relative',
         margin: {
             l: 50,
