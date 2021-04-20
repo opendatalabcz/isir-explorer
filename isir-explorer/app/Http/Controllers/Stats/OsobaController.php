@@ -74,14 +74,14 @@ class OsobaController extends StatsController
         $viewData = [
             'nazevStatistiky' => 'Věk dlužníka',
             'jednotkaRozsahu' => 'let',
-            'povolitPrazdneObdobi' => false,
+            'povolitPrazdneObdobi' => true,
         ];
 
         $viewData['vekDluznika'] = OsobaController::vekDluznika([
             'typ' => $this->getZpusobReseni($request),
-            'rok' => $this->getRok($request, static::VOLBA_ROK_VYCHOZI),
+            'rok' => $this->getRok($request),
             'typOsoby' => $this->getTypOsoby($request),
-            'vychoziRozliseni' => 5,
+            'vychoziRozliseni' => 1,
         ]);
 
         return $this->statView('stats.detail-vek', $viewData);

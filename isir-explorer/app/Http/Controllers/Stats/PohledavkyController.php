@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Stats;
 
 use App\Models\InsRizeni;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PohledavkyController extends StatsController
 {
@@ -14,6 +13,7 @@ class PohledavkyController extends StatsController
     const VYCHOZI_ROZSAH = 2;
 
     public static function pohledavkyVyse(array $conf){
+        $conf = $conf + ['typPohledavky' => null, 'zobrazeniTyp' => 'logxy'];
 
         if(!empty($conf['idRozsahu'])){
             self::aplikovatDefiniciRozsahu($conf, $conf['idRozsahu']);
@@ -23,7 +23,6 @@ class PohledavkyController extends StatsController
             self::aplikovatDefiniciRozsahu($conf, self::VYCHOZI_ROZSAH);
         }
 
-        $conf = $conf + ['max' => 10000000, 'res' => 10000, 'typPohledavky' => null, 'zobrazeniTyp' => 'logxy'];
         $filtr = InsRizeni::query()
             ->join('stat_pohledavky', 'stat_pohledavky.spisovaznacka', '=', 'stat_vec.spisovaznacka');
 
@@ -93,16 +92,17 @@ class PohledavkyController extends StatsController
         $viewData = [
             'nazevStatistiky' => 'Počet pohledávek',
             'jednotkaRozsahu' => 'pohledávek',
-            'povolitPrazdneObdobi' => false,
+            'povolitPrazdneObdobi' => true,
             'extraNastaveni' => ['zobrazeniTyp'],
+            'vychoziZobrazeniTyp' => 'logxy',
         ];
 
         $viewData['pohledavky'] = PohledavkyController::pohledavky([
             'typ' => $this->getZpusobReseni($request),
-            'rok' => $this->getRok($request, static::VOLBA_ROK_VYCHOZI),
+            'rok' => $this->getRok($request),
             'typOsoby' => $this->getTypOsoby($request),
-            'zobrazeniTyp' => $request->get("zobrazeniTyp", "linear"),
-            'vychoziRozliseni' => 5,
+            'zobrazeniTyp' => $request->get("zobrazeniTyp", "logxy"),
+            'vychoziRozliseni' => 2,
         ]);
 
         return $this->statView('stats.detail-pohledavky', $viewData);
@@ -112,7 +112,7 @@ class PohledavkyController extends StatsController
         $viewData = [
             'nazevStatistiky' => 'Velikost insolvence',
             'jednotkaRozsahu' => 'Kč',
-            'povolitPrazdneObdobi' => false,
+            'povolitPrazdneObdobi' => true,
             'extraNastaveni' => ['typPohledavky', 'idRozsahu', 'zobrazeniTyp'],
             'rozsahyZobrazeni' => self::ROZSAH_ZOBRAZENI,
             'vychoziZobrazeniTyp' => 'logxy',
@@ -120,11 +120,11 @@ class PohledavkyController extends StatsController
 
         $viewData['pohledavkyVyse'] = PohledavkyController::pohledavkyVyse([
             'typ' => $this->getZpusobReseni($request),
-            'rok' => $this->getRok($request, static::VOLBA_ROK_VYCHOZI),
+            'rok' => $this->getRok($request),
             'typOsoby' => $this->getTypOsoby($request),
             'typPohledavky' => $request->get("typPohledavky"),
             'idRozsahu' => $request->get("idRozsahu"),
-            'zobrazeniTyp' => $request->get("zobrazeniTyp", "log"),
+            'zobrazeniTyp' => $request->get("zobrazeniTyp", "logxy"),
         ]);
 
         return $this->statView('stats.detail-pohledavkyVyse', $viewData);

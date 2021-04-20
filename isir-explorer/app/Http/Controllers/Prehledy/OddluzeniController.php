@@ -35,50 +35,40 @@ class OddluzeniController extends BasePrehledController
 
         $viewData['vekDluznika'] = OsobaController::vekDluznika([
             'typ' => static::TYP_RIZENI,
-            'vychoziRozliseni' => 5,
+            'vychoziRozliseni' => 1,
         ]);
 
         $viewData['delkaRizeni'] = DelkaRizeniController::delkaRizeni([
             'typ' => static::TYP_RIZENI,
-            'rok' => 2012,
             'vychoziRozliseni' => 1,
         ]);
 
         $viewData['pohledavky'] = PohledavkyController::pohledavky([
             'typ' => static::TYP_RIZENI,
-            'rok' => 2019,
-            'vychoziRozliseni' => 3,
-            'zobrazeniTyp' => 'log',
+            'zobrazeniTyp' => 'logxy',
+            'vychoziRozliseni' => 2,
         ]);
 
         $viewData['pohledavkyVyseCelkem'] = PohledavkyController::pohledavkyVyse([
             'typ' => static::TYP_RIZENI,
-            'rok' => 2019,
             'idRozsahu' => 2,
-            'zobrazeniTyp' => 'logxy',
-            'vychoziRozliseni' => 100000,
         ]);
 
         $viewData['pohledavkyVyseZaji'] = PohledavkyController::pohledavkyVyse([
             'typ' => static::TYP_RIZENI,
-            'rok' => 2019,
             'typPohledavky' => 'Z',
             'idRozsahu' => 2,
-            'zobrazeniTyp' => 'logxy',
-            'vychoziRozliseni' => 100000,
         ]);
 
         $viewData['miraUspokojeni'] = OddlMiraUspokojeniController::miraUspokojeni([
             'miraUspokojeni' => OddlMiraUspokojeniController::ZOBRAZ_MIRA_SKUTECNA,
             'zobrazeniTyp' => 'lin',
-            'rok' => null,
-            'vychoziRozliseni' => 2,
+            'vychoziRozliseni' => 1,
         ]);
 
         $viewData['miraUspokojeniRozdil'] = OddlMiraUspokojeniController::miraUspokojeni([
             'miraUspokojeni' => OddlMiraUspokojeniController::ZOBRAZ_MIRA_ROZDIL,
             'zobrazeniTyp' => 'log',
-            'rok' => null,
             'vychoziRozliseni' => 4,
         ]);
 
@@ -89,6 +79,7 @@ class OddluzeniController extends BasePrehledController
         $viewData['majetekDluznika'] = OddlMajetekController::majetekDluznika([
             'zobrazeniTyp' => 'log',
             'idRozsahu' => 3,
+            'vychoziRozliseni' => 10000,
         ]);
 
         $viewData['formaOddluzeniIS'] = OddlFormaController::formaOddluzeni([

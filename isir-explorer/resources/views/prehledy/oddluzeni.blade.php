@@ -39,7 +39,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pocetNovychRoky"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'O', 'poLetech'=>1]) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'O', 'poLetech'=>1]) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -50,7 +51,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pocetNovychIns"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'O']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'O']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -64,7 +66,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_typyOsob"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.dluznik.typ', ['zpusobReseni'=>'O']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.dluznik.typ', ['zpusobReseni'=>'O']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -75,7 +78,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_vekDluznika"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.dluznik.vek', ['zpusobReseni'=>'O']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.dluznik.vek', ['zpusobReseni'=>'O']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -89,7 +93,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_delkaRizeni"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.delka', ['zpusobReseni'=>'O', 'obdobi' => 2010]) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.rizeni.delka', ['zpusobReseni'=>'O']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -101,7 +106,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pohledavky"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.pohledavky', ['zpusobReseni'=>'O', 'obdobi' => 2019]) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.rizeni.pohledavky', ['zpusobReseni'=>'O']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -115,7 +121,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_formaOddluzeniIS"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.oddl.forma', ['navrhujiciStrana'=>'IS']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.oddl.forma', ['navrhujiciStrana'=>'IS']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -127,7 +134,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_formaOddluzeniDL"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.oddl.forma', ['navrhujiciStrana'=>'DL']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.oddl.forma', ['navrhujiciStrana'=>'DL']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -141,7 +149,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pohledavkyVyseCelkem"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.pohledavky.vyse', ['zpusobReseni'=>'O', 'obdobi' => 2019]) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.rizeni.pohledavky.vyse', ['zpusobReseni'=>'O']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -153,7 +162,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pohledavkyVyseZaji"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.pohledavky.vyse', ['zpusobReseni'=>'O', 'obdobi' => 2019, 'typPohledavky' => 'Z']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.rizeni.pohledavky.vyse', ['zpusobReseni'=>'O', 'typPohledavky' => 'Z']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -167,7 +177,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_miraUspokojeni"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.oddl.mira_uspokojeni', ['miraUspokojeni'=>0, 'zobrazeniTyp' => 'lin']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.oddl.mira_uspokojeni', ['miraUspokojeni'=>0, 'zobrazeniTyp' => 'lin']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -179,7 +190,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_miraUspokojeniRozdil"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.oddl.mira_uspokojeni', ['miraUspokojeni'=>2, 'zobrazeniTyp' => 'log']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.oddl.mira_uspokojeni', ['miraUspokojeni'=>2, 'zobrazeniTyp' => 'log']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -193,7 +205,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_prijmyDluznika"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.oddl.prijmy_dluznika', []) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.oddl.prijmy_dluznika', []) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -204,7 +217,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_majetekDluznika"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.oddl.majetek_dluznika', []) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.oddl.majetek_dluznika', []) }}">Detail</a>
                     </div>
                 </div>
             </div>

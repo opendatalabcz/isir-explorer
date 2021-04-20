@@ -194,8 +194,14 @@ class StatsController extends Controller
             $def = self::ROZSAH_ZOBRAZENI[$id];
             $conf['max'] = $def['max'];
             $conf['res'] = $def['res'];
-            if(empty($conf['vychoziRozliseni']))
+            if(empty($conf['vychoziRozliseni'])){
                 $conf['vychoziRozliseni'] = $def['def'];
+
+                // V pripade logaritmickeho grafu jako vychozi rozliseni nastavit max. presnost
+                if(isset($conf['zobrazeniTyp']) && ($conf['zobrazeniTyp'] == "logxy" || $conf['zobrazeniTyp'] == "log")){
+                    $conf['vychoziRozliseni'] = $def['res'];
+                }
+            }
         }
     }
 

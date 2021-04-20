@@ -48,13 +48,13 @@ class DelkaRizeniController extends StatsController
         $viewData = [
             'nazevStatistiky' => 'Délka řízení',
             'jednotkaRozsahu' => 'měsíců',
-            'povolitPrazdneObdobi' => false,
+            'povolitPrazdneObdobi' => true,
             'extraNastaveni' => ['zobrazeniTyp'],
         ];
 
         $viewData['delkaRizeni'] = DelkaRizeniController::delkaRizeni([
             'typ' => $this->getZpusobReseni($request),
-            'rok' => $this->getRok($request, static::VOLBA_ROK_VYCHOZI),
+            'rok' => $this->getRok($request),
             'typOsoby' => $this->getTypOsoby($request),
             'zobrazeniTyp' => $request->get("zobrazeniTyp"),
             'vychoziRozliseni' => 1,
