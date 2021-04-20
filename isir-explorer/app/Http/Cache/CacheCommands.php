@@ -22,7 +22,7 @@ class CacheCommands{
     ];
 
     public function cacheStatistik($console){
-        $res = ini_set('memory_limit', '1000M') && ini_set('max_execution_time', '600');
+        $res = ini_set('memory_limit', '1000M') && set_time_limit(600);
 
         if(!$res){
             $console->comment("Nepodarilo se nastavit memory_limit / max_execution_time!");
