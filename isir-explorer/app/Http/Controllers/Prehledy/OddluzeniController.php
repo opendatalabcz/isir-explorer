@@ -47,14 +47,16 @@ class OddluzeniController extends BasePrehledController
         $viewData['pohledavky'] = PohledavkyController::pohledavky([
             'typ' => static::TYP_RIZENI,
             'rok' => 2019,
-            'vychoziRozliseni' => 5,
+            'vychoziRozliseni' => 3,
+            'zobrazeniTyp' => 'log',
         ]);
 
         $viewData['pohledavkyVyseCelkem'] = PohledavkyController::pohledavkyVyse([
             'typ' => static::TYP_RIZENI,
             'rok' => 2019,
             'idRozsahu' => 2,
-            'vychoziRozliseni' => 130000,
+            'zobrazeniTyp' => 'logxy',
+            'vychoziRozliseni' => 100000,
         ]);
 
         $viewData['pohledavkyVyseZaji'] = PohledavkyController::pohledavkyVyse([
@@ -62,7 +64,8 @@ class OddluzeniController extends BasePrehledController
             'rok' => 2019,
             'typPohledavky' => 'Z',
             'idRozsahu' => 2,
-            'vychoziRozliseni' => 130000,
+            'zobrazeniTyp' => 'logxy',
+            'vychoziRozliseni' => 100000,
         ]);
 
         $viewData['miraUspokojeni'] = OddlMiraUspokojeniController::miraUspokojeni([

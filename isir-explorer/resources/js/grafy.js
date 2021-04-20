@@ -188,6 +188,9 @@ function drawPlot(elemId, res){
         });
     }
 
+    console.log(xPoints);
+    console.log(res);
+
     let plotData = [{
         x: xPoints,
         y: histObj.data,
@@ -211,6 +214,10 @@ function drawPlot(elemId, res){
         // Definice range vypne autorange
         let rangeMin = histObj.min == 0 ? 0 : Math.log10(histObj.min);
         let rangeMax = histObj.max == 0 ? 0 : Math.log10(histObj.max);
+
+        // Posunuti leveho rozsahu pro zmenseni velikosti prvniho sloupce v log. zobrazeni
+        rangeMin = Math.log10(res * 0.75);
+
         xAxisDef.range = [rangeMin, rangeMax];
     }
 
