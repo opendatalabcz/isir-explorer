@@ -49,7 +49,7 @@ class OddlMiraUspokojeniController extends StatsController
         }
 
         $histogram["defRes"] = $conf['vychoziRozliseni'] ?? 1;
-        $histogram["ytype"] = $conf['zobrazeniTyp'] == "log" ? "log" : "linear";
+        self::aplikovatNastaveniOs($histogram, $conf, "Y");
 
         return [
             'data' => $histogram,
@@ -69,6 +69,7 @@ class OddlMiraUspokojeniController extends StatsController
             'nastaveni' => ['obdobi', 'typOsoby'],
             'extraNastaveni' => ['zobrazeniTyp', 'miraUspokojeni'],
             'vyraditTypOsoby' => ['P'],
+            'vychoziLogOsa' => 'Y',
             'poznamky' => [
                 'Zobrazovaná míra uspokojení se týká pouze nezajištěných věřitelů.',
                 'Zahrnuta jsou data pouze pro řízení, pro která se podařilo přečíst data o míře uspokojení ze Zprávy o splnění oddlužení.'

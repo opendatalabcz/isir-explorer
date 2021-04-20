@@ -57,7 +57,7 @@ class OddlMajetekController extends StatsController
 
         $histogram = self::intervalMode($rows, $conf['res'], 0, $conf['max'], 'majetek');
         $histogram["defRes"] = $conf['vychoziRozliseni'] ?? $conf['res'];
-        $histogram["ytype"] = $conf['zobrazeniTyp'] == "log" ? "log" : "linear";
+        self::aplikovatNastaveniOs($histogram, $conf, "Y");
 
         return [
             'data' => $histogram,
@@ -77,7 +77,8 @@ class OddlMajetekController extends StatsController
             'extraNastaveni' => ['zobrazeniTyp', 'idRozsahu', 'typMajetku'],
             'rozsahyZobrazeni' => self::ROZSAH_ZOBRAZENI,
             'vyraditTypOsoby' => ['P'],
-            'vychoziZobrazeniTyp' => 'log',
+            'vychoziZobrazeniTyp' => 'logxy',
+            'vychoziLogOsa' => 'Y',
             'poznamky' => [
                 'Zahrnuta jsou data pouze z insolvenčních řízení, pro která se podařilo přečíst data o majetku dlužníka ze Zprávy pro oddlužení.'
             ],

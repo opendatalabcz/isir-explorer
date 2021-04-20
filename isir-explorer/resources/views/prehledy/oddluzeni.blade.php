@@ -145,7 +145,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h2>Rozdíl míry uspokojení a předpokladu</h2>
+                        <h2>Rozdíl míry a předpokladu uspokojení</h2>
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_miraUspokojeniRozdil"></div>

@@ -4,7 +4,8 @@
         @php
             $poLetech = [
                 ["lin", "Lineární"],
-                ["log", "Logaritmické"],
+                ["log", "Logaritmické - osa " . ($vychoziLogOsa ?? "X")],
+                ["logxy", "Logaritmické - osy X,Y"],
             ];
         @endphp
         <select name="zobrazeniTyp" class="form-control" id="zobrazeniPo">

@@ -199,6 +199,19 @@ class StatsController extends Controller
         }
     }
 
+    protected static function aplikovatNastaveniOs(&$histogram, $conf, $vychoziLogOsa = "X"){
+        $histogram["xtype"] = $histogram["ytype"] = "linear";
+
+        if($conf['zobrazeniTyp'] == "logxy"){
+            $histogram["xtype"] = $histogram["ytype"] = "log";
+        }elseif($conf['zobrazeniTyp'] == "log"){
+            if("Y" == ($conf['vychoziLogOsa'] ?? $vychoziLogOsa))
+                $histogram["ytype"] = "log";
+            else
+                $histogram["xtype"] = "log";
+        }
+    }
+
     protected function statView($view, $data){
 
         $data = $data + [

@@ -33,7 +33,7 @@ class DelkaRizeniController extends StatsController
 
         $histogram = self::intervalMode($rows, 1, 0, $maximalniDelkaMesice, 'delka_rizeni_m');
         $histogram["defRes"] = $conf['vychoziRozliseni'] ?? 1;
-        $histogram["xtype"] = $conf['zobrazeniTyp'] == "log" ? "log" : "linear";
+        self::aplikovatNastaveniOs($histogram, $conf);
 
         return [
             'data' => $histogram,

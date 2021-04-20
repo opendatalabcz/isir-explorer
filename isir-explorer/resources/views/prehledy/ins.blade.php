@@ -107,7 +107,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h2>Velikosti konkurzů</h2>
+                        <h2>Velikosti insolvencí</h2>
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pohledavkyVyseCelkem"></div>

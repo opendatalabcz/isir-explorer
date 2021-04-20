@@ -23,7 +23,7 @@ class PohledavkyController extends StatsController
             self::aplikovatDefiniciRozsahu($conf, self::VYCHOZI_ROZSAH);
         }
 
-        $conf = $conf + ['max' => 10000000, 'res' => 10000, 'typPohledavky' => null, 'zobrazeniTyp' => 'log'];
+        $conf = $conf + ['max' => 10000000, 'res' => 10000, 'typPohledavky' => null, 'zobrazeniTyp' => 'logxy'];
         $filtr = InsRizeni::query()
             ->join('stat_pohledavky', 'stat_pohledavky.spisovaznacka', '=', 'stat_vec.spisovaznacka');
 
@@ -48,8 +48,7 @@ class PohledavkyController extends StatsController
 
         $histogram = self::intervalMode($rows, $conf['res'], 0, $conf['max'], $attrName);
         $histogram["defRes"] = $conf['vychoziRozliseni'] ?? $conf['res'];
-        $histogram["xtype"] = $conf['zobrazeniTyp'] == "log" ? "log" : "linear";
-
+        self::aplikovatNastaveniOs($histogram, $conf);
         return [
             'data' => $histogram,
             'labels' => [
@@ -61,7 +60,7 @@ class PohledavkyController extends StatsController
 
     public static function pohledavky(array $conf){
 
-        $conf = $conf + ['zobrazeniTyp' => 'log'];
+        $conf = $conf + ['zobrazeniTyp' => 'logxy'];
 
         $filtr = InsRizeni::query();
 
@@ -79,7 +78,7 @@ class PohledavkyController extends StatsController
 
         $histogram = self::intervalMode($rows, 1, 0, 200, 'pohledavky_pocet');
         $histogram["defRes"] = $conf['vychoziRozliseni'] ?? 5;
-        $histogram["xtype"] = $conf['zobrazeniTyp'] == "log" ? "log" : "linear";
+        self::aplikovatNastaveniOs($histogram, $conf);
 
         return [
             'data' => $histogram,
@@ -116,6 +115,7 @@ class PohledavkyController extends StatsController
             'povolitPrazdneObdobi' => false,
             'extraNastaveni' => ['typPohledavky', 'idRozsahu', 'zobrazeniTyp'],
             'rozsahyZobrazeni' => self::ROZSAH_ZOBRAZENI,
+            'vychoziZobrazeniTyp' => 'logxy',
         ];
 
         $viewData['pohledavkyVyse'] = PohledavkyController::pohledavkyVyse([

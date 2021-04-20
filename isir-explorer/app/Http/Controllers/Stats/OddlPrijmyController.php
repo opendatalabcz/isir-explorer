@@ -53,7 +53,7 @@ class OddlPrijmyController extends StatsController
         $histogram = self::intervalMode($rows, 1000, 0, 100000, 'prijmy_celkem');
 
         $histogram["defRes"] = $conf['vychoziRozliseni'] ?? 1;
-        $histogram["ytype"] = $conf['zobrazeniTyp'] == "log" ? "log" : "linear";
+        self::aplikovatNastaveniOs($histogram, $conf, "Y");
 
         return [
             'data' => $histogram,
@@ -72,6 +72,7 @@ class OddlPrijmyController extends StatsController
             'nastaveni' => ['obdobi', 'typOsoby'],
             'extraNastaveni' => ['zobrazeniTyp', 'typPrijmu'],
             'vyraditTypOsoby' => ['P'],
+            'vychoziLogOsa' => 'Y',
             'poznamky' => [
                 'Zahrnuta jsou data pouze z insolvenčních řízení, pro která se podařilo přečíst data o příjmech dlužníka ze Zprávy pro oddlužení.'
             ],
