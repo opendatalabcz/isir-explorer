@@ -37,7 +37,6 @@ class OsobaController extends StatsController
         return [
             'data' => $res,
             'labels' => [
-                'x' => 'Měsíc',
                 'y' => 'Počet insolvencí',
             ],
         ];

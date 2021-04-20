@@ -67,6 +67,41 @@ window.typOsoby = function (elemId, jsonData) {
 }
 
 
+window.formaOddluzeni = function (elemId, jsonData) {
+
+    var insData = JSON.parse(jsonData);
+    let arr = [
+        ['Forma oddlužení', 'Počet'],
+    ];
+
+    var chartData = insData["data"];
+    for(const m in chartData){
+        arr.push([m, chartData[m]]);
+    }
+
+    var data = google.visualization.arrayToDataTable(arr);
+
+    var options = {
+
+        isStacked: true,
+        hAxis: {
+            title: insData["labels"]["y"],
+            minValue: 0,
+            textPosition: 'out'
+        },
+
+        chartArea: {width: '70%', height: '60%'},
+        legend: {position: 'none', maxLines: 2},
+        titlePosition: 'in',
+        vAxis: {textPosition: 'out'}
+    };
+
+    var chart = new google.visualization.BarChart(document.getElementById(elemId));
+
+    chart.draw(data, options);
+}
+
+
 function rescaleData(elemId, res){
     let histObject = window.histograms[elemId];
     //rescale data from global histObject with given resolution and keep original unmodified

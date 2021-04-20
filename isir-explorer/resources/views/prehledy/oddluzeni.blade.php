@@ -107,6 +107,32 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
+                        <h2>Správcem navrhovaná forma oddlužení</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="chartBox sm" id="el_formaOddluzeniIS"></div>
+                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.oddl.forma', ['navrhujiciStrana'=>'IS']) }}">Detail</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Dlužníkem navrhovaná forma oddlužení</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="chartBox sm" id="el_formaOddluzeniDL"></div>
+                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.oddl.forma', ['navrhujiciStrana'=>'DL']) }}">Detail</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
                         <h2>Velikosti oddlužení</h2>
                     </div>
                     <div class="card-body">
@@ -195,6 +221,8 @@
         var miraUspokojeniRozdil_json = '{!!  json_encode($miraUspokojeniRozdil) !!}';
         var prijmyDluznika_json = '{!!  json_encode($prijmyDluznika) !!}';
         var majetekDluznika_json = '{!!  json_encode($majetekDluznika) !!}';
+        var formaOddluzeniIS_json = '{!!  json_encode($formaOddluzeniIS) !!}';
+        var formaOddluzeniDL_json = '{!!  json_encode($formaOddluzeniDL) !!}';
 
         window.addEventListener("load", function(){
             google.charts.load('current', {
@@ -218,6 +246,8 @@
             pocetNovychIns('el_pocetNovychIns', pocetNovychIns_json);
             pocetNovychIns('el_pocetNovychRoky', pocetNovychRoky_json);
             typOsoby('el_typyOsob', typyOsob_json);
+            formaOddluzeni('el_formaOddluzeniIS', formaOddluzeniIS_json);
+            formaOddluzeni('el_formaOddluzeniDL', formaOddluzeniDL_json);
         }
     </script>
 
