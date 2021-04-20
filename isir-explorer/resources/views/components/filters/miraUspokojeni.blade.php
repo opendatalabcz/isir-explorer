@@ -5,7 +5,7 @@
             $miraUspokojeni = [
                 [0, "Skutečná"],
                 [1, "Předpokládaná"],
-                [2, "Rozdíl předpokládaná - skutečná"],
+                [2, "Rozdíl skutečná - předpokládaná"],
             ];
         @endphp
         <select name="miraUspokojeni" class="form-control" id="miraUspokojeni">

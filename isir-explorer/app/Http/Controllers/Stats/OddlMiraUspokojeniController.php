@@ -72,7 +72,9 @@ class OddlMiraUspokojeniController extends StatsController
             'vychoziLogOsa' => 'Y',
             'poznamky' => [
                 'Zobrazovaná míra uspokojení se týká pouze nezajištěných věřitelů.',
-                'Zahrnuta jsou data pouze pro řízení, pro která se podařilo přečíst data o míře uspokojení ze Zprávy o splnění oddlužení.'
+                'Zahrnuta jsou data pouze pro řízení, pro která se podařilo přečíst data o míře uspokojení ze Zprávy o splnění oddlužení.',
+                (self::ZOBRAZ_MIRA_ROZDIL == $request->get("miraUspokojeni")) ? 'Kladné hodnoty reprezentují rozdíl mezi skutečnou mírou uspokojení a původním předpokladem.' .
+                    'Kladné hodnoty tedy udávají o kolik procent z dlužné částky se podařilo oproti původnímu předpokladu dluh splatit. Záporné hodnoty naopak signalizují nižší konečné uspokojení vůči předpokladu.' : '',
             ],
         ];
 
