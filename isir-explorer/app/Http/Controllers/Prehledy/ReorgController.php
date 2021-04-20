@@ -36,13 +36,11 @@ class ReorgController extends BasePrehledController
 
         $viewData['delkaRizeni'] = DelkaRizeniController::delkaRizeni([
             'typ' => static::TYP_RIZENI,
-            'rok' => 2010,
             'vychoziRozliseni' => 12,
         ]);
 
         $viewData['pohledavky'] = PohledavkyController::pohledavky([
             'typ' => static::TYP_RIZENI,
-            'rok' => 2019,
             'vychoziRozliseni' => 5,
         ]);
 

@@ -45,7 +45,6 @@ class OddluzeniController extends BasePrehledController
 
         $viewData['pohledavky'] = PohledavkyController::pohledavky([
             'typ' => static::TYP_RIZENI,
-            'zobrazeniTyp' => 'logxy',
             'vychoziRozliseni' => 2,
         ]);
 

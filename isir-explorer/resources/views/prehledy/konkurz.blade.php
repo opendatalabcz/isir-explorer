@@ -39,7 +39,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pocetNovychRoky"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'K', 'poLetech'=>1]) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'K', 'poLetech'=>1]) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -50,7 +51,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pocetNovychIns"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'K']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'K']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -64,7 +66,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_typyOsob"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.dluznik.typ', ['zpusobReseni'=>'K']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.dluznik.typ', ['zpusobReseni'=>'K']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -75,7 +78,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_vekDluznika"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.dluznik.vek', ['zpusobReseni'=>'K']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.dluznik.vek', ['zpusobReseni'=>'K']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -89,7 +93,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_delkaRizeni"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.delka', ['zpusobReseni'=>'K', 'obdobi' => 2010]) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.rizeni.delka', ['zpusobReseni'=>'K']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -101,7 +106,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pohledavky"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.pohledavky', ['zpusobReseni'=>'K', 'obdobi' => 2019]) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.rizeni.pohledavky', ['zpusobReseni'=>'K']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -115,7 +121,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pohledavkyVyseCelkem"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.pohledavky.vyse', ['zpusobReseni'=>'K', 'obdobi' => 2019]) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.rizeni.pohledavky.vyse', ['zpusobReseni'=>'K']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -127,7 +134,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pohledavkyVyseZaji"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.pohledavky.vyse', ['zpusobReseni'=>'K', 'obdobi' => 2019, 'typPohledavky' => 'Z']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.rizeni.pohledavky.vyse', ['zpusobReseni'=>'K', 'typPohledavky' => 'Z']) }}">Detail</a>
                     </div>
                 </div>
             </div>

@@ -39,7 +39,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pocetNovychRoky"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'R', 'poLetech'=>1]) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'R', 'poLetech'=>1]) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -50,7 +51,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pocetNovychIns"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'R']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.pocet', ['zpusobReseni'=>'R']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -64,21 +66,28 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_typyOsob"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.dluznik.typ', ['zpusobReseni'=>'R']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.dluznik.typ', ['zpusobReseni'=>'R']) }}">Detail</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h2>Věk dlužníka</h2>
+                        <h2>Věk dlužníka (pouze fyzické osoby)</h2>
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_vekDluznika"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.dluznik.vek', ['zpusobReseni'=>'R']) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.dluznik.vek', ['zpusobReseni'=>'R']) }}">Detail</a>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="alert alert-dismissible alert-secondary mt-4">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            Následující výstupy mohou být nepřesné kvůli nízké míře výskytu reorganizací. IsirExplorer se převážně zaměřuje na statistiky Oddlužení a Konkurzů.
         </div>
 
         <div class="row mt-4">
@@ -89,7 +98,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_delkaRizeni"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.delka', ['zpusobReseni'=>'R', 'obdobi' => 2010]) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.rizeni.delka', ['zpusobReseni'=>'R']) }}">Detail</a>
                     </div>
                 </div>
             </div>
@@ -101,7 +111,8 @@
                     </div>
                     <div class="card-body">
                         <div class="chartBox sm" id="el_pohledavky"></div>
-                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.rizeni.pohledavky', ['zpusobReseni'=>'R', 'obdobi' => 2019]) }}">Detail</a>
+                        <a class="btn btn-info pull-right"
+                        href="{{ route('stat.detail.rizeni.pohledavky', ['zpusobReseni'=>'R']) }}">Detail</a>
                     </div>
                 </div>
             </div>

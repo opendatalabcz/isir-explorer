@@ -31,34 +31,30 @@ class KonkurzController extends BasePrehledController
 
         $viewData['vekDluznika'] = OsobaController::vekDluznika([
             'typ' => static::TYP_RIZENI,
-            'vychoziRozliseni' => 5,
+            'vychoziRozliseni' => 2,
         ]);
 
         $viewData['delkaRizeni'] = DelkaRizeniController::delkaRizeni([
             'typ' => static::TYP_RIZENI,
-            'rok' => 2010,
-            'vychoziRozliseni' => 12,
+            'vychoziRozliseni' => 2,
         ]);
 
         $viewData['pohledavky'] = PohledavkyController::pohledavky([
             'typ' => static::TYP_RIZENI,
-            'rok' => 2019,
-            'vychoziRozliseni' => 5,
+            'vychoziRozliseni' => 2,
         ]);
 
         $viewData['pohledavkyVyseCelkem'] = PohledavkyController::pohledavkyVyse([
             'typ' => static::TYP_RIZENI,
-            'rok' => 2019,
             'idRozsahu' => 2,
-            'vychoziRozliseni' => 1000000,
+            'vychoziRozliseni' => 100000,
         ]);
 
         $viewData['pohledavkyVyseZaji'] = PohledavkyController::pohledavkyVyse([
             'typ' => static::TYP_RIZENI,
-            'rok' => 2019,
             'typPohledavky' => 'Z',
             'idRozsahu' => 2,
-            'vychoziRozliseni' => 1000000,
+            'vychoziRozliseni' => 100000,
         ]);
 
         return view('prehledy.konkurz', $viewData);

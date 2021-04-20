@@ -26,30 +26,25 @@ class InsController extends BasePrehledController
         ]);
 
         $viewData['vekDluznika'] = OsobaController::vekDluznika([
-            'vychoziRozliseni' => 5,
+            'vychoziRozliseni' => 1,
         ]);
 
         $viewData['delkaRizeni'] = DelkaRizeniController::delkaRizeni([
-            'rok' => 2010,
-            'vychoziRozliseni' => 12,
+            'vychoziRozliseni' => 1,
         ]);
 
         $viewData['pohledavky'] = PohledavkyController::pohledavky([
-            'rok' => 2019,
-            'vychoziRozliseni' => 5,
+            'zobrazeniTyp' => 'logxy',
+            'vychoziRozliseni' => 2,
         ]);
 
         $viewData['pohledavkyVyseCelkem'] = PohledavkyController::pohledavkyVyse([
-            'rok' => 2019,
             'idRozsahu' => 2,
-            'vychoziRozliseni' => 1000000,
         ]);
 
         $viewData['pohledavkyVyseZaji'] = PohledavkyController::pohledavkyVyse([
-            'rok' => 2019,
             'typPohledavky' => 'Z',
             'idRozsahu' => 2,
-            'vychoziRozliseni' => 1000000,
         ]);
 
         return view('prehledy.ins', $viewData);
