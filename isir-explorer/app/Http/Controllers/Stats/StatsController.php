@@ -15,6 +15,14 @@ class StatsController extends Controller
     protected const VOLBA_ROK_MIN = 2008;
     protected const VOLBA_ROK_MAX = 2020;
 
+    public const ROZSAH_ZOBRAZENI = [
+        0 => ['nazev' => 'Výchozí nastavení'],
+        1 => ['nazev' => '0 až 100 milionů Kč', 'max' => 100000000, 'res' => 100000, 'def' => 500000],
+        2 => ['nazev' => '0 až 10 milionů Kč', 'max' => 10000000, 'res' => 10000, 'def' => 500000],
+        3 => ['nazev' => '0 až 1 milion Kč', 'max' => 1000000, 'res' => 5000, 'def' => 20000],
+        4 => ['nazev' => '0 až 300 tisíc Kč', 'max' => 300000, 'res' => 1000, 'def' => 10000],
+    ];
+
     protected $obdobi;
 
     function __construct() {
@@ -179,6 +187,16 @@ class StatsController extends Controller
             "res" => $res,
             "data" => \array_values($flotHistogram),
         ];
+    }
+
+    protected static function aplikovatDefiniciRozsahu(&$conf, $id){
+        if(isset(self::ROZSAH_ZOBRAZENI[$id])){
+            $def = self::ROZSAH_ZOBRAZENI[$id];
+            $conf['max'] = $def['max'];
+            $conf['res'] = $def['res'];
+            if(empty($conf['vychoziRozliseni']))
+                $conf['vychoziRozliseni'] = $def['def'];
+        }
     }
 
     protected function statView($view, $data){

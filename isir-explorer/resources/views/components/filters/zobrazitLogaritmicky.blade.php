@@ -9,7 +9,7 @@
         @endphp
         <select name="zobrazeniTyp" class="form-control" id="zobrazeniPo">
             @foreach ($poLetech as $item)
-                <option value="{{$item[0]}}" {{ Request::get('zobrazeniTyp') == $item[0] ? "selected" : "" }}>{{ $item[1] }}</option>
+                <option value="{{$item[0]}}" {{ Request::get('zobrazeniTyp', $vychoziZobrazeniTyp ?? null) == $item[0] ? "selected" : "" }}>{{ $item[1] }}</option>
             @endforeach
         </select>
     </div>

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Prehledy;
 
 use App\Http\Controllers\Stats\DelkaRizeniController;
+use App\Http\Controllers\Stats\OddlMajetekController;
 use App\Http\Controllers\Stats\OddlMiraUspokojeniController;
+use App\Http\Controllers\Stats\OddlPrijmyController;
 use App\Http\Controllers\Stats\OsobaController;
 use App\Http\Controllers\Stats\PocetInsController;
 use App\Http\Controllers\Stats\PohledavkyController;
@@ -74,6 +76,15 @@ class OddluzeniController extends BasePrehledController
             'zobrazeniTyp' => 'log',
             'rok' => null,
             'vychoziRozliseni' => 4,
+        ]);
+
+        $viewData['prijmyDluznika'] = OddlPrijmyController::prijmyDluznika([
+            'vychoziRozliseni' => 1000,
+        ]);
+
+        $viewData['majetekDluznika'] = OddlMajetekController::majetekDluznika([
+            'zobrazeniTyp' => 'log',
+            'idRozsahu' => 3,
         ]);
 
         return view('prehledy.oddluzeni', $viewData);

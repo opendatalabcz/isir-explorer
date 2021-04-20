@@ -10,6 +10,8 @@ use App\Http\Controllers\Prehledy\OddluzeniController as PrehledyOddluzeniContro
 use App\Http\Controllers\Prehledy\ReorgController;
 use App\Http\Controllers\SpravciController;
 use App\Http\Controllers\Stats\DelkaRizeniController;
+use App\Http\Controllers\Stats\OddlMajetekController;
+use App\Http\Controllers\Stats\OddlPrijmyController;
 use App\Http\Controllers\Stats\OddlMiraUspokojeniController;
 use App\Http\Controllers\Stats\OsobaController;
 use App\Http\Controllers\Stats\PocetInsController;
@@ -47,6 +49,10 @@ Route::get('/statistiky/pohledavky_vyse', [StatsPohledavkyController::class, 'po
     ->name("stat.detail.rizeni.pohledavky.vyse");
 Route::get('/statistiky/mira_uspokojeni', [OddlMiraUspokojeniController::class, 'miraUspokojeni_detail'])
     ->name("stat.detail.oddl.mira_uspokojeni");
+Route::get('/statistiky/prijmy_dluznika', [OddlPrijmyController::class, 'prijmyDluznika_detail'])
+    ->name("stat.detail.oddl.prijmy_dluznika");
+Route::get('/statistiky/majetek_dluznika', [OddlMajetekController::class, 'majetekDluznika_detail'])
+    ->name("stat.detail.oddl.majetek_dluznika");
 
 /** Prehledove stranky */
 Route::get('/statistiky/insolvence', [InsController::class, 'index'])

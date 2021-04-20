@@ -12,23 +12,6 @@ class PohledavkyController extends StatsController
     protected static $celkemPocetIns = 0;
 
     const VYCHOZI_ROZSAH = 2;
-    const ROZSAH_ZOBRAZENI = [
-        0 => ['nazev' => 'Výchozí nastavení'],
-        1 => ['nazev' => '0 až 100 milionů Kč', 'max' => 100000000, 'res' => 100000, 'def' => 500000],
-        2 => ['nazev' => '0 až 10 milionů Kč', 'max' => 10000000, 'res' => 10000, 'def' => 500000],
-        3 => ['nazev' => '0 až 1 milion Kč', 'max' => 1000000, 'res' => 5000, 'def' => 20000],
-        4 => ['nazev' => '0 až 300 tisíc Kč', 'max' => 300000, 'res' => 1000, 'def' => 10000],
-    ];
-
-    protected static function aplikovatDefiniciRozsahu(&$conf, $id){
-        if(isset(self::ROZSAH_ZOBRAZENI[$id])){
-            $def = self::ROZSAH_ZOBRAZENI[$id];
-            $conf['max'] = $def['max'];
-            $conf['res'] = $def['res'];
-            if(empty($conf['vychoziRozliseni']))
-                $conf['vychoziRozliseni'] = $def['def'];
-        }
-    }
 
     public static function pohledavkyVyse(array $conf){
 

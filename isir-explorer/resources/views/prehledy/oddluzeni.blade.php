@@ -153,7 +153,31 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Příjmy dlužníka</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="chartBox sm" id="el_prijmyDluznika"></div>
+                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.oddl.prijmy_dluznika', []) }}">Detail</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Majetek dlužníka</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="chartBox sm" id="el_majetekDluznika"></div>
+                        <a class="btn btn-info pull-right" href="{{ route('stat.detail.oddl.majetek_dluznika', []) }}">Detail</a>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -169,6 +193,8 @@
         var pohledavkyVyseZaji_json = '{!!  json_encode($pohledavkyVyseZaji) !!}';
         var miraUspokojeni_json = '{!!  json_encode($miraUspokojeni) !!}';
         var miraUspokojeniRozdil_json = '{!!  json_encode($miraUspokojeniRozdil) !!}';
+        var prijmyDluznika_json = '{!!  json_encode($prijmyDluznika) !!}';
+        var majetekDluznika_json = '{!!  json_encode($majetekDluznika) !!}';
 
         window.addEventListener("load", function(){
             google.charts.load('current', {
@@ -184,6 +210,8 @@
             histogram('el_pohledavkyVyseZaji', pohledavkyVyseZaji_json);
             histogram('el_miraUspokojeni', miraUspokojeni_json);
             histogram('el_miraUspokojeniRozdil', miraUspokojeniRozdil_json);
+            histogram('el_prijmyDluznika', prijmyDluznika_json);
+            histogram('el_majetekDluznika', majetekDluznika_json);
         });
 
         function drawCharts(){

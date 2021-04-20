@@ -51,6 +51,18 @@
                 @include('components.filters.miraUspokojeni')
             </div>
         @endif
+
+        @if(in_array('typPrijmu', $extraNastaveni))
+            <div class="col-lg-6">
+                @include('components.filters.typPrijmu')
+            </div>
+        @endif
+
+        @if(in_array('typMajetku', $extraNastaveni))
+            <div class="col-lg-6">
+                @include('components.filters.typMajetku')
+            </div>
+        @endif
     </div>
 
     @include('components.filters.potvrditFiltr')
