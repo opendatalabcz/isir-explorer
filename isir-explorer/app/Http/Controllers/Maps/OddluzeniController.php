@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Maps;
 
-use App\Http\Controllers\Controller;
 use App\Models\InsRizeni;
-use App\Models\Statistiky;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OddluzeniController extends MapController
 {
     const FIXED_DECIMAL = 4;
+    const PRIJMY_MAXIMUM_PRO_PRUMER = 60000;
     protected const VOLBA_ROK_MIN = 2012;
 
     protected $celkemPocetIns = 0;
@@ -92,6 +90,34 @@ class OddluzeniController extends MapController
         return $kraje;
     }
 
+    protected function dataKrajePrijmyDluznika(Request $request){
+        $filtr = InsRizeni::query();
+
+        $obdobi = $this->getObdobi($request);
+        $typOsoby = $this->getTypOsoby($request);
+
+        $this->filtrParamObdobi($obdobi, $filtr);
+        $this->filtrParamTypOsoby($typOsoby, $filtr);
+
+        $rows = $filtr
+            ->whereNotNull('kraj')
+            ->join('stat_oddluzeni', 'stat_oddluzeni.spisovaznacka', '=', 'stat_vec.spisovaznacka')
+            ->join('zprava_pro_oddluzeni', 'zprava_pro_oddluzeni.id', '=', 'stat_oddluzeni.zpro_id')
+            ->whereNotNull('prijmy_celkem')
+            ->where('prijmy_celkem', '>=', 0)
+            ->where('prijmy_celkem', '<=', self::PRIJMY_MAXIMUM_PRO_PRUMER)
+            ->select('kraj', DB::raw('count(*) as pocet'), DB::raw('sum(prijmy_celkem) as prijmy_celkem'))
+            ->groupBy('kraj')
+            ->get();
+
+        $kraje = [];
+        foreach ($rows as $row) {
+            $kraje[$row->kraj] = round($row->prijmy_celkem / $row->pocet, 4);
+            $this->celkemPocetIns += $row->pocet;
+        }
+        return $kraje;
+    }
+
     protected function filtrParamObdobi($obdobi, $filtr){
         $filtr
             ->where('ukonceni_oddluzeni', '>=', $obdobi->od)
@@ -116,6 +142,7 @@ class OddluzeniController extends MapController
             'inverze' => true,
             'vyberPoMesicich' => false,
             'nazevVolbyObdobi' => 'Období ukončení řízení',
+            'vyraditTypOsoby' => ['P'],
             'nastaveni' => ['obdobi', 'typOsoby'],
         ]);
     }
@@ -135,6 +162,7 @@ class OddluzeniController extends MapController
             ],
             'vyberPoMesicich' => false,
             'nazevVolbyObdobi' => 'Období ukončení řízení',
+            'vyraditTypOsoby' => ['P'],
             'nastaveni' => ['obdobi', 'typOsoby'],
         ]);
     }
@@ -146,7 +174,7 @@ class OddluzeniController extends MapController
             'data' => $kraje,
             'nazevHodnoty' => 'Průměrná výše<br>osvobození (Kč)',
             'nazevHodnotyInfobox' => 'Výše (Kč)',
-            'nazevMapy' => 'Oddlužení - výše osvobození od dluhů',
+            'nazevMapy' => 'Oddlužení – výše osvobození od dluhů',
             'poznamky' => [
                 'V případě úspěšného splnění oddlužení je dlužník osvobozen od dosud neuhrazených částí dluhů. Ve statistice je zobrazena průměrná výše tohoto osvobození a to pouze pro případy, kdy dlužník po skončení oddlužení neuhradil 100% svých dluhů. '
                 .'Jsou zahrnuta osvobození vyplývající pouze z pohledávek nezajištěných věřitelů. '
@@ -155,6 +183,27 @@ class OddluzeniController extends MapController
             'jeCastka' => true,
             'vyberPoMesicich' => false,
             'nazevVolbyObdobi' => 'Období ukončení řízení',
+            'vyraditTypOsoby' => ['P'],
+            'nastaveni' => ['obdobi', 'typOsoby'],
+        ]);
+    }
+
+    public function prijmyDluznika(Request $request){
+        $kraje = $this->dataKrajePrijmyDluznika($request);
+
+        return $this->mapView([
+            'data' => $kraje,
+            'nazevHodnoty' => 'Průměrné příjmy (Kč)',
+            'nazevHodnotyInfobox' => 'Výše (Kč)',
+            'nazevMapy' => 'Oddlužení – průměrné příjmy dlužníka',
+            'poznamky' => [
+                'Celkový počet insolvencí zahrnutých v kalkulaci pro toto období: ' . $this->celkemPocetIns . '.'
+            ],
+            'jeCastka' => true,
+            'vyberPoMesicich' => false,
+            'inverze' => true,
+            'nazevVolbyObdobi' => 'Období ukončení řízení',
+            'vyraditTypOsoby' => ['P'],
             'nastaveni' => ['obdobi', 'typOsoby'],
         ]);
     }

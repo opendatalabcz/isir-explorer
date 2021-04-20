@@ -81,6 +81,9 @@ Route::get('/mapy/kraje/zrusena_oddluzeni', [OddluzeniController::class, 'zrusen
     ->name("stat.mapy.oddl.zrusena");
 Route::get('/mapy/kraje/vyse_osvobozeni', [OddluzeniController::class, 'osvobozeni'])
     ->name("stat.mapy.oddl.osvobozeni");
+Route::get('/mapy/kraje/prijmy_dluznika', [OddluzeniController::class, 'prijmyDluznika'])
+    ->name("stat.mapy.oddl.prijmy_dluznika");
+
 
 Route::get('/veritele', [VeriteleController::class, 'list'])->name("veritele.ins");
 Route::get('/veritele/{id}', [VeriteleController::class, 'detail'])->name("veritele.detail");
