@@ -10,6 +10,10 @@
 
 @endsection
 
+@section('title')
+ | Všechny insolvence
+@endsection
+
 @section('content')
 
     <div class="container">

@@ -8,6 +8,10 @@
     <script defer src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 @endsection
 
+@section('title')
+ | {{ $nazevStatistiky }}
+@endsection
+
 @section('content')
 
     <div class="container">

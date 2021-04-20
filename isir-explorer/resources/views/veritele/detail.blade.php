@@ -27,6 +27,10 @@
     </style>
 @endsection
 
+@section('title')
+ | {{ $veritel->nazev }} - detail věřitele
+@endsection
+
 @section('content')
 
     <div class="container">

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 
-    <title>{{ config('app.name') }}</title>
+    <title>{{ config('app.name') }}@yield('title', '')</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>

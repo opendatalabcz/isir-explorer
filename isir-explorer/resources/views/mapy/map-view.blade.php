@@ -37,6 +37,10 @@
     </style>
 @endsection
 
+@section('title')
+ | Mapy - {{ $nazevMapy }}
+@endsection
+
 @section('content')
 
     <div class="container">

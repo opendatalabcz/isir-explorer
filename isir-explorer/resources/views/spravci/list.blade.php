@@ -6,6 +6,10 @@
 
 @endsection
 
+@section('title')
+ | Insolvenční správci
+@endsection
+
 @section('content')
 
     <div class="container">

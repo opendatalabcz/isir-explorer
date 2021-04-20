@@ -10,6 +10,10 @@
 
 @endsection
 
+@section('title')
+ | Statistiky konkurzů
+@endsection
+
 @section('content')
 
     <div class="container">

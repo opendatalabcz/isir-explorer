@@ -6,6 +6,10 @@
 
 @endsection
 
+@section('title')
+ | Věřitelé
+@endsection
+
 @section('content')
 
     <div class="container">

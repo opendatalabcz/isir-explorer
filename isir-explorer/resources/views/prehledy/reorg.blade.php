@@ -10,6 +10,10 @@
 
 @endsection
 
+@section('title')
+ | Statistiky reorganizací
+@endsection
+
 @section('content')
 
     <div class="container">

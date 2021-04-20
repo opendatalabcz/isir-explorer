@@ -6,6 +6,10 @@
 
 @endsection
 
+@section('title')
+ | {{ $spravce->nazev }} - odměny správce
+@endsection
+
 @section('content')
 
     <div class="container">
