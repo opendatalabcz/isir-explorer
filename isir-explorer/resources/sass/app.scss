@@ -264,3 +264,84 @@ margin: 0;
 }
 }
 
+/* Hlavni stranka ---------------------------- */
+.mainpage p {
+    font-size: 1.04rem;
+    text-align: justify;
+}
+.isir-ex-img-wrap{
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+}
+.isir-ex-img{
+    position: relative;
+    height: 100%;
+}
+.isir-ex-img img{
+    box-shadow:
+        0 0 8px rgb(0 0 0 / 33%),
+        0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+        0 12.5px 10px rgba(0, 0, 0, 0.06),
+        0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+        0 41.8px 33.4px rgba(0, 0, 0, 0.086);
+}
+
+.isir-ex-img {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.isir-ex-img img{
+    margin-bottom: 2rem;
+    width: 100%;
+    background-color: white;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+
+    .isir-ex-img {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+
+    .isir-ex-img img{
+        margin-bottom: 0;
+        width: 28%;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .isir-ex-img {
+        display: block;
+    }
+
+    .isir-ex-img-wrap{
+        margin-bottom: 0;
+    }
+
+    .isir-ex-img img{
+        position: absolute;
+        width: 92%;
+    }
+
+    .isir-ex-img .img1{
+        z-index: 0;
+    }
+    .isir-ex-img .img2{
+        z-index: 3;
+        top: 50%;
+        transform: translate(0,-50%);
+        right: 0;
+
+        padding-top: 1.5%;
+    }
+    .isir-ex-img .img3{
+        z-index: 2;
+        bottom: 0;
+    }
+}
+/* End/Hlavni stranka ---------------------------- */
