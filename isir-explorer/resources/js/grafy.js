@@ -239,7 +239,13 @@ function drawPlot(elemId, res){
         annotations: anno,
     };
 
-    Plotly.newPlot(elemId, plotData, layout, {modeBarButtonsToRemove: ['toggleSpikelines','hoverCompareCartesian','hoverClosestCartesian']});
+    Plotly.newPlot(elemId, plotData, layout, {
+        modeBarButtonsToRemove: [
+            'toggleSpikelines','hoverCompareCartesian','hoverClosestCartesian',
+            'select2d', 'lasso2d', 'resetScale2d', 'toImage',
+            'zoomIn2d', 'zoomOut2d',
+        ]
+    });
 }
 
 window.histograms = {};

@@ -50,6 +50,9 @@ class DelkaRizeniController extends StatsController
             'jednotkaRozsahu' => 'měsíců',
             'povolitPrazdneObdobi' => true,
             'extraNastaveni' => ['zobrazeniTyp'],
+            'poznamky' => [
+                'Zahrnuty jsou pouze délky již ukončených řízení.'
+            ],
         ];
 
         $viewData['delkaRizeni'] = DelkaRizeniController::delkaRizeni([
