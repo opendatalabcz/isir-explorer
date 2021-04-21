@@ -95,6 +95,9 @@ class PohledavkyController extends StatsController
             'povolitPrazdneObdobi' => true,
             'extraNastaveni' => ['zobrazeniTyp'],
             'vychoziZobrazeniTyp' => 'logxy',
+            'poznamky' => [
+                'Zobrazen je počet insolvencí dle počtu pohledávek, které do nich byly přihlášeny.'
+            ],
         ];
 
         $viewData['pohledavky'] = PohledavkyController::pohledavky([
