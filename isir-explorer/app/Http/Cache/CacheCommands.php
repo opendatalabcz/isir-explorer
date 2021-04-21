@@ -13,6 +13,7 @@ class CacheCommands{
     protected $app;
 
     const CACHED_ROUTES = [
+        "stat.prehled.ins",
         "stat.prehled.konkurz",
         "stat.prehled.reorg",
         "stat.prehled.oddluzeni",
