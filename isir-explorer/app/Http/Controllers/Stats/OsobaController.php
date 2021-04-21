@@ -75,6 +75,9 @@ class OsobaController extends StatsController
             'nazevStatistiky' => 'Věk dlužníka',
             'jednotkaRozsahu' => 'let',
             'povolitPrazdneObdobi' => true,
+            'poznamky' => [
+                'V kalkulaci je použit věk dlužníka v době zahájení řízení.'
+            ],
         ];
 
         $viewData['vekDluznika'] = OsobaController::vekDluznika([
