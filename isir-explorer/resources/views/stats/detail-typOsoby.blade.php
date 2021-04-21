@@ -9,7 +9,8 @@ var typyOsob_json = '{!!  json_encode($typOsoby) !!}';
 
 window.addEventListener("load", function(){
     google.charts.load('current', {
-        packages: ['corechart', 'bar']
+        packages: ['corechart', 'bar'],
+        'language': 'cs',
     });
     google.charts.setOnLoadCallback(drawCharts);
 });

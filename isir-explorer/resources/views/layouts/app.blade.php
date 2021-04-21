@@ -64,7 +64,7 @@
                 <br>
                 <a href="https://github.com/opendatalabcz/isir-explorer" target="_blank">Zdrojový kod</a> je dostupný pod licencí GNU General Public License v3.0
                 <br><br>
-                <p style="text-align: justify">
+                <p style="text-align: justify; color: #888;">
                 Zdrojem pro data prezentovaná ve statistikách v tomto nástroji je databáze insolvenčního rejstříku a dokumenty v něm zveřejňované.
                 Část statistik vychází pouze z dat u takových řízení, kde bylo možné data automatizovaně získat. Správnost takto přečtených údajů z insolvenčních dokumentů není manuálně kontrolována, a v údajích se tak mohou vyskytovat nepřestnosti.
                 Provozovatel žádným způsobem neodpovídá za správnost údajů a statistik prezentovaných v nástroji IsirExplorer.

@@ -9,13 +9,14 @@ var pocetNovychIns_json = '{!!  json_encode($pocetNovych) !!}';
 
 window.addEventListener("load", function(){
     google.charts.load('current', {
-        packages: ['corechart', 'bar']
+        packages: ['corechart', 'bar'],
+        'language': 'cs',
     });
     google.charts.setOnLoadCallback(drawCharts);
 });
 
 function drawCharts(){
-    pocetNovychIns('el_pocetNovychIns', pocetNovychIns_json);
+    pocetNovychIns('el_pocetNovychIns', pocetNovychIns_json, true);
 }
 </script>
 

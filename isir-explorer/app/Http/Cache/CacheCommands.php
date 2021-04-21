@@ -5,7 +5,6 @@ namespace App\Http\Cache;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
 use Illuminate\Support\Facades\URL;
 use Tests\CreatesApplication;
-use Tests\TestCase;
 
 class CacheCommands{
 

@@ -1,5 +1,5 @@
 
-window.pocetNovychIns = function (elemId, jsonData) {
+window.pocetNovychIns = function (elemId, jsonData, isDetail) {
     var insData = JSON.parse(jsonData);
     var arr = [[insData["labels"]["x"], insData["labels"]["y"]]];
     var chartData = insData["data"];
@@ -23,7 +23,7 @@ window.pocetNovychIns = function (elemId, jsonData) {
             title: insData["labels"]["y"]
         },
         chartArea: {
-            width: "90%"
+            width: isDetail ? "80%" : "90%"
         }
     };
 

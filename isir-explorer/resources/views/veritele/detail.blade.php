@@ -107,7 +107,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <h2>Ins. řízení dle krajů</h2>
+                        <h2>Insolvenční řízení dle krajů</h2>
 
                         <script>
                             var mapData = '{!! json_encode($kraje) !!}';

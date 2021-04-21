@@ -20,7 +20,7 @@
                         <h1>Věřitelé</h1>
                     </div>
                     <div class="card-body">
-                        <p>Věřitel je osoba, které náleží plnění nějaké pohledávky od osoby dlužníka. Věřitelé do řízení vstupují podáním tzv. přihlášky pohledávky. V tomto přehledovém seznamu je zobrazeno až 1000 věřitelů seřazených dle vybraného parametru. V seznamu nejsou zahrnuty nepodnikající fyzické osoby. Zdrojem počtů insolvencí u jednotlivých věřitelů jsou údaje z insolvenčního rejstříku. Zdrojem údajích o přihláškách a velikostech pohledávek jsou čteny z dokumentů přihlášek a údaje tak nemusí být kompletní ze všech pohledávek, které věřitel přihlásil.</p>
+                        <p>Věřitel je osoba, které náleží plnění nějaké pohledávky od osoby dlužníka. Věřitelé do řízení vstupují podáním tzv. přihlášky pohledávky. V tomto přehledovém seznamu je zobrazeno až 1000 věřitelů seřazených dle vybraného parametru. V seznamu nejsou zahrnuty nepodnikající fyzické osoby. Zdrojem počtů insolvencí u jednotlivých věřitelů jsou údaje z insolvenčního rejstříku. Zdrojem údajů o přihláškách a velikostech pohledávek jsou čteny z dokumentů přihlášek a údaje tak nemusí být kompletní ze všech pohledávek, které věřitel přihlásil.</p>
                     </div>
                 </div>
             </div>
