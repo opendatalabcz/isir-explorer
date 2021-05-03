@@ -157,11 +157,9 @@ footer{
     font-size: 1em;
 }
 
-.text-right {
-    &.tablesorter-header::before, &.tablesorter-header::after {
-        right: unset !important;
-        left: 0.4em;
-    }
+/* Vytvoreni prostoru na sipky pro razeni u nadpisu tabulky zarovnanych doprava*/
+.text-right.tablesorter-header {
+    padding-right: 1.6em;
 }
 
 .chartBox.sm{
