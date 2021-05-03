@@ -75,6 +75,7 @@ class OsobaController extends StatsController
             'nazevStatistiky' => 'Věk dlužníka',
             'jednotkaRozsahu' => 'let',
             'povolitPrazdneObdobi' => true,
+            'vyraditTypOsoby' => ['P'],
             'poznamky' => [
                 'V kalkulaci je použit věk dlužníka v době zahájení řízení.'
             ],
