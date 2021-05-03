@@ -42,7 +42,9 @@ class MapController extends StatsController
     }
 
     protected function mapView($data){
-
+        $data = $data + [
+            'vyberPoMesicich' => false,
+        ];
         $data = $data + [
             'nazvyKraju' => self::KRAJE,
             'nazevHodnoty' => '?',
