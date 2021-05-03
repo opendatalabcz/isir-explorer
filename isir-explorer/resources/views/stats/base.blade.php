@@ -4,7 +4,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/tablesorter@2.31.3/dist/js/jquery.tablesorter.combined.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
     <script defer src="https://www.gstatic.com/charts/loader.js"></script>
-    <script defer src="{{ asset('js/grafy.js') }}"></script>
+    <script defer src="{{ mix('js/grafy.js') }}"></script>
     <script defer src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 @endsection
 

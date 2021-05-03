@@ -15,8 +15,8 @@
 
     <script defer src="https://cdn.jsdelivr.net/npm/tablesorter@2.31.3/dist/js/jquery.tablesorter.combined.min.js"></script>
 
-    <script defer src="{{ asset('js/maps.js') }}"></script>
-    <script defer src="{{ asset('js/detail-spravce.js') }}"></script>
+    <script defer src="{{ mix('js/maps.js') }}"></script>
+    <script defer src="{{ mix('js/detail-spravce.js') }}"></script>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
 

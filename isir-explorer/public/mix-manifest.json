@@ -1,8 +1,8 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/js/grafy.js": "/js/grafy.js",
-    "/js/maps.js": "/js/maps.js",
-    "/js/detail-spravce.js": "/js/detail-spravce.js",
-    "/js/detail-veritel.js": "/js/detail-veritel.js",
-    "/css/app.css": "/css/app.css"
+    "/js/app.js": "/js/app.js?id=f66f61f9df5aed351e27",
+    "/js/grafy.js": "/js/grafy.js?id=68b3a79dca4ffb267587",
+    "/js/maps.js": "/js/maps.js?id=c8e6558c9663f30b0a76",
+    "/js/detail-spravce.js": "/js/detail-spravce.js?id=7d9b6e79110a21b41f07",
+    "/js/detail-veritel.js": "/js/detail-veritel.js?id=3ed56b198af5fc7b441c",
+    "/css/app.css": "/css/app.css?id=5b0171f300bcf72ec693"
 }
