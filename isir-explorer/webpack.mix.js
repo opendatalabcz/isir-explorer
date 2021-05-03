@@ -19,3 +19,6 @@ mix.js('resources/js/grafy.js', 'public/js');
 mix.js('resources/js/maps.js', 'public/js');
 mix.js('resources/js/detail-spravce.js', 'public/js');
 mix.js('resources/js/detail-veritel.js', 'public/js');
+
+// Pridani verzi pri nacitani frontend souboru (obnova cache po update)
+mix.version();
