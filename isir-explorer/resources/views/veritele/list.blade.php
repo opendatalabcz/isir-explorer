@@ -45,7 +45,7 @@
         <div class="row mt-4">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body table-card">
                         <table class="table table-hover">
                             <thead>
                                 <tr>

@@ -162,6 +162,11 @@ footer{
     padding-right: 1.6em;
 }
 
+/* Moznost posunu kontejneru s tabulkou pro zamezeni zobrazeni casti tabulky mimo stranku*/
+.table-card{
+overflow-x: auto;
+}
+
 .chartBox.sm{
     max-height: 200px;
 }

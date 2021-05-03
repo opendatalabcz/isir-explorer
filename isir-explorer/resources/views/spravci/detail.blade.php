@@ -182,7 +182,7 @@
         <div class="row mt-4">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body table-card">
                         <h2>Poslední evidované odměny z oddlužení</h2>
 
                         @if(!empty($odmeny))

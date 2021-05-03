@@ -58,7 +58,7 @@
         <div class="row mt-4 veritel-info">
             <div class="col-md-4">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body table-card">
                         <h2>Informace o věřiteli</h2>
                         <table class="table table-hover mt-4 key-value">
                             <tbody>

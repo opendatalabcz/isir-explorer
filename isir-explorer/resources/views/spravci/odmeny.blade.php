@@ -26,7 +26,7 @@
                     <div class="card-header">
                         <h1>Odměny správce {{ $spravce->nazev }}</h1>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body table-card">
                         @include('spravci.partials.tabulka-odmen')
                     </div>
 
