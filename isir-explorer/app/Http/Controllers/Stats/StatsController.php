@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Stats;
 
 use App\Http\Controllers\Controller;
-use App\Models\InsRizeni;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\Statistiky;
 
 class StatsController extends Controller
 {
@@ -52,15 +49,6 @@ class StatsController extends Controller
             $rozmezi->do = $date->copy()->endOfMonth();
         }
 
-        return $rozmezi;
-    }
-
-    protected function maximalniObdobi(){
-        $rozmezi = new \stdClass;
-        $rozmezi->obdobi_nazev = 'Nezvoleno';
-        $rozmezi->zahrnout_v_nabidce = true;
-        $rozmezi->od = Carbon::createFromDate(static::VOLBA_ROK_MIN, 1, 1);
-        $rozmezi->do = Carbon::createFromDate(static::VOLBA_ROK_MAX, 1, 1);
         return $rozmezi;
     }
 
@@ -159,7 +147,7 @@ class StatsController extends Controller
     }
 
     static function intervalMode($qb, $res = 1, $min = 0, $max = 100, $attrName = 'value'){
-        //construct range-keys array
+        // Sestavit pole range-keys
         $widths = \range($min, $max, $res);
 
         $bins = array();
@@ -167,7 +155,7 @@ class StatsController extends Controller
             if (!isset($widths[$key + 1])) break;
             $bins[] = $val.'-'. ($widths[$key + 1]);
         }
-        //construct flotHistogram count array
+        // Sestavit flotHistogram pole s cestnostmi
         $flotHistogram = \array_fill_keys($bins, 0);
 
         $i=0;
@@ -176,7 +164,7 @@ class StatsController extends Controller
             $time = $dataRow->$attrName;
             $key = $bins[floor(($time-$min)/$res)] ?? null;
             if ($key===null || !isset($flotHistogram[$key])){
-                continue; //out of binning range
+                continue; // Mimo rozsah trid
             }
             ++$flotHistogram[$key];
         }
