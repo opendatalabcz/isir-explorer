@@ -18,7 +18,7 @@
                 <td data-text="{{round($odmena->delka_oddluzeni)}}">{{ formatKc(round($odmena->delka_oddluzeni/365,2)) }}</td>
                 <td data-text="{{round($odmena->celkova_odmena)}}">{{ formatKc($odmena->celkova_odmena) }}</td>
                 <td data-text="{{round($odmena->hotove_vydaje)}}">{{ formatKc($odmena->hotove_vydaje) }}</td>
-                <td>{{ round($odmena->uhrazeno) }} %</td>
+                <td data-text="{{round($odmena->uhrazeno)}}">{{ round($odmena->uhrazeno) }} %</td>
                 <td><a target="_blank" href="{{getInsDocLink($odmena->isir_id)}}">Dokument</a></td>
             </tr>
         @endforeach
