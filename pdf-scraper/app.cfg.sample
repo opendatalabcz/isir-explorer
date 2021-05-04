@@ -3,3 +3,7 @@ tmp_dir=/tmp/isir
 
 [scraper]
 pdftotext=/usr/bin/pdftotext2
+
+# Pro nastaveni pripojeni k databazi odstrante komentar z teto deklarace
+# [db]
+# dsn=postgresql://username:password@127.0.0.1:5432/dbname
