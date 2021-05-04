@@ -56,25 +56,16 @@ Příklad konfigurace je v *app.cfg.sample*.
 Konfigurační soubor je členěn do kategorií dle oblasti, pro která jsou nastavení aplikována. Možné kategorie jsou app (globální), db (databáze), dl (stahování), ws (webservice), scraper (nástroj pro čtení PDF).
 
 Globální parametry:
--  **app.tmp\_dir** - Adresář pro ukládání dočasných souborů při převodu
-   (výchozí: */tmp/isir*)
--  **app.debug** - Aktivace testovacích výpisů u nástrojů, které to umožňují
-   (výchozí: *False*)
--  **app.verbose** - Aktivace vyšších detailů u výpisů
-   (výchozí: *False*)
--  **app.silent** - Deaktivace stavových výstupů nástroje
-   (výchozí: *False*)
+-  **app.tmp\_dir** - Adresář pro ukládání dočasných souborů při převodu (výchozí: */tmp/isir*)
+-  **app.debug** - Aktivace testovacích výpisů u nástrojů, které to umožňují (výchozí: *False*)
+-  **app.verbose** - Aktivace vyšších detailů u výpisů (výchozí: *False*)
+-  **app.silent** - Deaktivace stavových výstupů nástroje (výchozí: *False*)
 
 Parametry specifické pro scraper:
--  **scraper.pdftotext** - Příkaz pro spuštení programu pdftotext
-   (výchozí: *pdftotext*)
--  **scraper.pdftk** - Příkaz pro spuštení programu pdftk
-   (výchozí: *pdftk*)
--  **scraper.save_unreadable** - Možnost aktivace ukládání nečitelných souborů
-   (výchozí: *False*)
--  **scraper.save_text** - Možnost aktivace ukládání textového obsahu PDF
-   (výchozí: *False*)
--  **scraper.save_unpacked** - Možnost aktivace ukládání obsahu pdf kolekcí
-   (výchozí: *False*)
+-  **scraper.pdftotext** - Příkaz pro spuštení programu pdftotext (výchozí: *pdftotext*)
+-  **scraper.pdftk** - Příkaz pro spuštení programu pdftk (výchozí: *pdftk*)
+-  **scraper.save_unreadable** - Možnost aktivace ukládání nečitelných souborů (výchozí: *False*)
+-  **scraper.save_text** - Možnost aktivace ukládání textového obsahu PDF (výchozí: *False*)
+-  **scraper.save_unpacked** - Možnost aktivace ukládání obsahu pdf kolekcí (výchozí: *False*)
 
 Kompletní seznam možných konfiguračních hodnot je v souboru config.py.
