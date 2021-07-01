@@ -11,6 +11,15 @@
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}" defer></script>
 
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SWH8D1FRZY"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-SWH8D1FRZY');
+    </script>
+
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 
@@ -65,6 +74,8 @@
                 &copy; 2021 IsirExplorer
                 <br>
                 <a href="https://github.com/opendatalabcz/isir-explorer" target="_blank">Zdrojový kod</a> je dostupný pod licencí GNU General Public License v3.0
+                <br><br>
+                <a href="mailto:info@opendatalab.cz">info@opendatalab.cz</a>
                 <br><br>
                 <p style="text-align: justify; color: #888;">
                 Zdrojem pro data prezentovaná ve statistikách v tomto nástroji je databáze insolvenčního rejstříku a dokumenty v něm zveřejňované.
