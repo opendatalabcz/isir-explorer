@@ -74,8 +74,8 @@
                 &copy; 2021 IsirExplorer
                 <br>
                 <a href="https://github.com/opendatalabcz/isir-explorer" target="_blank">Zdrojový kod</a> je dostupný pod licencí GNU General Public License v3.0
-                <br><br>
-                <a href="mailto:info@opendatalab.cz">info@opendatalab.cz</a>
+                <br>
+                Kontaktujte nás na: <a href="mailto:info@opendatalab.cz">info@opendatalab.cz</a>
                 <br><br>
                 <p style="text-align: justify; color: #888;">
                 Zdrojem pro data prezentovaná ve statistikách v tomto nástroji je databáze insolvenčního rejstříku a dokumenty v něm zveřejňované.
