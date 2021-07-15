@@ -31,7 +31,7 @@
                                 <li><p>Sekce <a href="{{ route("veritele.ins") }}">Věřitelé</a> obsahuje informace o nejčastejších věřitelích vyskytujících se v insolvenčních řízeních. U každého věřitele je možné zobrazit detail, jako je průměrná výše přihlášky, nejčastejší typy insolvencí a kraje dlužníků.</p></li>
                                 <li><p>Sekce <a href="{{ route("spravci.ins") }}">Správci</a> poskytuje seznam insolvenčních správců, možnost srovnávat velikosti spravovaných insolvencí nebo informace o odměnách správců z oddlužení.</p></li>
                                 <li><p>V kategorii <a href="{{ route("stat.mapy.ins") }}">Mapy</a> je možné srovnávat vybrané statistické údaje o insolvencích mezi jednotlivými kraji v ČR. Je možné srovnávat údaje jako počty insolvencí, podíl populace kraje v insolvenci, průměrný věk dlužníka aj.</p></li>
-                                <li><p>Sekce <a href="{{ route("stat.prehled.ins") }}">Statistiky</a> obsahuje přehledová data prezentovaná formou grafů a to celkově pro všechny inlvence nebo jen pro konkrétní formu řešení úpadku. Pro každý graf je možné zobrazit detail a konfigurovat parametry výstupu, jako jsou časový úsek dat, typ osoby dlužníka, způsob řešení úpadku atp.</p></li>
+                                <li><p>Sekce <a href="{{ route("stat.prehled.ins") }}">Statistiky</a> obsahuje přehledová data prezentovaná formou grafů a to celkově pro všechny insolvence nebo jen pro konkrétní formu řešení úpadku. Pro každý graf je možné zobrazit detail a konfigurovat parametry výstupu, jako jsou časový úsek dat, typ osoby dlužníka, způsob řešení úpadku atp.</p></li>
                                 </ul>
                             </p>
                         </div>
