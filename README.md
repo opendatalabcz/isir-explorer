@@ -8,3 +8,10 @@ ISIR explorer umožňuje sběr a následné zobrazení agregovaných dat o insol
 
 ## License
 GNU General Public License v3.0
+
+***
+<img src="https://fit.cvut.cz/static/images/fit-cvut-logo-cs.svg" alt="logo FIT ČVUT" height="200">
+
+Tento software vznikl za podpory **Fakulty informačních technologií ČVUT v Praze**.
+Více informací naleznete na [fit.cvut.cz](https://fit.cvut.cz).
+Otevřený repozitář naleznete na [https://github.com/opendatalabcz/isir-explorer](https://github.com/opendatalabcz/isir-explorer).
